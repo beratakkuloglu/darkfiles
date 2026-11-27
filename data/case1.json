@@ -639,20 +639,20 @@
    "inspect": {
     "front": [
      {
-      "x": 0.5,
-      "y": 0.62,
+      "x": 0.72,
+      "y": 0.42,
       "text": "Kıl inceliğinde bir çizgi tabanı çevreliyor."
      },
      {
-      "x": 0.2,
-      "y": 0.62,
+      "x": 0.17,
+      "y": 0.52,
       "text": "Köşede minik bir menteşe. Taban aşağı açılıyor."
      }
     ],
     "back": [
      {
       "x": 0.5,
-      "y": 0.5,
+      "y": 0.44,
       "text": "Alttan bakınca: bir yay mekanizması. Sahnede 'kaybolan kuş' numarası böyle yapılır."
      }
     ]
