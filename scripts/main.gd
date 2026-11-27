@@ -35,7 +35,7 @@ var walk_max := 336.0
 var room_w: float = 320.0
 var floor_y: float = DEFAULT_FLOOR_Y
 var room_h: float = WORLD_H
-var char_scale: float = 1.0   # mekanda "char_scale": yakın çekim mekanlarda karakterleri büyütür
+var char_scale: float = 1.0   # hep 1.0: karakter ölçüsü sabit, mekan çizimleri ona uyar
 var flags: Dictionary = {}
 var clues: Dictionary = {}
 var lab_done: Dictionary = {}
@@ -1676,7 +1676,7 @@ func load_room(id: String, spawn_x: float) -> void:
 	var r: Dictionary = data["rooms"][id]
 	room_w = float(r["width"])
 	floor_y = float(r.get("floor_y", DEFAULT_FLOOR_Y))
-	char_scale = float(r.get("char_scale", 1.0))
+	char_scale = 1.0   # Berat kararı (2026-11-28): karakterler her mekanda sabit 1x, sahneler bu ölçüye göre çizilir
 	if player_sprite:
 		player_sprite.pivot_offset = Vector2(player_sprite.size.x / 2.0, player_sprite.size.y)
 		player_sprite.scale = Vector2(char_scale, char_scale)
