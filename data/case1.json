@@ -953,26 +953,26 @@
   },
   "afis": {
    "name": "Eski gösteri afişi",
-   "desc": "'Oscar Penn'in Büyük Gösterisi'. Köşede Vesper & Co. logosu. Oscar bunu kimseye söylemiyor.",
+   "desc": "'Büyük Valentino' afişi: Oscar'ın eski sahne adı. Köşede Vesper & Co. damgası. Oscar bunu kimseye söylemiyor.",
    "comment": "...Bunu sonra düşüneceğim.",
    "inspect": {
     "front": [
      {
-      "x": 0.5,
-      "y": 0.35,
-      "text": "'Oscar Penn'in Büyük Gösterisi'. Genç ve kendinden emin."
+      "x": 0.47,
+      "y": 0.3,
+      "text": "'Büyük Valentino'. Oscar'ın eski sahne adı. Genç ve kendinden emin."
      },
      {
-      "x": 0.8,
-      "y": 0.85,
-      "text": "Köşede küçük bir logo: Vesper & Co."
+      "x": 0.75,
+      "y": 0.88,
+      "text": "Köşede matbaa damgası: Vesper & Co."
      }
     ],
     "back": [
      {
-      "x": 0.5,
+      "x": 0.55,
       "y": 0.5,
-      "text": "Arkada silik bir not: 'Sahne ekipmanı: Vesper & Co. tarafından sağlandı.'"
+      "text": "El yazısı: 'Final perdesinden sonra kuliste buluşalım. -V' V... Vesper mi?"
      }
     ]
    }
@@ -983,15 +983,15 @@
    "inspect": {
     "front": [
      {
-      "x": 0.5,
-      "y": 0.4,
+      "x": 0.45,
+      "y": 0.42,
       "text": "'Özel vitrin ve oluk sistemi'. Müşteri: Harold Finch-Moore."
      }
     ],
     "back": [
      {
-      "x": 0.5,
-      "y": 0.6,
+      "x": 0.3,
+      "y": 0.68,
       "text": "Tarih üç ay önce. Ödeme nakit."
      }
     ]
