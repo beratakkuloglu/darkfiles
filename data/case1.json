@@ -83,40 +83,41 @@
     {
      "type": "clue",
      "id": "ruj",
-     "x": 94,
-     "y": 18,
-     "w": 3,
-     "h": 5
+     "x": 146,
+     "y": 51,
+     "w": 5,
+     "h": 6
     },
     {
      "type": "clue",
      "id": "misafir",
-     "x": 199,
-     "y": 20,
-     "w": 6,
-     "h": 7
+     "x": 172,
+     "y": 49,
+     "w": 16,
+     "h": 6
     },
     {
      "type": "clue",
      "id": "sakiz",
-     "x": 275,
+     "x": 230,
      "y": 0,
-     "w": 3,
+     "w": 5,
      "h": 3
     },
     {
      "type": "npc",
      "dialogue": "toby",
-     "x": 245,
+     "x": 222,
      "hide_if_flag": "depo_acik"
     },
     {
      "type": "door",
      "to": "salon",
-     "x": 324,
+     "x": 287,
      "spawn_x": 52
     }
-   ]
+   ],
+   "floor_y": 172
   },
   "salon": {
    "name": "Sergi Salonu",
@@ -164,7 +165,7 @@
      "type": "door",
      "to": "hol",
      "x": 28,
-     "spawn_x": 304
+     "spawn_x": 265
     },
     {
      "type": "clue",
@@ -209,7 +210,7 @@
      "type": "door",
      "to": "guvenlik",
      "x": 292,
-     "spawn_x": 40
+     "spawn_x": 60
     }
    ],
    "floor_y": 172
@@ -245,47 +246,48 @@
     {
      "type": "door",
      "to": "salon",
-     "x": 20,
+     "x": 33,
      "spawn_x": 270
     },
     {
      "type": "clue",
      "id": "kamera",
-     "x": 143,
-     "y": 25,
-     "w": 15,
-     "h": 8
+     "x": 173,
+     "y": 114,
+     "w": 30,
+     "h": 24
     },
     {
      "type": "clue",
      "id": "kart",
-     "x": 194,
-     "y": 20,
-     "w": 5,
-     "h": 3
+     "x": 217,
+     "y": 54,
+     "w": 8,
+     "h": 4
     },
     {
      "type": "clue",
      "id": "fincan",
-     "x": 115,
-     "y": 20,
-     "w": 3,
-     "h": 4
+     "x": 203,
+     "y": 55,
+     "w": 7,
+     "h": 8
     },
     {
      "type": "npc",
      "dialogue": "gus",
-     "x": 236
+     "x": 265
     },
     {
      "type": "door",
      "to": "ofis",
-     "x": 324,
-     "spawn_x": 40,
+     "x": 315,
+     "spawn_x": 35,
      "requires_flag": "ofis_acik",
      "locked_text": "Müdürün ofisi kilitli. Anahtar Gus'ta. Önce onu biraz konuşturmam lazım."
     }
-   ]
+   ],
+   "floor_y": 180
   },
   "ofis": {
    "name": "Müdürün Ofisi",
@@ -332,58 +334,58 @@
     {
      "type": "door",
      "to": "guvenlik",
-     "x": 20,
-     "spawn_x": 304
+     "x": 12,
+     "spawn_x": 290
     },
     {
      "type": "clue",
      "id": "krem",
-     "x": 75,
-     "y": 36,
-     "w": 3,
-     "h": 5
+     "x": 72,
+     "y": 102,
+     "w": 6,
+     "h": 8
     },
     {
      "type": "npc",
      "dialogue": "harold",
-     "x": 126
+     "x": 205
     },
     {
      "type": "clue",
      "id": "kol1",
-     "x": 153,
-     "y": 19,
-     "w": 3,
-     "h": 3
-    },
-    {
-     "type": "clue",
-     "id": "anahtar",
-     "x": 170,
-     "y": 19,
+     "x": 110,
+     "y": 37,
      "w": 4,
      "h": 3
     },
     {
      "type": "clue",
+     "id": "anahtar",
+     "x": 152,
+     "y": 40,
+     "w": 8,
+     "h": 4
+    },
+    {
+     "type": "clue",
      "id": "sigorta",
-     "x": 206,
-     "y": 11,
-     "w": 5,
-     "h": 3
+     "x": 125,
+     "y": 0,
+     "w": 14,
+     "h": 4
     },
     {
      "type": "clue",
      "id": "plan",
-     "x": 237,
-     "y": 40,
-     "w": 15,
-     "h": 10
+     "x": 140,
+     "y": 78,
+     "w": 58,
+     "h": 44
     },
     {
      "type": "door",
      "to": "depo",
-     "x": 290,
+     "x": 256,
      "spawn_x": 40,
      "requires_flag": "depo_acik",
      "locked_text": "Bodrum kapısı. Neden ineyim ki? Henüz bir sebebim yok."
@@ -391,12 +393,13 @@
     {
      "type": "door",
      "to": "otopark",
-     "x": 324,
+     "x": 320,
      "spawn_x": 40,
      "requires_flag": "otopark_acik",
      "locked_text": "Otopark. Harold'ın arabası orada ama anahtarı bende değil."
     }
-   ]
+   ],
+   "floor_y": 172
   },
   "depo": {
    "name": "Bodrum Depo",
@@ -430,7 +433,7 @@
      "type": "door",
      "to": "ofis",
      "x": 20,
-     "spawn_x": 279
+     "spawn_x": 250
     },
     {
      "type": "clue",
@@ -506,7 +509,7 @@
      "type": "door",
      "to": "ofis",
      "x": 20,
-     "spawn_x": 304
+     "spawn_x": 300
     },
     {
      "type": "npc",
@@ -540,101 +543,479 @@
    "name": "Ruj izli kadeh",
    "desc": "Şampanya kadehinde koyu kırmızı ruj izi. Kadeh hâlâ soğuk.",
    "comment": "Bu tonu yalnızca kendinden çok emin biri sürer.",
-   "analysis": "Ruj, Vivian Lark'ın kullandığı markayla aynı. Kadeh 21:35'ten sonra bırakılmış."
+   "analysis": "Ruj, Vivian Lark'ın kullandığı markayla aynı. Kadeh 21:35'ten sonra bırakılmış.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.5,
+      "y": 0.25,
+      "text": "Kenarda koyu kırmızı ruj izi. Bu ton ucuz değil."
+     },
+     {
+      "x": 0.5,
+      "y": 0.8,
+      "text": "Ayağında parmak izi yok. Biri silmiş."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.45,
+      "y": 0.3,
+      "text": "Arka tarafta ikinci, daha soluk bir ruj izi. İki kez içilmiş."
+     }
+    ]
+   }
   },
   "misafir": {
    "name": "Misafir listesi",
-   "desc": "Herkesin giriş ve çıkış saati yazıyor. Vivian Lark'ın çıkış saati boş."
+   "desc": "Herkesin giriş ve çıkış saati yazıyor. Vivian Lark'ın çıkış saati boş.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.35,
+      "y": 0.4,
+      "text": "Vivian Lark, giriş 20:15. Çıkış sütunu boş."
+     },
+     {
+      "x": 0.65,
+      "y": 0.7,
+      "text": "Harold'ın imzası titrek. Aceleyle atılmış."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.5,
+      "text": "Arka kapakta kurşun kalemle: '21:40'. Altı çizili."
+     }
+    ]
+   }
   },
   "sakiz": {
    "name": "Naneli sakız kağıdı",
    "desc": "Yerde buruşuk bir sakız kağıdı. Toby'nin çiğnediği sakızla aynı marka.",
-   "comment": "Ya biri çok gergindi, ya da nefesi çok kötüydü."
+   "comment": "Ya biri çok gergindi, ya da nefesi çok kötüydü.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.5,
+      "y": 0.45,
+      "text": "Marka: Polar Nane. Toby'nin cebinden çıkanla aynı."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.5,
+      "text": "İç yüzünde diş izi yok, sadece buruşturulmuş. Gergin bir el."
+     }
+    ]
+   }
   },
   "kilit": {
    "name": "Sağlam vitrin kilidi",
-   "desc": "Cam çizik bile değil. Kilit zorlanmamış. Kimse vitrini açmamış."
+   "desc": "Cam çizik bile değil. Kilit zorlanmamış. Kimse vitrini açmamış.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.5,
+      "y": 0.55,
+      "text": "Anahtar deliğinde tek çizik yok. Maymuncuk değmemiş."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.4,
+      "text": "Vida başları boyalı ve boya çatlamamış. Kilit hiç sökülmemiş."
+     }
+    ]
+   }
   },
   "taban": {
    "name": "Vitrindeki ince çizgi",
    "desc": "Tabanı çevreleyen kıl inceliğinde bir çizgi. Bu bir sahte taban, klasik sahne numarası.",
-   "comment": "Bu numarayı ben 1997'de daha temiz yapıyordum."
+   "comment": "Bu numarayı ben 1997'de daha temiz yapıyordum.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.5,
+      "y": 0.62,
+      "text": "Kıl inceliğinde bir çizgi tabanı çevreliyor."
+     },
+     {
+      "x": 0.2,
+      "y": 0.62,
+      "text": "Köşede minik bir menteşe. Taban aşağı açılıyor."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.5,
+      "text": "Alttan bakınca: bir yay mekanizması. Sahnede 'kaybolan kuş' numarası böyle yapılır."
+     }
+    ]
+   }
   },
   "kupe": {
    "name": "Zümrüt küpe",
-   "desc": "Vitrinin tam dibinde, yerde. Biri buraya eğilmiş."
+   "desc": "Vitrinin tam dibinde, yerde. Biri buraya eğilmiş.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.5,
+      "y": 0.4,
+      "text": "Gerçek zümrüt. Vivian'ın kulağındakinin eşi."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.6,
+      "text": "Kilidi kırık değil, açık. Düşmüş, koparılmamış."
+     }
+    ]
+   }
   },
   "sac": {
    "name": "Kır saç teli",
    "desc": "Vitrinin kenarına takılmış kısa, kır bir saç. Harold da Gus da kır saçlı.",
-   "analysis": "Saçta lavanta kokulu, pahalı bir saç kremi kalıntısı var."
+   "analysis": "Saçta lavanta kokulu, pahalı bir saç kremi kalıntısı var.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.5,
+      "y": 0.3,
+      "text": "Kısa, kır bir saç. Ucunda parlak bir kalıntı."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.6,
+      "text": "Hafif lavanta kokusu. Gus'ın saçı kokmuyordu."
+     }
+    ]
+   }
   },
   "kamera": {
    "name": "Kamera kaydı",
-   "desc": "21:40'ta salon ışıkları tam 4 saniye sönüyor. Işık gelince yakut yok."
+   "desc": "21:40'ta salon ışıkları tam 4 saniye sönüyor. Işık gelince yakut yok.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.35,
+      "y": 0.4,
+      "text": "Zaman damgası 21:40:02. Işıklar sönüyor."
+     },
+     {
+      "x": 0.7,
+      "y": 0.4,
+      "text": "21:40:06. Işık geri geliyor, vitrin boş."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.5,
+      "text": "Kaset etiketinde müdürün el yazısı: 'Yedek. Dokunma.'"
+     }
+    ]
+   }
   },
   "kart": {
    "name": "Kapı kartı kaydı",
-   "desc": "21:39: Harold Finch-Moore'un kartıyla müdür ofisine giriş."
+   "desc": "21:39: Harold Finch-Moore'un kartıyla müdür ofisine giriş.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.5,
+      "y": 0.4,
+      "text": "21:39 - H. Finch-Moore - Müdür ofisi."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.55,
+      "text": "Kartın arkasına yapıştırılmış not: 'Işık paneli: 3. şalter'."
+     }
+    ]
+   }
   },
   "fincan": {
    "name": "MÜDÜR yazılı fincan",
    "desc": "Gus'ın masasında. Dibinde beyaz bir toz var.",
-   "analysis": "Toz güçlü bir uyku ilacı."
+   "analysis": "Toz güçlü bir uyku ilacı.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.5,
+      "y": 0.3,
+      "text": "Üzerinde 'MÜDÜR' yazıyor. Gus'ın masasında ne arıyor?"
+     },
+     {
+      "x": 0.5,
+      "y": 0.75,
+      "text": "Dibinde beyaz toz. Şeker değil, uyku ilacı kokusu."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.5,
+      "text": "Kulpta iki farklı parmak izi lekesi."
+     }
+    ]
+   }
   },
   "gus_ifadesi": {
    "name": "Gus'ın ifadesi",
    "desc": "Gus: 'Kahveyi müdür getirdi. Salon ışıkları da sadece müdürün ofisinden açılıp kapanır.'",
-   "sets_flag": "ofis_acik"
+   "sets_flag": "ofis_acik",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.5,
+      "y": 0.45,
+      "text": "Gus: 'Kahveyi müdür getirdi. Hiç getirmezdi.'"
+     }
+    ]
+   }
   },
   "krem": {
    "name": "Lavanta saç kremi",
-   "desc": "Müdürün rafında pahalı bir saç kremi şişesi. Lavanta kokuyor."
+   "desc": "Müdürün rafında pahalı bir saç kremi şişesi. Lavanta kokuyor.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.5,
+      "y": 0.4,
+      "text": "Lavanta saç kremi. Pahalı bir marka."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.6,
+      "text": "Etikette eczane fişi: Harold Finch-Moore."
+     }
+    ]
+   }
   },
   "kol1": {
    "name": "Tek kol düğmesi",
-   "desc": "Gümüş, üzerinde H.F.M. harfleri. Eşi kayıp."
+   "desc": "Gümüş, üzerinde H.F.M. harfleri. Eşi kayıp.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.5,
+      "y": 0.45,
+      "text": "Gümüş üzerine H.F.M. harfleri."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.5,
+      "text": "Tutturma iğnesi bükülmüş. Bir yere takılıp kopmuş."
+     }
+    ]
+   }
   },
   "anahtar": {
    "name": "Araba anahtarı",
    "desc": "Harold'ın masasında eski bir Mercedes anahtarı.",
    "sets_flag": "otopark_acik",
-   "comment": "Hiç kimse araba anahtarını masada unutmaz. Ben hariç. Ve Harold."
+   "comment": "Hiç kimse araba anahtarını masada unutmaz. Ben hariç. Ve Harold.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.5,
+      "y": 0.35,
+      "text": "Eski bir Mercedes anahtarı."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.6,
+      "text": "Anahtarlıkta küçük bir etiket: 'Otopark, P3'."
+     }
+    ]
+   }
   },
   "sigorta": {
    "name": "Yırtık sigorta belgesi",
-   "desc": "Çöpten çıkan parçalar birleşince: yakutun sigorta değeri iki hafta önce iki katına çıkarılmış."
+   "desc": "Çöpten çıkan parçalar birleşince: yakutun sigorta değeri iki hafta önce iki katına çıkarılmış.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.4,
+      "y": 0.4,
+      "text": "Değer: 2.000.000 dolar. Eskiden 1.000.000'du."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.55,
+      "text": "Tarih: iki hafta önce. İmza: H. Finch-Moore."
+     }
+    ]
+   }
   },
   "plan": {
    "name": "Bina planı",
    "desc": "Sergi salonundaki vitrin tam bodrum deponun üstüne denk geliyor.",
    "sets_flag": "depo_acik",
-   "comment": "Bodrum. Kötü fikirlerin her zaman gittiği yer."
+   "comment": "Bodrum. Kötü fikirlerin her zaman gittiği yer.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.45,
+      "y": 0.35,
+      "text": "Sergi salonu, vitrin noktası işaretli."
+     },
+     {
+      "x": 0.45,
+      "y": 0.7,
+      "text": "Tam altında: bodrum depo. Kurşun kalemle bir ok çizilmiş."
+     }
+    ]
+   }
   },
   "bileklik": {
    "name": "Kopuk deri bileklik",
-   "desc": "Yanında boş bir içki şişesi. Toby'nin bileği bu akşam çıplaktı."
+   "desc": "Yanında boş bir içki şişesi. Toby'nin bileği bu akşam çıplaktı.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.5,
+      "y": 0.45,
+      "text": "Deri, toka kopuk. İç yüzde 'T' harfi kazınmış."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.55,
+      "text": "Üzerinde içki lekesi. Sahibi burada içip uyuyakalmış."
+     }
+    ]
+   }
   },
   "oluk": {
    "name": "Metal oluk ve sandık",
-   "desc": "Tavandan inen oluk, 'Vesper & Co.' yazılı kilitli bir sandığa iniyor. İçinden tıkırtı geliyor."
+   "desc": "Tavandan inen oluk, 'Vesper & Co.' yazılı kilitli bir sandığa iniyor. İçinden tıkırtı geliyor.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.5,
+      "y": 0.25,
+      "text": "Oluk tavandan, tam vitrinin altından iniyor."
+     },
+     {
+      "x": 0.5,
+      "y": 0.75,
+      "text": "Sandıkta 'Vesper & Co.' yazısı."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.5,
+      "text": "Sandığın arkasında nakliye etiketi: 'Teslim: Cuma'."
+     }
+    ]
+   }
   },
   "kol2": {
    "name": "İkinci kol düğmesi",
-   "desc": "Sandığın dibinde, tozun altında. Gümüş, H.F.M. harfli."
+   "desc": "Sandığın dibinde, tozun altında. Gümüş, H.F.M. harfli.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.5,
+      "y": 0.45,
+      "text": "Gümüş, H.F.M. harfli. Birincinin eşi."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.5,
+      "text": "Üzerinde bodrum tozu. Uzun süredir burada değil, bu akşam düşmüş."
+     }
+    ]
+   }
   },
   "afis": {
    "name": "Eski gösteri afişi",
    "desc": "'Oscar Penn'in Büyük Gösterisi'. Köşede Vesper & Co. logosu. Oscar bunu kimseye söylemiyor.",
-   "comment": "...Bunu sonra düşüneceğim."
+   "comment": "...Bunu sonra düşüneceğim.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.5,
+      "y": 0.35,
+      "text": "'Oscar Penn'in Büyük Gösterisi'. Genç ve kendinden emin."
+     },
+     {
+      "x": 0.8,
+      "y": 0.85,
+      "text": "Köşede küçük bir logo: Vesper & Co."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.5,
+      "text": "Arkada silik bir not: 'Sahne ekipmanı: Vesper & Co. tarafından sağlandı.'"
+     }
+    ]
+   }
   },
   "fatura": {
    "name": "Vesper & Co. faturası",
-   "desc": "Torpidoda. 'Özel vitrin ve oluk sistemi', üç ay önce, Harold adına."
+   "desc": "Torpidoda. 'Özel vitrin ve oluk sistemi', üç ay önce, Harold adına.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.5,
+      "y": 0.4,
+      "text": "'Özel vitrin ve oluk sistemi'. Müşteri: Harold Finch-Moore."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.6,
+      "text": "Tarih üç ay önce. Ödeme nakit."
+     }
+    ]
+   }
   },
   "kartvizit": {
    "name": "Notlu kartvizit",
-   "desc": "Bagajda. Arkasında el yazısı: 'Alıcı Cuma, şehir dışı. Nakit.'"
+   "desc": "Bagajda. Arkasında el yazısı: 'Alıcı Cuma, şehir dışı. Nakit.'",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.5,
+      "y": 0.45,
+      "text": "Vesper & Co. Adres yok, sadece telefon."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.5,
+      "text": "El yazısı: 'Alıcı Cuma, şehir dışı. Nakit.'"
+     }
+    ]
+   }
   }
  },
  "deductions": [

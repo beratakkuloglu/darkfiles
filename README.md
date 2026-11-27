@@ -2,7 +2,7 @@
 
 2D pixel art dedektiflik oyunu. Oyuncu, FCD (Federal Crimes Division) danışmanı ve eski sahne sihirbazı Oscar Penn'i yönetir.
 
-Vaka 1 "Boş Vitrin" baştan sona oynanabilir: ana menü, 6 mekan, 5 karakter, ipucu toplama, sorgu, kanıt gösterme, dedüksiyon tahtası, suçlama ve puanlı final. Karakterler PixelLab çizimi; mekanlardan salon çizildi, diğerleri çizim gelene kadar sade duvar/zemin ile gösterilir.
+Vaka 1 "Boş Vitrin" baştan sona oynanabilir: ana menü, 6 mekan, 5 karakter, ipucu toplama, sorgu, kanıt gösterme, dedüksiyon tahtası, suçlama ve puanlı final. Karakterler PixelLab çizimi; salon, hol, güvenlik ve ofis çizildi, diğerleri çizim gelene kadar sade duvar/zemin ile gösterilir.
 
 ## Nasıl açılır
 
@@ -25,6 +25,8 @@ Vaka 1 "Boş Vitrin" baştan sona oynanabilir: ana menü, 6 mekan, 5 karakter, i
 Ayarlar (ana menüden veya duraklatma menüsünden): müzik sesi, efekt sesi, tam ekran. Tercihler `user://settings.cfg` dosyasına kaydedilir.
 
 Sahne çizimi olan mekanlarda ipuçları yanıp sönen sarı yıldızlarla belli olur.
+
+Bir ipucu alınca inceleme ekranı açılır: "Çevir" (F) ile önü ve arkası görülür, "?" noktalarına tıklayınca detay bulunur ve deftere yazılır. Defterden bir ipucu seçip "yakından incele" ile tekrar açılabilir. Detay noktaları `data/case1.json` içinde her ipucunun `inspect` alanında (0-1 arası konum). Eşya çizimleri için promptlar: `docs/esya_promptlari.md`.
 
 ## Klasörler
 
@@ -49,7 +51,8 @@ Ekran 640x360, kamera 2x yakınlaştırır; yani dünya 320x180 "çizim pikseli"
 | Oscar yürüme | `art/oscar_walk.png` | 32x48 kareler yan yana |
 | Şüpheliler | `art/toby.png`, `art/vivian.png`, `art/gus.png`, `art/harold.png` | 32x48 |
 | Durma (nefes) animasyonu | `art/<ad>_idle.png` (ör. `art/gus_idle.png`) | 32x48 kareler yan yana |
-| İpucu | `art/<ipucu id>.png` (ör. `art/kupe.png`) | 4-30 px |
+| İpucu (sahnede) | `art/<ipucu id>.png` (ör. `art/kupe.png`); yoksa yanıp sönen yıldız | 4-30 px |
+| İpucu (inceleme ekranı) | `art/items/<ipucu id>.png` ön, `art/items/<ipucu id>_back.png` arka | 64x64 |
 | Mekan arka planı | `art/rooms/<mekan id>.png` | 344x192 |
 
 Mekan id'leri: `hol`, `salon`, `guvenlik`, `ofis`, `depo`, `otopark`. Yeni bir mekan çizimi gelince JSON'da o mekanın `floor_y` değeri ve nesnelerin `x`/`y` değerleri resme göre ayarlanır.
@@ -68,7 +71,7 @@ Palet: `#0f0b08`, `#2b1d14`, `#5a3d2b`, `#8a6a4f`, `#e8c547`, `#f2e3b3`.
 
 ## Henüz olmayanlar
 
-- Hol, güvenlik, ofis, depo ve otopark çizimleri.
+- Depo ve otopark çizimleri, eşya çizimleri.
 - Sihir numaralarının mini oyunları (soğuk okuma şimdilik diyalog seçeneği, cep aşırma finalde ara sahne).
 - Yırtık belge birleştirme yapbozu.
 - Kayıt sistemi, Vaka 2+.

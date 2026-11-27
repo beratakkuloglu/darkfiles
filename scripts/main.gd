@@ -111,6 +111,24 @@ var menu_button: Button
 var paused: bool = false
 var busy_before_pause: bool = false
 
+# Eşya inceleme
+const INSPECT_SIZE := 192.0
+var inspect_panel: Control
+var inspect_area: Control
+var inspect_img: TextureRect
+var inspect_card: Label
+var inspect_spots: Control
+var inspect_title: Label
+var inspect_side_label: Label
+var inspect_notes: Label
+var inspect_flip: Button
+var inspect_id: String = ""
+var inspect_side: String = "front"
+var inspect_done: Callable = Callable()
+var found_details: Dictionary = {}
+var notebook_selected: String = ""
+var notebook_inspect_btn: Button
+
 
 func _ready() -> void:
 	var f := FileAccess.open("res://data/case1.json", FileAccess.READ)
@@ -425,6 +443,14 @@ func _build_ui() -> void:
 		_sfx("click")
 		notebook_info.text = _hint_text())
 	right.add_child(hint_btn)
+	notebook_inspect_btn = Button.new()
+	notebook_inspect_btn.text = "Seçili ipucunu yakından incele"
+	notebook_inspect_btn.visible = false
+	notebook_inspect_btn.pressed.connect(func():
+		if notebook_selected != "":
+			var sel := notebook_selected
+			open_inspect(sel, func(): notebook_info.text = _clue_text(sel)))
+	right.add_child(notebook_inspect_btn)
 	link_button = Button.new()
 	link_button.text = "Dedüksiyon tahtası: iki ipucunu bağla"
 	link_button.pressed.connect(_start_link)
@@ -453,6 +479,8 @@ func _build_ui() -> void:
 	menu_button.position = Vector2(VIEW_W - 92, 32)
 	menu_button.pressed.connect(open_pause)
 	ui_root.add_child(menu_button)
+
+	_build_inspect()
 
 	# Sahne geçişi için kararma (her şeyin üstünde)
 	var fade_layer := CanvasLayer.new()
@@ -855,12 +883,20 @@ func _unhandled_input(event: InputEvent) -> void:
 		if key.keycode == KEY_ESCAPE:
 			if settings_panel.visible:
 				_close_settings()
+			elif inspect_panel.visible:
+				_close_inspect()
 			elif paused:
 				close_pause()
 			elif not in_menu:
 				open_pause()
 			return
 		if paused or settings_panel.visible:
+			return
+		if inspect_panel.visible:
+			if key.keycode == KEY_F:
+				_flip_inspect()
+			elif key.keycode == KEY_SPACE or key.keycode == KEY_ENTER or key.keycode == KEY_E:
+				_close_inspect()
 			return
 		if in_menu:
 			if key.keycode == KEY_ENTER or key.keycode == KEY_SPACE:
@@ -973,7 +1009,10 @@ func give_clue(id: String, done: Callable) -> void:
 		lines.append(["Maya", "Bunu laboratuvara yolluyorum. Sonuç bir sonraki mekanda gelir."])
 	_add_link_hint(lines)
 	_refresh_visibility()
-	play_lines(lines, done)
+	if c.has("inspect"):
+		open_inspect(id, func(): play_lines(lines, done))
+	else:
+		play_lines(lines, done)
 
 
 func _complete_lab() -> void:
@@ -1043,6 +1082,9 @@ func _clue_text(id: String) -> String:
 		t += "\n\nLab: " + str(c["analysis"])
 	elif pending_lab.has(id):
 		t += "\n\nLab: sonuç bekleniyor."
+	var notes := _found_notes(id)
+	if notes != "":
+		t += "\n\n" + notes
 	return t
 
 
@@ -1272,6 +1314,8 @@ func _fill_notebook(info: String) -> void:
 				lb.custom_minimum_size = Vector2(250, 0)
 				notebook_list.add_child(lb)
 	notebook_info.text = info
+	notebook_selected = ""
+	notebook_inspect_btn.visible = false
 	var req: Array = data["final"]["required"]
 	var done := 0
 	for rid in req:
@@ -1301,6 +1345,8 @@ func _on_clue_pressed(id: String) -> void:
 				select_mode = ""
 				_fill_notebook(_try_link(a, id))
 		_:
+			notebook_selected = id
+			notebook_inspect_btn.visible = data["clues"][id].has("inspect")
 			notebook_info.text = _clue_text(id)
 
 
@@ -1580,3 +1626,180 @@ func _apply_settings() -> void:
 	var want: DisplayServer.WindowMode = DisplayServer.WINDOW_MODE_FULLSCREEN if bool(settings["fullscreen"]) else DisplayServer.WINDOW_MODE_WINDOWED
 	if DisplayServer.window_get_mode() != want:
 		DisplayServer.window_set_mode(want)
+
+
+# ================================================================ eşya inceleme
+
+## İpucunu büyük gösterir: önünü / arkasını çevir, parlayan noktalara tıklayıp detay bul.
+## Çizim: art/items/<id>.png (ön) ve art/items/<id>_back.png (arka), 64x64 önerilir.
+func _build_inspect() -> void:
+	inspect_panel = ColorRect.new()
+	(inspect_panel as ColorRect).color = Color(0.02, 0.015, 0.01, 0.85)
+	inspect_panel.size = Vector2(VIEW_W, VIEW_H)
+	inspect_panel.visible = false
+	ui_root.add_child(inspect_panel)
+	var panel := PanelContainer.new()
+	panel.position = Vector2(48, 44)
+	panel.custom_minimum_size = Vector2(VIEW_W - 96, 0)
+	inspect_panel.add_child(panel)
+	var hb := HBoxContainer.new()
+	hb.add_theme_constant_override("separation", 14)
+	panel.add_child(hb)
+
+	var frame := PanelContainer.new()
+	var fstyle := StyleBoxFlat.new()
+	fstyle.bg_color = Color("#1a120c")
+	fstyle.border_color = C_YELLOW
+	fstyle.set_border_width_all(1)
+	fstyle.set_content_margin_all(6)
+	frame.add_theme_stylebox_override("panel", fstyle)
+	frame.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	hb.add_child(frame)
+	inspect_area = Control.new()
+	inspect_area.custom_minimum_size = Vector2(INSPECT_SIZE, INSPECT_SIZE)
+	inspect_area.pivot_offset = Vector2(INSPECT_SIZE / 2.0, INSPECT_SIZE / 2.0)
+	frame.add_child(inspect_area)
+	inspect_img = TextureRect.new()
+	inspect_img.size = Vector2(INSPECT_SIZE, INSPECT_SIZE)
+	inspect_img.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	inspect_img.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	inspect_img.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	inspect_area.add_child(inspect_img)
+	inspect_card = Label.new()
+	inspect_card.size = Vector2(INSPECT_SIZE, INSPECT_SIZE)
+	inspect_card.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	inspect_card.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	inspect_card.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	inspect_card.add_theme_color_override("font_color", C_LIGHT)
+	inspect_card.add_theme_font_size_override("font_size", 16)
+	inspect_area.add_child(inspect_card)
+	inspect_spots = Control.new()
+	inspect_spots.size = Vector2(INSPECT_SIZE, INSPECT_SIZE)
+	inspect_spots.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	inspect_area.add_child(inspect_spots)
+
+	var right := VBoxContainer.new()
+	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right.add_theme_constant_override("separation", 6)
+	hb.add_child(right)
+	inspect_title = Label.new()
+	inspect_title.add_theme_color_override("font_color", C_YELLOW)
+	inspect_title.add_theme_font_size_override("font_size", 16)
+	inspect_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	right.add_child(inspect_title)
+	inspect_side_label = Label.new()
+	inspect_side_label.add_theme_color_override("font_color", C_LIGHT)
+	inspect_side_label.add_theme_font_size_override("font_size", 11)
+	right.add_child(inspect_side_label)
+	inspect_notes = Label.new()
+	inspect_notes.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	inspect_notes.custom_minimum_size = Vector2(250, 150)
+	inspect_notes.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	right.add_child(inspect_notes)
+	var row := HBoxContainer.new()
+	right.add_child(row)
+	inspect_flip = Button.new()
+	inspect_flip.text = "Çevir [F]"
+	inspect_flip.pressed.connect(_flip_inspect)
+	row.add_child(inspect_flip)
+	var ok := Button.new()
+	ok.text = "Tamam [Boşluk]"
+	ok.pressed.connect(_close_inspect)
+	row.add_child(ok)
+
+
+func open_inspect(id: String, done: Callable) -> void:
+	busy = true
+	inspect_id = id
+	inspect_side = "front"
+	inspect_done = done
+	inspect_area.scale = Vector2.ONE
+	inspect_panel.visible = true
+	ui_root.move_child(inspect_panel, ui_root.get_child_count() - 1)
+	inspect_panel.modulate.a = 0.0
+	create_tween().tween_property(inspect_panel, "modulate:a", 1.0, 0.2)
+	_show_inspect_side()
+
+
+func _inspect_data() -> Dictionary:
+	return data["clues"][inspect_id].get("inspect", {})
+
+
+func _show_inspect_side() -> void:
+	var c: Dictionary = data["clues"][inspect_id]
+	var ins := _inspect_data()
+	inspect_title.text = str(c["name"])
+	inspect_side_label.text = ("ÖN YÜZ" if inspect_side == "front" else "ARKA YÜZ") + "   (parlayan noktalara tıkla)"
+	inspect_flip.visible = ins.has("back")
+	var tex := _art("items/" + inspect_id + ("" if inspect_side == "front" else "_back"))
+	inspect_img.texture = tex
+	inspect_card.visible = tex == null
+	inspect_card.text = str(c["name"]) + ("" if inspect_side == "front" else "\n(arka yüz)")
+	for ch in inspect_spots.get_children():
+		inspect_spots.remove_child(ch)
+		ch.queue_free()
+	var spots: Array = ins.get(inspect_side, [])
+	for i in range(spots.size()):
+		var sp: Dictionary = spots[i]
+		var key := inspect_id + ":" + inspect_side + ":" + str(i)
+		var b := Button.new()
+		b.text = "!" if found_details.has(key) else "?"
+		b.custom_minimum_size = Vector2(18, 18)
+		b.size = Vector2(18, 18)
+		b.position = Vector2(float(sp["x"]), float(sp["y"])) * INSPECT_SIZE - Vector2(9, 9)
+		b.add_theme_font_size_override("font_size", 11)
+		b.pressed.connect(_on_inspect_spot.bind(key))
+		inspect_spots.add_child(b)
+		if not found_details.has(key):
+			b.pivot_offset = Vector2(9, 9)
+			var tw := b.create_tween().set_loops()
+			tw.tween_property(b, "scale", Vector2(1.2, 1.2), 0.5)
+			tw.tween_property(b, "scale", Vector2.ONE, 0.5)
+	inspect_notes.text = str(c["desc"]) + "\n\n" + _found_notes(inspect_id)
+
+
+func _on_inspect_spot(key: String) -> void:
+	if found_details.has(key):
+		return
+	found_details[key] = true
+	_sfx("pickup")
+	_show_inspect_side()
+
+
+## Bu ipucunda bulunan detaylar ve sayaç.
+func _found_notes(id: String) -> String:
+	var ins: Dictionary = data["clues"][id].get("inspect", {})
+	var total := 0
+	var found: Array = []
+	for side in ["front", "back"]:
+		var spots: Array = ins.get(side, [])
+		for i in range(spots.size()):
+			total += 1
+			if found_details.has(id + ":" + side + ":" + str(i)):
+				found.append("- " + str(spots[i]["text"]))
+	if total == 0:
+		return ""
+	var t := "Detaylar " + str(found.size()) + "/" + str(total)
+	for f in found:
+		t += "\n" + str(f)
+	return t
+
+
+func _flip_inspect() -> void:
+	if not _inspect_data().has("back"):
+		return
+	_sfx("click")
+	var tw := create_tween()
+	tw.tween_property(inspect_area, "scale:x", 0.0, 0.12)
+	tw.tween_callback(func():
+		inspect_side = "back" if inspect_side == "front" else "front"
+		_show_inspect_side())
+	tw.tween_property(inspect_area, "scale:x", 1.0, 0.12)
+
+
+func _close_inspect() -> void:
+	inspect_panel.visible = false
+	var cb := inspect_done
+	inspect_done = Callable()
+	if cb.is_valid():
+		cb.call()
