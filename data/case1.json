@@ -547,20 +547,20 @@
    "inspect": {
     "front": [
      {
-      "x": 0.5,
-      "y": 0.25,
+      "x": 0.48,
+      "y": 0.08,
       "text": "Kenarda koyu kırmızı ruj izi. Bu ton ucuz değil."
      },
      {
       "x": 0.5,
-      "y": 0.8,
+      "y": 0.92,
       "text": "Ayağında parmak izi yok. Biri silmiş."
      }
     ],
     "back": [
      {
-      "x": 0.45,
-      "y": 0.3,
+      "x": 0.5,
+      "y": 0.1,
       "text": "Arka tarafta ikinci, daha soluk bir ruj izi. İki kez içilmiş."
      }
     ]

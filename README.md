@@ -52,7 +52,7 @@ Ekran 640x360, kamera 2x yakınlaştırır; yani dünya 320x180 "çizim pikseli"
 | Şüpheliler | `art/toby.png`, `art/vivian.png`, `art/gus.png`, `art/harold.png` | 32x48 |
 | Durma (nefes) animasyonu | `art/<ad>_idle.png` (ör. `art/gus_idle.png`) | 32x48 kareler yan yana |
 | İpucu (sahnede) | `art/<ipucu id>.png` (ör. `art/kupe.png`); yoksa yanıp sönen yıldız | 4-30 px |
-| İpucu (inceleme ekranı) | `art/items/<ipucu id>.png` ön, `art/items/<ipucu id>_back.png` arka | 64x64 |
+| İpucu (inceleme ekranı) | `art/items/<ipucu id>.png` ön, `art/items/<ipucu id>_back.png` arka | 96x96 |
 | Mekan arka planı | `art/rooms/<mekan id>.png` | 344x192 |
 
 Mekan id'leri: `hol`, `salon`, `guvenlik`, `ofis`, `depo`, `otopark`. Yeni bir mekan çizimi gelince JSON'da o mekanın `floor_y` değeri ve nesnelerin `x`/`y` değerleri resme göre ayarlanır.

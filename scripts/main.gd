@@ -1631,7 +1631,7 @@ func _apply_settings() -> void:
 # ================================================================ eşya inceleme
 
 ## İpucunu büyük gösterir: önünü / arkasını çevir, parlayan noktalara tıklayıp detay bul.
-## Çizim: art/items/<id>.png (ön) ve art/items/<id>_back.png (arka), 64x64 önerilir.
+## Çizim: art/items/<id>.png (ön) ve art/items/<id>_back.png (arka), 96x96 (tools/pixelize.py bu boyutta üretir).
 func _build_inspect() -> void:
 	inspect_panel = ColorRect.new()
 	(inspect_panel as ColorRect).color = Color(0.02, 0.015, 0.01, 0.85)

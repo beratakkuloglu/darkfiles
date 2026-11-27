@@ -1,7 +1,7 @@
 """Turn an ordinary AI image (ChatGPT, Gemini...) into game-ready pixel art.
 
 Steps: optional background removal (flood fill from the corners over colors
-close to the corner color), crop to the object, shrink to the target size with
+close to the corner color), crop to the object, shrink to the target size (96x96 for items) with
 a box filter, then reduce to a small palette so it reads as pixel art.
 
 Usage:
@@ -11,7 +11,7 @@ Usage:
 """
 import argparse
 from collections import deque
-from PIL import Image
+from PIL import Image, ImageEnhance
 
 
 def remove_bg(im, tol):
@@ -38,10 +38,11 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("src")
     p.add_argument("dst")
-    p.add_argument("--size", default="64", help="64 (square, keeps aspect inside) or WxH (fills exactly)")
+    p.add_argument("--sat", type=float, default=1.3, help="color boost so small details survive shrinking")
+    p.add_argument("--size", default="96", help="96 (square, keeps aspect inside) or WxH (fills exactly)")
     p.add_argument("--remove-bg", action="store_true")
     p.add_argument("--tol", type=int, default=60)
-    p.add_argument("--colors", type=int, default=24)
+    p.add_argument("--colors", type=int, default=40)
     p.add_argument("--half", choices=["left", "right"], help="use only one half (front/back views side by side)")
     a = p.parse_args()
     im = Image.open(a.src).convert("RGBA")
@@ -62,8 +63,9 @@ def main():
         im.thumbnail((n, n), Image.BOX)
         out = Image.new("RGBA", (n, n))
         out.paste(im, ((n - im.width) // 2, (n - im.height) // 2))
+    out = Image.merge("RGBA", (*ImageEnhance.Color(out.convert("RGB")).enhance(a.sat).split(), out.getchannel("A")))
     alpha = out.getchannel("A").point(lambda v: 255 if v > 128 else 0)
-    rgb = out.convert("RGB").quantize(colors=a.colors, method=Image.Quantize.MEDIANCUT).convert("RGB")
+    rgb = out.convert("RGB").quantize(colors=a.colors, method=Image.Quantize.FASTOCTREE, dither=Image.Dither.NONE).convert("RGB")
     rgb.putalpha(alpha)
     rgb.save(a.dst)
 
