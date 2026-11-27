@@ -664,15 +664,15 @@
    "inspect": {
     "front": [
      {
-      "x": 0.5,
-      "y": 0.4,
+      "x": 0.52,
+      "y": 0.58,
       "text": "Gerçek zümrüt. Vivian'ın kulağındakinin eşi."
      }
     ],
     "back": [
      {
       "x": 0.5,
-      "y": 0.6,
+      "y": 0.88,
       "text": "Kilidi kırık değil, açık. Düşmüş, koparılmamış."
      }
     ]
