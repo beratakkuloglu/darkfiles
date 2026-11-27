@@ -55,9 +55,12 @@ Ekran 640x360, kamera 2x yakınlaştırır; yani dünya 320x180 "çizim pikseli"
 | İpucu (sahnede) | `art/<ipucu id>.png` (ör. `art/kupe.png`); yoksa yanıp sönen yıldız | 4-30 px |
 | İpucu (inceleme ekranı) | `art/items/<ipucu id>.png` ön, `art/items/<ipucu id>_back.png` arka | 96x96 |
 | Mekan arka planı | `art/rooms/<mekan id>.png` | 344x192 |
+| Oscar oturan / yudum | `art/oscar_sit.png`, `art/oscar_sip.png` (isteğe bağlı) | 32x48 |
+| Araba (yandan, sağa bakan) | `art/araba.png` | ~96x40 |
+| Gece yolu katmanları | `art/drive/sky.png`, `art/drive/lamps.png`, `art/drive/road.png` (yatayda tekrar eden, şeffaf) | 320x180 |
 | Açılış sahnesi kartları | `art/cutscene/sehir.png`, `sahne.png`, `muze.png`; yoksa sadece yazı | 320x180 civarı |
 
-Mekan id'leri: `fcd` (başlangıç, FCD Merkezi), `hol`, `salon`, `guvenlik`, `ofis`, `depo`, `otopark`. Yeni bir mekan çizimi gelince JSON'da o mekanın `floor_y` değeri ve nesnelerin `x`/`y` değerleri resme göre ayarlanır.
+Mekan id'leri: `oscar_ofis` (başlangıç), `koridor` (640 genişlik), `fcd`, `sokak`, `muze_onu`, `hol`, `salon`, `guvenlik`, `ofis`, `depo`, `otopark`. Yeni bir mekan çizimi gelince JSON'da o mekanın `floor_y` değeri ve nesnelerin `x`/`y` değerleri resme göre ayarlanır.
 
 Kendi çizdiğin bir animasyon şeridi aynı isimle konursa otomatik üretilenin yerine geçer.
 

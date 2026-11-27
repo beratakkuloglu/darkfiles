@@ -78,6 +78,17 @@ var maya_x: float = 0.0
 var maya_walk: Array = []
 var maya_idle: Array = []
 var maya_moving: bool = false
+var maya_script: bool = false     # true: Maya senaryoyla yürür, Oscar'ı takip etmez
+var maya_target: float = 0.0
+var maya_speed: float = 1.0
+var maya_cb: Callable = Callable()
+var player_pose: Texture2D = null  # oturma gibi sabit poz (null: normal animasyon)
+var in_car: bool = false
+var drive_panel: Control
+var drive_layers: Array = []      # [{node, speed, wrap}]
+var drive_offset: float = 0.0
+var driving: bool = false
+var car_tween: Tween
 
 # Arayüz
 var ui_root: Control
@@ -682,9 +693,7 @@ func _start_game() -> void:
 	tw.tween_property(menu_panel, "modulate:a", 0.0, 0.5)
 	tw.tween_callback(func():
 		menu_panel.visible = false
-		_play_cutscene(data.get("cutscene", []), func():
-			_set_hud_visible(true)
-			play_lines(data["intro"], Callable())))
+		_play_cutscene(data.get("cutscene", []), _office_intro))
 
 
 # ================================================================ açılış sahnesi
@@ -779,7 +788,7 @@ func _end_cutscene() -> void:
 	if cut_tween:
 		cut_tween.kill()
 	var tw := create_tween()
-	tw.tween_property(cut_panel, "modulate:a", 0.0, 0.6)
+	tw.tween_property(fade_rect, "color:a", 1.0, 0.6)
 	tw.tween_callback(func():
 		cut_panel.visible = false
 		var cb := cut_done
@@ -850,7 +859,309 @@ func go_room(id: String, spawn_x: float) -> void:
 				busy_before_pause = false
 			else:
 				busy = false
-				_play_enter_lines())
+				_room_event())
+
+
+# ================================================================ açılış akışı
+
+func _scene(key: String) -> Array:
+	return data.get("scenes", {}).get(key, [])
+
+
+func _room_obj(type_name: String) -> Dictionary:
+	for e in room_objects:
+		if str(e["data"]["type"]) == type_name:
+			return e
+	return {}
+
+
+## Maya'yı senaryoyla x'e yürütür; varınca cb çağrılır. speed_mul: Oscar hızına oran.
+func maya_go(x: float, speed_mul: float, cb: Callable) -> void:
+	maya_script = true
+	maya_target = x
+	maya_speed = speed_mul
+	maya_cb = cb
+
+
+func maya_follow() -> void:
+	maya_script = false
+	maya_cb = Callable()
+	if maya:
+		maya.visible = true
+
+
+func _wait(sec: float, cb: Callable) -> void:
+	get_tree().create_timer(sec).timeout.connect(cb)
+
+
+## Mekan yüklenince (ekran karanlıkken) kişilerin yerleşimi.
+func _room_setup(id: String, spawn_x: float) -> void:
+	player.visible = true
+	player_pose = null
+	in_car = false
+	maya_follow()
+	match id:
+		"oscar_ofis":
+			if not flags.has("ofis_done"):
+				var sit := _art("oscar_sit")
+				player_pose = sit if sit else _art("oscar")
+				_face(1.0)
+				if maya:
+					maya.visible = false
+		"koridor":
+			if not flags.has("koridor_done") and maya:
+				maya_x = spawn_x + 20.0
+				maya_go(maya_x, 1.0, Callable())
+		"muze_onu":
+			if not flags.has("arrived"):
+				in_car = true
+				player.visible = false
+				if maya:
+					maya.visible = false
+				var car := _room_obj("car")
+				if not car.is_empty():
+					player.position.x = float(car["data"]["x"])
+				camera.reset_smoothing()
+
+
+## Kapıdan girip ekran açılınca: odaya özel sahne, yoksa "enter_lines".
+func _room_event() -> void:
+	match room_id:
+		"koridor":
+			if not flags.has("koridor_done"):
+				flags["koridor_done"] = true
+				var elev := float(data["rooms"]["koridor"].get("elevator_x", room_w - 30.0))
+				play_lines(_scene("koridor"), func():
+					_close_dialog()
+					maya_go(elev - 12.0, 1.7, Callable()))
+				return
+		"muze_onu":
+			if not flags.has("arrived"):
+				_car_arrive()
+				return
+	_play_enter_lines()
+
+
+## Oyun başı: hikaye kartlarından sonra Oscar'ın odası yavaşça aydınlanır, Maya gelir.
+func _office_intro() -> void:
+	busy = true
+	var door := float(data["rooms"]["oscar_ofis"].get("door_x", room_w - 30.0))
+	var tw := create_tween()
+	tw.tween_property(fade_rect, "color:a", 0.0, 3.0).set_trans(Tween.TRANS_SINE)
+	tw.tween_interval(1.2)
+	tw.tween_callback(func():
+		if maya == null:
+			_office_talk()
+			return
+		maya_x = door
+		maya.visible = true
+		maya.modulate.a = 0.0
+		maya.create_tween().tween_property(maya, "modulate:a", 1.0, 0.3)
+		_sfx("door")
+		maya_go(door - 70.0, 1.0, _office_talk))
+
+
+func _office_talk() -> void:
+	play_lines(_scene("ofis"), func():
+		_close_dialog()
+		busy = true
+		# son yudum, sonra ayağa kalk
+		var sip := _art("oscar_sip")
+		if sip:
+			player_pose = sip
+		var tw := create_tween()
+		tw.tween_property(player_sprite, "position:y", player_sprite.position.y - 1.0, 0.4)
+		tw.tween_property(player_sprite, "position:y", player_sprite.position.y, 0.4)
+		tw.tween_interval(0.6)
+		tw.tween_callback(func():
+			player_pose = null
+			flags["ofis_done"] = true
+			_set_hud_visible(true)
+			var door := float(data["rooms"]["oscar_ofis"].get("door_x", room_w - 30.0))
+			if maya:
+				maya_go(door, 1.1, func():
+					_sfx("door")
+					var mt := maya.create_tween()
+					mt.tween_property(maya, "modulate:a", 0.0, 0.3)
+					mt.tween_callback(func():
+						maya.visible = false
+						maya.modulate.a = 1.0))
+			play_lines(_scene("ofis_after"), Callable())))
+
+
+# ---------------------------------------------------------------- araba
+
+func _start_drive() -> void:
+	busy = true
+	_sfx("door")
+	var tw := create_tween()
+	tw.tween_property(fade_rect, "color:a", 1.0, 0.5)
+	tw.tween_callback(func():
+		_build_drive()
+		drive_panel.visible = true
+		driving = true
+		drive_offset = 0.0)
+	tw.tween_property(fade_rect, "color:a", 0.0, 0.8)
+	tw.tween_callback(func():
+		play_lines(_scene("drive"), func():
+			_close_dialog()
+			busy = true
+			var t2 := create_tween()
+			t2.tween_interval(1.0)
+			t2.tween_property(fade_rect, "color:a", 1.0, 0.8)
+			t2.tween_callback(func():
+				driving = false
+				drive_panel.visible = false
+				load_room("muze_onu", 0.0))
+			t2.tween_property(fade_rect, "color:a", 0.0, 0.8)
+			t2.tween_callback(_car_arrive)))
+
+
+## Gece yolu: gökyüzü (ay, yıldız), ışık direkleri ve yol farklı hızlarda kayar.
+## Çizimler: art/drive/sky.png, art/drive/lamps.png, art/drive/road.png (320x180, yatayda tekrar eden).
+func _build_drive() -> void:
+	if drive_panel != null:
+		return
+	drive_panel = Control.new()
+	drive_panel.size = Vector2(VIEW_W, VIEW_H)
+	drive_panel.clip_contents = true
+	drive_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	ui_root.add_child(drive_panel)
+	ui_root.move_child(drive_panel, 0)
+	for layer in [["drive/sky", 0.0], ["drive/lamps", 90.0], ["drive/road", 220.0]]:
+		var tex := _art(str(layer[0]))
+		if tex == null:
+			continue
+		var w := tex.get_width() * ZOOM
+		var tr := TextureRect.new()
+		tr.texture = tex
+		tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tr.stretch_mode = TextureRect.STRETCH_TILE
+		tr.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+		# Doku 2x görünsün diye düğüm büyütülür; kayma ekran pikseliyle yapılır.
+		tr.size = Vector2((VIEW_W + w * 2.0) / ZOOM, tex.get_height())
+		tr.scale = Vector2(ZOOM, ZOOM)
+		tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		drive_panel.add_child(tr)
+		drive_layers.append({"node": tr, "speed": float(layer[1]), "wrap": w})
+	if drive_layers.is_empty():
+		_build_drive_placeholder()
+	var car_tex := _art("araba")
+	var car: Control
+	if car_tex:
+		car = TextureRect.new()
+		(car as TextureRect).texture = car_tex
+		car.scale = Vector2(ZOOM, ZOOM)
+		car.position = Vector2(VIEW_W / 2.0 - car_tex.get_width(), 318.0 - car_tex.get_height() * ZOOM)
+	else:
+		car = ColorRect.new()
+		(car as ColorRect).color = C_BROWN
+		car.size = Vector2(160, 50)
+		car.position = Vector2(VIEW_W / 2.0 - 80, 268)
+	car.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	drive_panel.add_child(car)
+	var bob := car.create_tween().set_loops()
+	bob.tween_property(car, "position:y", car.position.y - 2.0, 0.18)
+	bob.tween_property(car, "position:y", car.position.y, 0.18)
+
+
+## Gece yolu çizimleri gelene kadar geçici görüntü.
+func _build_drive_placeholder() -> void:
+	var sky := ColorRect.new()
+	sky.color = Color("#0b0c16")
+	sky.size = Vector2(VIEW_W, VIEW_H)
+	drive_panel.add_child(sky)
+	var moon := ColorRect.new()
+	moon.color = C_PALE
+	moon.size = Vector2(22, 22)
+	moon.position = Vector2(500, 40)
+	drive_panel.add_child(moon)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7
+	for i in range(40):
+		var st := ColorRect.new()
+		st.color = Color(C_PALE, rng.randf_range(0.3, 0.9))
+		st.size = Vector2(2, 2)
+		st.position = Vector2(rng.randf_range(0, VIEW_W), rng.randf_range(0, 180))
+		drive_panel.add_child(st)
+	var lamps := Control.new()
+	drive_panel.add_child(lamps)
+	for i in range(8):
+		var x := i * 120.0
+		var pole := ColorRect.new()
+		pole.color = C_DARK
+		pole.size = Vector2(4, 130)
+		pole.position = Vector2(x, 160)
+		lamps.add_child(pole)
+		var head := ColorRect.new()
+		head.color = C_YELLOW
+		head.size = Vector2(16, 4)
+		head.position = Vector2(x - 6, 158)
+		lamps.add_child(head)
+	drive_layers.append({"node": lamps, "speed": 90.0, "wrap": 120.0})
+	var road := ColorRect.new()
+	road.color = Color("#1a1612")
+	road.size = Vector2(VIEW_W, 70)
+	road.position = Vector2(0, 290)
+	drive_panel.add_child(road)
+	var dashes := Control.new()
+	drive_panel.add_child(dashes)
+	for i in range(12):
+		var d := ColorRect.new()
+		d.color = C_YELLOW
+		d.size = Vector2(30, 3)
+		d.position = Vector2(i * 70.0, 330)
+		dashes.add_child(d)
+	drive_layers.append({"node": dashes, "speed": 220.0, "wrap": 70.0})
+
+
+func _update_drive(delta: float) -> void:
+	if not driving:
+		return
+	drive_offset += delta
+	for l in drive_layers:
+		var sp: float = l["speed"]
+		if sp <= 0.0:
+			continue
+		(l["node"] as Control).position.x = -fmod(drive_offset * sp, float(l["wrap"]))
+
+
+## Müzenin önünde araba soldan gelip yanaşır; E/F ya da tıklama ile inilir.
+func _car_arrive() -> void:
+	busy = true
+	in_car = true
+	player.visible = false
+	if maya:
+		maya.visible = false
+	var car := _room_obj("car")
+	if car.is_empty():
+		_exit_car()
+		return
+	var n: Control = car["node"]
+	var final_x := n.position.x
+	n.position.x = -n.size.x - 40.0
+	car_tween = create_tween()
+	var tw := car_tween
+	tw.tween_property(n, "position:x", final_x, 2.2).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tw.tween_callback(func(): show_msg("Arabadan in: E / F"))
+
+
+func _exit_car() -> void:
+	if not in_car or (car_tween and car_tween.is_running()):
+		return
+	in_car = false
+	flags["arrived"] = true
+	var car := _room_obj("car")
+	var cx := float(car["data"]["x"]) if not car.is_empty() else player.position.x
+	player.position.x = clampf(cx + 26.0, 8.0, room_w - 8.0)
+	player.visible = true
+	_face(1.0)
+	if maya:
+		maya_x = clampf(cx - 6.0, 8.0, room_w - 8.0)
+		maya_follow()
+	_sfx("door")
+	busy = false
+	_play_enter_lines()
 
 
 ## Mekanın "enter_lines" satırları ilk girişte bir kez oynar.
@@ -907,6 +1218,7 @@ func load_room(id: String, spawn_x: float) -> void:
 	_refresh_visibility()
 	show_msg((str(r["place"]) + "  ·  " if r.has("place") else "") + str(r["name"]))
 	_complete_lab()
+	_room_setup(id, spawn_x)
 
 
 ## Sahne çizimi (art/rooms/<id>.png) yokken basit duvar ve zemin.
@@ -959,6 +1271,14 @@ func _spawn_object(o: Dictionary, has_bg: bool) -> void:
 			h = 44.0
 			col = C_LIGHT
 			label_text = str(data["dialogues"][o["dialogue"]]["name"])
+		"look":
+			art_key = str(o.get("art", ""))
+			col = C_LIGHT
+		"car":
+			art_key = str(o.get("art", "araba"))
+			w = 80.0
+			h = 30.0
+			col = C_BROWN
 		"door":
 			art_key = str(o.get("art", "door"))
 			w = float(o.get("w", 24))
@@ -992,7 +1312,7 @@ func _spawn_object(o: Dictionary, has_bg: bool) -> void:
 		n.scale = Vector2(char_scale, char_scale)
 	if t == "npc" and not frames.is_empty():
 		npc_anims.append({"node": n, "frames": frames, "phase": randf() * 2.0})
-	if t == "clue":
+	if t == "clue" or t == "look":
 		if has_bg and not tex:
 			# Sahne çiziminde nesne zaten resimde: kutu yerine yanıp sönen bir yıldız.
 			(n as ColorRect).color = Color(0, 0, 0, 0)
@@ -1085,6 +1405,10 @@ func _hover_text(o: Dictionary) -> String:
 			return "Konuş: " + str(data["dialogues"][o["dialogue"]]["name"])
 		"door":
 			return "Git: " + str(data["rooms"][o["to"]]["name"])
+		"look":
+			return "Bak: " + str(o.get("name", ""))
+		"car":
+			return "Arabaya bin" if room_id == "sokak" else "Araba"
 	return ""
 
 
@@ -1092,6 +1416,7 @@ func _hover_text(o: Dictionary) -> String:
 
 func _process(delta: float) -> void:
 	_update_maya(delta)
+	_update_drive(delta)
 	_animate(delta)
 	_type_step(delta)
 	_update_hover()
@@ -1181,6 +1506,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			else:
 				open_notebook("")
 			return
+		if in_car and not dialog_panel.visible and (key.keycode == KEY_E or key.keycode == KEY_F):
+			_exit_car()
+			return
 		if busy:
 			if dialog_panel.visible and dialog_choices.get_child_count() == 0 and (key.keycode == KEY_SPACE or key.keycode == KEY_ENTER or key.keycode == KEY_E or key.keycode == KEY_F):
 				_advance()
@@ -1190,9 +1518,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif key.keycode == KEY_Q:
 			toggle_eye()
 		return
+	var mb := event as InputEventMouseButton
+	if in_car and mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT and not dialog_panel.visible:
+		_exit_car()
+		return
 	if busy:
 		return
-	var mb := event as InputEventMouseButton
 	if mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
 		var pos := get_global_mouse_position()
 		if maya and maya.visible and _maya_rect().has_point(pos):
@@ -1223,6 +1554,9 @@ func _animate(delta: float) -> void:
 		if absf(dx) > 3.0:
 			var faces_right := str(o.get("faces", "right")) == "right"
 			(e["node"] as TextureRect).flip_h = (dx < 0.0) == faces_right
+	if player_pose != null:
+		player_sprite.texture = player_pose
+		return
 	var moving := not busy and (target_x >= 0.0 or Input.is_action_pressed("ui_left") or Input.is_action_pressed("ui_right") or Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_D))
 	if moving and not walk_frames.is_empty():
 		walk_time += delta
@@ -1298,6 +1632,13 @@ func _interact(o: Dictionary) -> void:
 		"npc":
 			_face_each_other(o)
 			start_dialogue(str(o["dialogue"]))
+		"look":
+			play_lines(o.get("lines", []), Callable())
+		"car":
+			if room_id == "sokak":
+				_start_drive()
+			else:
+				play_lines([["Oscar", "Daha yeni geldik. Önce yakut."]], Callable())
 
 
 # ================================================================ ipuçları
@@ -1360,8 +1701,8 @@ func _add_link_hint(lines: Array) -> void:
 
 
 func _hint_text() -> String:
-	if room_id == "fcd" and not flags.has("briefed"):
-		return "Maya: Önce Şef Calloway. Masası sağda, bekletmeyi sevmez."
+	if room_id in ["oscar_ofis", "koridor", "fcd", "sokak"]:
+		return "Maya: Araba binanın önünde. Asansörle in, çıkıştan dışarı."
 	var req: Array = data["final"]["required"]
 	var ready_list := _ready_pairs()
 	var pick: Dictionary = {}
@@ -2351,14 +2692,22 @@ func _update_maya(delta: float) -> void:
 		return
 	var facing_right := not player_sprite.flip_h if PLAYER_ART_FACES_RIGHT else player_sprite.flip_h
 	var target := player.position.x + (-22.0 if facing_right else 22.0) * char_scale
+	var speed := SPEED * 1.05
+	if maya_script:
+		target = maya_target
+		speed = SPEED * maya_speed
 	target = clampf(target, 8.0, room_w - 8.0)
 	var dx := target - maya_x
-	maya_moving = absf(dx) > 4.0
+	maya_moving = absf(dx) > (0.5 if maya_script else 4.0)
 	if maya_moving:
-		maya_x += signf(dx) * minf(absf(dx), SPEED * 1.05 * delta)
+		maya_x += signf(dx) * minf(absf(dx), speed * delta)
 		maya.flip_h = dx < 0.0
 	else:
 		maya.flip_h = player.position.x < maya_x
+		if maya_script and maya_cb.is_valid():
+			var cb := maya_cb
+			maya_cb = Callable()
+			cb.call()
 	maya.scale = Vector2(char_scale, char_scale)
 	maya.position = Vector2(maya_x - maya.size.x / 2.0, floor_y - maya.size.y)
 	var frames: Array = maya_walk if maya_moving and not maya_walk.is_empty() else maya_idle

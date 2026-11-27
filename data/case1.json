@@ -1,7 +1,7 @@
 {
  "case_name": "Vaka 1: Boş Vitrin",
- "start_room": "fcd",
- "start_x": 44,
+ "start_room": "oscar_ofis",
+ "start_x": 120,
  "cutscene": [
   {
    "art": "cutscene/sehir",
@@ -23,34 +23,8 @@
   },
   {
    "art": "cutscene/muze",
-   "text": "Bu gece ilk günümdü. Daha ceketimi asmadan telefon çaldı. Şehrin en iyi korunan müzesinden bir yakut kaybolmuştu."
+   "text": "O gece büroda kahvemi içiyordum. Şehrin öbür ucunda ise bir yakut, kilitli bir vitrinden buhar olup uçmuştu."
   }
- ],
- "intro": [
-  [
-   "Maya",
-   "Penn? Oscar Penn?"
-  ],
-  [
-   "Oscar",
-   "Duruma göre. Borç için geldiysen, değilim."
-  ],
-  [
-   "Maya",
-   "Maya Cole. Ortağınım. İlk gününe hoş geldin. Bir vakamız var."
-  ],
-  [
-   "Oscar",
-   "Daha kahvemi bile almadım."
-  ],
-  [
-   "Maya",
-   "Arabada içersin. Önce Şef'e uğra, cam odanın önünde bekliyor."
-  ],
-  [
-   "",
-   "Tıkla ya da A/D ile yürü. F ile konuş, incele. Tab defteri açar."
-  ]
  ],
  "wrong_quips": [
   "Penn, bu kanıtın konuyla ne alakası var?",
@@ -609,14 +583,12 @@
    "objects": [
     {
      "type": "door",
-     "to": "hol",
+     "to": "koridor",
      "x": 18,
-     "spawn_x": 31,
+     "spawn_x": 596,
      "w": 30,
      "h": 100,
-     "label": "Asansör: Finch-Moore Müzesi",
-     "lock_flag": "briefed",
-     "locked_text": "Önce Şef. İlk günden kızdırmayayım."
+     "label": "Asansör"
     },
     {
      "type": "npc",
@@ -629,9 +601,305 @@
      "dialogue": "sef",
      "art": "memur1",
      "x": 292
+    },
+    {
+     "type": "door",
+     "to": "sokak",
+     "x": 334,
+     "spawn_x": 60,
+     "w": 20,
+     "h": 80,
+     "label": "Çıkış"
     }
    ],
    "place": "FCD Ravenport Bürosu"
+  },
+  "oscar_ofis": {
+   "name": "Oscar'ın Odası",
+   "place": "FCD Ravenport Bürosu",
+   "width": 344,
+   "floor_y": 172,
+   "bg": "#241a12",
+   "door_x": 316,
+   "decor": [
+    {
+     "x": 120,
+     "y": 0,
+     "w": 70,
+     "h": 22,
+     "color": "#3a2a1e"
+    },
+    {
+     "x": 60,
+     "y": 40,
+     "w": 26,
+     "h": 36,
+     "color": "#5a3d2b"
+    },
+    {
+     "x": 250,
+     "y": 0,
+     "w": 30,
+     "h": 56,
+     "color": "#2e241a"
+    }
+   ],
+   "objects": [
+    {
+     "type": "door",
+     "to": "koridor",
+     "x": 316,
+     "spawn_x": 40,
+     "w": 26,
+     "h": 60,
+     "label": "Koridor"
+    },
+    {
+     "type": "look",
+     "name": "Eski afiş",
+     "x": 60,
+     "y": 46,
+     "w": 26,
+     "h": 36,
+     "lines": [
+      [
+       "Oscar",
+       "Büyük Valentino. Gloriana Tiyatrosu, 1998. Biletler üç dakikada tükenmişti."
+      ],
+      [
+       "Oscar",
+       "Şimdi bu odanın kirasını zor ödüyorum."
+      ]
+     ]
+    },
+    {
+     "type": "look",
+     "name": "Gazete kupürü",
+     "x": 92,
+     "y": 56,
+     "w": 12,
+     "h": 14,
+     "lines": [
+      [
+       "",
+       "Eski bir gazete kupürü: 'VALENTINO'NUN NUMARASI FELAKETLE BİTTİ.'"
+      ],
+      [
+       "",
+       "Kenarında Oscar'ın el yazısı: 'Kaza değildi.'"
+      ],
+      [
+       "Oscar",
+       "Beş yıldır kimse inanmadı. Henüz kanıtlayamadım."
+      ]
+     ]
+    },
+    {
+     "type": "look",
+     "name": "Mektup",
+     "x": 104,
+     "y": 22,
+     "w": 8,
+     "h": 4,
+     "lines": [
+      [
+       "",
+       "Bayan Kowalski'den: 'Bay Penn, üç aylık kira. Cuma'ya kadar. Yoksa tavşanınızı alıp gidin.'"
+      ],
+      [
+       "Oscar",
+       "Tavşanım yok. Artık."
+      ]
+     ]
+    },
+    {
+     "type": "look",
+     "name": "İskambil destesi",
+     "x": 136,
+     "y": 22,
+     "w": 6,
+     "h": 4,
+     "lines": [
+      [
+       "Oscar",
+       "51 kart. Kupa ası hep kayıp. Nerede olduğunu biliyorum ama söylemem."
+      ]
+     ]
+    },
+    {
+     "type": "look",
+     "name": "Sihirbaz şapkası",
+     "x": 250,
+     "y": 56,
+     "w": 14,
+     "h": 10,
+     "lines": [
+      [
+       "Oscar",
+       "İçi boş. Kontrol ettim. İki kere."
+      ]
+     ]
+    }
+   ]
+  },
+  "koridor": {
+   "name": "Koridor",
+   "place": "FCD Ravenport Bürosu",
+   "width": 640,
+   "floor_y": 172,
+   "bg": "#2a2018",
+   "elevator_x": 612,
+   "decor": [
+    {
+     "x": 140,
+     "y": 0,
+     "w": 24,
+     "h": 56,
+     "color": "#3a2a1e"
+    },
+    {
+     "x": 260,
+     "y": 0,
+     "w": 24,
+     "h": 56,
+     "color": "#3a2a1e"
+    },
+    {
+     "x": 380,
+     "y": 0,
+     "w": 24,
+     "h": 56,
+     "color": "#3a2a1e"
+    },
+    {
+     "x": 500,
+     "y": 0,
+     "w": 24,
+     "h": 56,
+     "color": "#3a2a1e"
+    }
+   ],
+   "objects": [
+    {
+     "type": "door",
+     "to": "oscar_ofis",
+     "x": 28,
+     "spawn_x": 290,
+     "w": 24,
+     "h": 56,
+     "label": "Oscar'ın Odası"
+    },
+    {
+     "type": "look",
+     "name": "Su sebili",
+     "x": 320,
+     "w": 12,
+     "h": 30,
+     "lines": [
+      [
+       "Oscar",
+       "Su bitmiş. Kimse yenisini takmıyor. FCD'nin en eski çözülmemiş vakası."
+      ]
+     ]
+    },
+    {
+     "type": "look",
+     "name": "İlan panosu",
+     "x": 445,
+     "y": 40,
+     "w": 30,
+     "h": 20,
+     "lines": [
+      [
+       "",
+       "'KAYIP: Mavi kupa. Sahibi Şef Calloway. Bulan dokunmasın, getirsin.'"
+      ]
+     ]
+    },
+    {
+     "type": "door",
+     "to": "fcd",
+     "x": 612,
+     "spawn_x": 40,
+     "w": 30,
+     "h": 100,
+     "label": "Asansör"
+    }
+   ]
+  },
+  "sokak": {
+   "name": "Mercer Caddesi",
+   "place": "Ravenport",
+   "width": 344,
+   "floor_y": 172,
+   "bg": "#121018",
+   "rain": true,
+   "decor": [
+    {
+     "x": 50,
+     "y": 0,
+     "w": 40,
+     "h": 70,
+     "color": "#2b1d14"
+    }
+   ],
+   "objects": [
+    {
+     "type": "door",
+     "to": "fcd",
+     "x": 50,
+     "spawn_x": 320,
+     "w": 28,
+     "h": 60,
+     "label": "FCD Bürosu"
+    },
+    {
+     "type": "car",
+     "x": 230
+    }
+   ]
+  },
+  "muze_onu": {
+   "name": "Müze Önü",
+   "place": "Finch-Moore Müzesi",
+   "width": 344,
+   "floor_y": 172,
+   "bg": "#14100c",
+   "rain": true,
+   "decor": [
+    {
+     "x": 290,
+     "y": 0,
+     "w": 60,
+     "h": 90,
+     "color": "#2b1d14"
+    }
+   ],
+   "enter_lines": [
+    [
+     "Maya",
+     "Polis kapıda. Herkes içeride bekliyor."
+    ],
+    [
+     "Oscar",
+     "Seyirci hazır. Sahneye çıkalım."
+    ]
+   ],
+   "objects": [
+    {
+     "type": "car",
+     "x": 110
+    },
+    {
+     "type": "door",
+     "to": "hol",
+     "x": 292,
+     "spawn_x": 31,
+     "w": 30,
+     "h": 60,
+     "label": "Finch-Moore Müzesi"
+    }
+   ]
   }
  },
  "clues": {
@@ -1547,7 +1815,6 @@
   },
   "sef": {
    "name": "Şef Calloway",
-   "intro_flag": "briefed",
    "intro": [
     [
      "Şef Calloway",
@@ -1567,27 +1834,11 @@
     ],
     [
      "Şef Calloway",
-     "Dinle. Bu gece Finch-Moore Müzesi'nde gala vardı. Işıklar dört saniye söndü."
+     "Müze işi, değil mi? Polis 'imkansız' deyip bize attı. Vitrin kilitli, cam sağlam, alarm sessiz."
     ],
     [
      "Şef Calloway",
-     "Geri geldiğinde Kızıl Göz yoktu. Vitrin kilitli, cam sağlam, alarm sessiz."
-    ],
-    [
-     "Oscar",
-     "Dört saniye. Fena numara değil."
-    ],
-    [
-     "Şef Calloway",
-     "Numara değil, Penn. Belediye başkanının en sevdiği taş. Herkes hâlâ binada."
-    ],
-    [
-     "Şef Calloway",
-     "Cole'la git. Sabaha kadar bana bir isim getir."
-    ],
-    [
-     "Maya",
-     "Asansör solda. Ben sürüyorum."
+     "Sabaha kadar bana bir isim getir, Penn."
     ]
    ],
    "claim": "Hâlâ buradasın, Penn.",
@@ -1816,5 +2067,63 @@
   "Maya": "maya",
   "Şef Calloway": "memur1",
   "Memur Park": "memur2"
+ },
+ "scenes": {
+  "ofis": [
+   [
+    "Maya",
+    "Oscar, elimizde yeni bir dava var. Finch-Moore Müzesi'nde soygun olmuş."
+   ],
+   [
+    "Maya",
+    "Polis bizim ilgilenmemizi istedi, davayı bize yönlendirdiler. Seninle müzeye gidip bakmamız gerekiyor."
+   ],
+   [
+    "Oscar",
+    "Tamam. Şu kahvemi bitireyim, hemen yola çıkarız."
+   ]
+  ],
+  "ofis_after": [
+   [
+    "Maya",
+    "Kapıda bekliyorum. Oyalanma, Penn."
+   ],
+   [
+    "",
+    "Tıkla ya da A/D ile yürü. F ile incele. Odadaki eşyalara göz atabilirsin."
+   ]
+  ],
+  "koridor": [
+   [
+    "Maya",
+    "Asansör koridorun sonunda. Hadi, yetiş!"
+   ]
+  ],
+  "drive": [
+   [
+    "Maya",
+    "Müdürün adı Harold Finch-Moore. Müzeyi dedesinden devralmış."
+   ],
+   [
+    "Oscar",
+    "Bir aile, bir müze ve kayıp bir yakut. Daha şimdiden tanıdık geliyor."
+   ],
+   [
+    "Maya",
+    "Önyargılı olma, Penn."
+   ],
+   [
+    "Oscar",
+    "Önyargı değil, Cole. Tecrübe. Sahnede en çok alkışlayan, çoğu zaman en çok saklayandır."
+   ],
+   [
+    "Maya",
+    "Ve sen bunu nereden biliyorsun?"
+   ],
+   [
+    "Oscar",
+    "Eskiden alkışları ben toplardım."
+   ]
+  ]
  }
 }
