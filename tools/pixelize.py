@@ -6,6 +6,7 @@ a box filter, then reduce to a small palette so it reads as pixel art.
 
 Usage:
   python3 tools/pixelize.py in.png art/items/kupe.png --size 64 --remove-bg
+  python3 tools/pixelize.py both.png art/items/kupe_back.png --half right --remove-bg
   python3 tools/pixelize.py in.png art/rooms/depo.png --size 344x192
 """
 import argparse
@@ -41,8 +42,13 @@ def main():
     p.add_argument("--remove-bg", action="store_true")
     p.add_argument("--tol", type=int, default=60)
     p.add_argument("--colors", type=int, default=24)
+    p.add_argument("--half", choices=["left", "right"], help="use only one half (front/back views side by side)")
     a = p.parse_args()
     im = Image.open(a.src).convert("RGBA")
+    if a.half == "left":
+        im = im.crop((0, 0, im.width // 2, im.height))
+    elif a.half == "right":
+        im = im.crop((im.width // 2, 0, im.width, im.height))
     if a.remove_bg:
         im = remove_bg(im, a.tol)
         box = im.getchannel("A").point(lambda v: 255 if v > 0 else 0).getbbox()
