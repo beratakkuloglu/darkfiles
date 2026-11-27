@@ -8,7 +8,9 @@ const FLOOR_Y := 290.0
 const SPEED := 140.0
 const INTERACT_RANGE := 40.0
 ## art/oscar.png sağa bakıyorsa true, sola bakıyorsa false yap.
-const PLAYER_ART_FACES_RIGHT := false
+const PLAYER_ART_FACES_RIGHT := true
+## Yürüme şeridi (art/oscar_walk.png): yan yana eşit kareler, kare başına süre.
+const WALK_FRAME_TIME := 0.13
 
 # Palet: siyah, kahverengi, sarı
 const C_BLACK := Color("#0f0b08")
@@ -36,6 +38,8 @@ var room_layer: Node2D
 var player: Node2D
 var player_sprite: TextureRect
 var walk_time: float = 0.0
+var idle_tex: Texture2D
+var walk_frames: Array = []
 var camera: Camera2D
 var target_x: float = -1.0
 var pending_action: Callable = Callable()
@@ -88,6 +92,15 @@ func _build_player() -> void:
 	var tex := _art("oscar")
 	if tex:
 		player_sprite = _child_tex(player, Vector2(-tex.get_width() / 2.0, -tex.get_height()), tex)
+		idle_tex = tex
+		var sheet := _art("oscar_walk")
+		if sheet:
+			var fw: int = tex.get_width()
+			for i in range(int(sheet.get_width() / fw)):
+				var at := AtlasTexture.new()
+				at.atlas = sheet
+				at.region = Rect2(i * fw, 0, fw, sheet.get_height())
+				walk_frames.append(at)
 	else:
 		_child_rect(player, Vector2(-8, -40), Vector2(16, 40), C_PALE)
 		_child_rect(player, Vector2(-11, -45), Vector2(22, 6), C_BROWN) # şapka
@@ -432,13 +445,18 @@ func _bob(delta: float) -> void:
 		return
 	var moving := not busy and (target_x >= 0.0 or Input.is_action_pressed("ui_left") or Input.is_action_pressed("ui_right") or Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_D))
 	var base_y := -player_sprite.size.y
-	if moving:
+	if moving and not walk_frames.is_empty():
+		walk_time += delta
+		var i := int(walk_time / WALK_FRAME_TIME) % walk_frames.size()
+		player_sprite.texture = walk_frames[i]
+	elif moving:
 		walk_time += delta * 10.0
 		player_sprite.position.y = base_y - absf(sin(walk_time)) * 2.0
 		player_sprite.pivot_offset = Vector2(player_sprite.size.x / 2.0, player_sprite.size.y)
 		player_sprite.rotation = sin(walk_time) * 0.04
 	else:
 		walk_time = 0.0
+		player_sprite.texture = idle_tex
 		player_sprite.position.y = base_y
 		player_sprite.rotation = 0.0
 

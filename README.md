@@ -49,4 +49,4 @@ Renkler: sarı kutular ipucu, açık kahve kutular kişi, koyu kahve kutular kap
 
 İpucu ve mekan id'leri `data/case1.json` içinde. Zemin çizgisi y=290'da. Palet: `#0f0b08`, `#2b1d14`, `#5a3d2b`, `#8a6a4f`, `#e8c547`, `#f2e3b3`.
 
-Şu anki karakter sprite'ları `tools/make_sprites.py` ile üretilmiş geçici çizimler. Pixelorama'da açıp üzerine çizebilirsin.
+Oscar çizimi PixelLab ile yapıldı. Yürüme şeridi `tools/make_walk.py` ile üretilir (`art/oscar_walk.png`, 4 kare). Diğer karakter sprite'ları `tools/make_sprites.py` ile üretilmiş geçici çizimler.
