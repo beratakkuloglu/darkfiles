@@ -89,6 +89,9 @@ var drive_layers: Array = []      # [{node, speed, wrap}]
 var drive_offset: float = 0.0
 var driving: bool = false
 var car_tween: Tween
+var drive_street: Control
+var drive_road: Control
+var drive_street_car: Control
 
 # Arayüz
 var ui_root: Control
@@ -994,14 +997,32 @@ func _office_talk() -> void:
 func _start_drive() -> void:
 	busy = true
 	_sfx("door")
+	_build_drive()   # tween'ler düğümlere şimdiden bağlanabilsin diye önce kur
+	drive_panel.visible = false
 	var tw := create_tween()
 	tw.tween_property(fade_rect, "color:a", 1.0, 0.5)
 	tw.tween_callback(func():
-		_build_drive()
 		drive_panel.visible = true
+		drive_street.visible = true
+		drive_road.visible = false
+		drive_street.scale = Vector2.ONE
+		drive_street_car.position.x = -drive_street_car.size.x * drive_street_car.scale.x - 20.0)
+	tw.tween_property(fade_rect, "color:a", 0.0, 0.8)
+	# 1) Sokak: araba soldan gelir, ortada durur, sonra hızlanıp sağdan çıkar (kamera hafif yakınlaşır).
+	var mid := VIEW_W / 2.0 - _car_w() / 2.0
+	tw.tween_property(drive_street_car, "position:x", mid, 2.2).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tw.tween_interval(1.4)
+	tw.tween_property(drive_street_car, "position:x", VIEW_W + 40.0, 1.6).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tw.parallel().tween_property(drive_street, "scale", Vector2(1.12, 1.12), 1.6).set_trans(Tween.TRANS_SINE)
+	tw.parallel().tween_property(fade_rect, "color:a", 1.0, 0.7).set_delay(1.0)
+	# 2) Yolculuk: araba ortada, yol ve direkler altından kayar.
+	tw.tween_callback(func():
+		drive_street.visible = false
+		drive_road.visible = true
 		driving = true
 		drive_offset = 0.0)
 	tw.tween_property(fade_rect, "color:a", 0.0, 0.8)
+	tw.tween_interval(1.0)
 	tw.tween_callback(func():
 		play_lines(_scene("drive"), func():
 			_close_dialog()
@@ -1017,8 +1038,54 @@ func _start_drive() -> void:
 			t2.tween_callback(_car_arrive)))
 
 
-## Gece yolu: gökyüzü (ay, yıldız), ışık direkleri ve yol farklı hızlarda kayar.
-## Çizimler: art/drive/sky.png, art/drive/lamps.png, art/drive/road.png (320x180, yatayda tekrar eden).
+func _car_w() -> float:
+	var t := _art("araba")
+	return t.get_width() * ZOOM if t else 160.0
+
+
+## Arabanın tekerlek hizası (ekran pikseli). Çizim gelince yola göre ayarlanır.
+const DRIVE_CAR_BOTTOM := 330.0
+
+
+func _make_drive_car(parent: Control, x: float) -> Control:
+	var car_tex := _art("araba")
+	var car: Control
+	if car_tex:
+		car = TextureRect.new()
+		(car as TextureRect).texture = car_tex
+		car.size = car_tex.get_size()
+		car.scale = Vector2(ZOOM, ZOOM)
+		car.position = Vector2(x, DRIVE_CAR_BOTTOM - car_tex.get_height() * ZOOM)
+	else:
+		car = ColorRect.new()
+		(car as ColorRect).color = C_BROWN
+		car.size = Vector2(160, 50)
+		car.position = Vector2(x, DRIVE_CAR_BOTTOM - 50.0)
+	car.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(car)
+	return car
+
+
+## 344x192 çizimi 2x büyütüp ekrana ortalar.
+func _drive_bg(parent: Control, tex: Texture2D, tile: bool) -> TextureRect:
+	var tr := TextureRect.new()
+	tr.texture = tex
+	tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if tile:
+		tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tr.stretch_mode = TextureRect.STRETCH_TILE
+		tr.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+		tr.size = Vector2(VIEW_W / ZOOM + tex.get_width() * 2.0, tex.get_height())
+	else:
+		tr.size = tex.get_size()
+	tr.scale = Vector2(ZOOM, ZOOM)
+	tr.position = Vector2(-(tex.get_width() * ZOOM - VIEW_W) / 2.0 if not tile else 0.0, -(tex.get_height() * ZOOM - VIEW_H) / 2.0)
+	parent.add_child(tr)
+	return tr
+
+
+## Çizimler: art/drive/street.png (sokak, 344x192), art/drive/sky.png (gökyüzü, sabit),
+## art/drive/road.png (yol ve direkler, şeffaf üst, yatayda kesintisiz tekrar eden), isteğe bağlı art/drive/lamps.png.
 func _build_drive() -> void:
 	if drive_panel != null:
 		return
@@ -1028,64 +1095,60 @@ func _build_drive() -> void:
 	drive_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	ui_root.add_child(drive_panel)
 	ui_root.move_child(drive_panel, 0)
+	# sokak sahnesi
+	drive_street = Control.new()
+	drive_street.size = Vector2(VIEW_W, VIEW_H)
+	drive_street.pivot_offset = Vector2(VIEW_W / 2.0, VIEW_H * 0.75)
+	drive_panel.add_child(drive_street)
+	var st := _art("drive/street")
+	if st:
+		_drive_bg(drive_street, st, false)
+	else:
+		_build_drive_placeholder(drive_street, false)
+	drive_street_car = _make_drive_car(drive_street, -200.0)
+	# yolculuk sahnesi
+	drive_road = Control.new()
+	drive_road.size = Vector2(VIEW_W, VIEW_H)
+	drive_panel.add_child(drive_road)
+	var any_layer := false
 	for layer in [["drive/sky", 0.0], ["drive/lamps", 90.0], ["drive/road", 220.0]]:
 		var tex := _art(str(layer[0]))
 		if tex == null:
 			continue
-		var w := tex.get_width() * ZOOM
-		var tr := TextureRect.new()
-		tr.texture = tex
-		tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		tr.stretch_mode = TextureRect.STRETCH_TILE
-		tr.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
-		# Doku 2x görünsün diye düğüm büyütülür; kayma ekran pikseliyle yapılır.
-		tr.size = Vector2((VIEW_W + w * 2.0) / ZOOM, tex.get_height())
-		tr.scale = Vector2(ZOOM, ZOOM)
-		tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		drive_panel.add_child(tr)
-		drive_layers.append({"node": tr, "speed": float(layer[1]), "wrap": w})
-	if drive_layers.is_empty():
-		_build_drive_placeholder()
-	var car_tex := _art("araba")
-	var car: Control
-	if car_tex:
-		car = TextureRect.new()
-		(car as TextureRect).texture = car_tex
-		car.scale = Vector2(ZOOM, ZOOM)
-		car.position = Vector2(VIEW_W / 2.0 - car_tex.get_width(), 318.0 - car_tex.get_height() * ZOOM)
-	else:
-		car = ColorRect.new()
-		(car as ColorRect).color = C_BROWN
-		car.size = Vector2(160, 50)
-		car.position = Vector2(VIEW_W / 2.0 - 80, 268)
-	car.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	drive_panel.add_child(car)
+		any_layer = true
+		var sp := float(layer[1])
+		var tr := _drive_bg(drive_road, tex, sp > 0.0)
+		if sp > 0.0:
+			drive_layers.append({"node": tr, "speed": sp, "wrap": tex.get_width() * ZOOM})
+	if not any_layer:
+		_build_drive_placeholder(drive_road, true)
+	var car := _make_drive_car(drive_road, VIEW_W / 2.0 - _car_w() / 2.0)
 	var bob := car.create_tween().set_loops()
 	bob.tween_property(car, "position:y", car.position.y - 2.0, 0.18)
 	bob.tween_property(car, "position:y", car.position.y, 0.18)
 
 
-## Gece yolu çizimleri gelene kadar geçici görüntü.
-func _build_drive_placeholder() -> void:
+## Gece yolu çizimleri gelene kadar geçici görüntü. moving: direkler ve şeritler kayar.
+func _build_drive_placeholder(parent: Control, moving: bool) -> void:
 	var sky := ColorRect.new()
 	sky.color = Color("#0b0c16")
 	sky.size = Vector2(VIEW_W, VIEW_H)
-	drive_panel.add_child(sky)
+	parent.add_child(sky)
 	var moon := ColorRect.new()
 	moon.color = C_PALE
 	moon.size = Vector2(22, 22)
 	moon.position = Vector2(500, 40)
-	drive_panel.add_child(moon)
+	parent.add_child(moon)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 7
 	for i in range(40):
-		var st := ColorRect.new()
-		st.color = Color(C_PALE, rng.randf_range(0.3, 0.9))
-		st.size = Vector2(2, 2)
-		st.position = Vector2(rng.randf_range(0, VIEW_W), rng.randf_range(0, 180))
-		drive_panel.add_child(st)
+		var star := ColorRect.new()
+		star.color = Color(C_PALE, rng.randf_range(0.3, 0.9))
+		star.size = Vector2(2, 2)
+		star.position = Vector2(rng.randf_range(0, VIEW_W), rng.randf_range(0, 180))
+		parent.add_child(star)
 	var lamps := Control.new()
-	drive_panel.add_child(lamps)
+	parent.add_child(lamps)
 	for i in range(8):
 		var x := i * 120.0
 		var pole := ColorRect.new()
@@ -1098,21 +1161,22 @@ func _build_drive_placeholder() -> void:
 		head.size = Vector2(16, 4)
 		head.position = Vector2(x - 6, 158)
 		lamps.add_child(head)
-	drive_layers.append({"node": lamps, "speed": 90.0, "wrap": 120.0})
 	var road := ColorRect.new()
 	road.color = Color("#1a1612")
 	road.size = Vector2(VIEW_W, 70)
 	road.position = Vector2(0, 290)
-	drive_panel.add_child(road)
+	parent.add_child(road)
 	var dashes := Control.new()
-	drive_panel.add_child(dashes)
+	parent.add_child(dashes)
 	for i in range(12):
 		var d := ColorRect.new()
 		d.color = C_YELLOW
 		d.size = Vector2(30, 3)
 		d.position = Vector2(i * 70.0, 330)
 		dashes.add_child(d)
-	drive_layers.append({"node": dashes, "speed": 220.0, "wrap": 70.0})
+	if moving:
+		drive_layers.append({"node": lamps, "speed": 90.0, "wrap": 120.0})
+		drive_layers.append({"node": dashes, "speed": 220.0, "wrap": 70.0})
 
 
 func _update_drive(delta: float) -> void:
