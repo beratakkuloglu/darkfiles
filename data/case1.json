@@ -685,7 +685,7 @@
    "inspect": {
     "front": [
      {
-      "x": 0.5,
+      "x": 0.56,
       "y": 0.3,
       "text": "Kısa, kır bir saç. Ucunda parlak bir kalıntı."
      }
@@ -693,7 +693,7 @@
     "back": [
      {
       "x": 0.5,
-      "y": 0.6,
+      "y": 0.5,
       "text": "Hafif lavanta kokusu. Gus'ın saçı kokmuyordu."
      }
     ]
@@ -705,20 +705,20 @@
    "inspect": {
     "front": [
      {
-      "x": 0.35,
-      "y": 0.4,
+      "x": 0.28,
+      "y": 0.16,
       "text": "Zaman damgası 21:40:02. Işıklar sönüyor."
      },
      {
-      "x": 0.7,
-      "y": 0.4,
+      "x": 0.72,
+      "y": 0.16,
       "text": "21:40:06. Işık geri geliyor, vitrin boş."
      }
     ],
     "back": [
      {
-      "x": 0.5,
-      "y": 0.5,
+      "x": 0.55,
+      "y": 0.48,
       "text": "Kaset etiketinde müdürün el yazısı: 'Yedek. Dokunma.'"
      }
     ]
@@ -752,18 +752,18 @@
     "front": [
      {
       "x": 0.5,
-      "y": 0.3,
-      "text": "Üzerinde 'MÜDÜR' yazıyor. Gus'ın masasında ne arıyor?"
+      "y": 0.7,
+      "text": "Üzerinde 'BOSS' yazıyor. Müdürün fincanı Gus'ın masasında ne arıyor?"
      },
      {
-      "x": 0.5,
-      "y": 0.75,
+      "x": 0.45,
+      "y": 0.32,
       "text": "Dibinde beyaz toz. Şeker değil, uyku ilacı kokusu."
      }
     ],
     "back": [
      {
-      "x": 0.5,
+      "x": 0.84,
       "y": 0.5,
       "text": "Kulpta iki farklı parmak izi lekesi."
      }
@@ -777,9 +777,16 @@
    "inspect": {
     "front": [
      {
-      "x": 0.5,
+      "x": 0.45,
       "y": 0.45,
-      "text": "Gus: 'Kahveyi müdür getirdi. Hiç getirmezdi.'"
+      "text": "Gus: 'Kahveyi müdür getirdi, hiç getirmezdi. Sonra ofisten tartışma sesi geldi ve biri yan kapıdan çıktı.'"
+     }
+    ],
+    "back": [
+     {
+      "x": 0.55,
+      "y": 0.5,
+      "text": "Maya'nın notu: 'Vesper & Co.'yu araştır? 5-3240'. Bu numara bir yerde daha var."
      }
     ]
    }
@@ -791,14 +798,14 @@
     "front": [
      {
       "x": 0.5,
-      "y": 0.4,
+      "y": 0.47,
       "text": "Lavanta saç kremi. Pahalı bir marka."
      }
     ],
     "back": [
      {
       "x": 0.5,
-      "y": 0.6,
+      "y": 0.62,
       "text": "Etikette eczane fişi: Harold Finch-Moore."
      }
     ]
@@ -892,15 +899,15 @@
    "inspect": {
     "front": [
      {
-      "x": 0.5,
-      "y": 0.45,
+      "x": 0.72,
+      "y": 0.6,
       "text": "Deri, toka kopuk. İç yüzde 'T' harfi kazınmış."
      }
     ],
     "back": [
      {
-      "x": 0.5,
-      "y": 0.55,
+      "x": 0.48,
+      "y": 0.6,
       "text": "Üzerinde içki lekesi. Sahibi burada içip uyuyakalmış."
      }
     ]

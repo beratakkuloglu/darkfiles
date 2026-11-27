@@ -43,6 +43,7 @@ def main():
     p.add_argument("--size", default="96", help="96 (square, keeps aspect inside) or WxH (fills exactly)")
     p.add_argument("--remove-bg", action="store_true")
     p.add_argument("--tol", type=int, default=60)
+    p.add_argument("--knockout", type=int, default=0, help="also clear enclosed background holes: any pixel this close to the corner color")
     p.add_argument("--colors", type=int, default=40)
     p.add_argument("--half", choices=["left", "right"], help="use only one half (front/back views side by side)")
     p.add_argument("--xrange", help="a,b: use only this horizontal slice, as fractions of the width (e.g. 0,0.62)")
@@ -56,7 +57,14 @@ def main():
         x0, x1 = (float(v) for v in a.xrange.split(","))
         im = im.crop((int(im.width * x0), 0, int(im.width * x1), im.height))
     if a.remove_bg:
+        corner = im.getpixel((0, 0))[:3]
         im = remove_bg(im, a.tol)
+        if a.knockout:
+            px = im.load()
+            for y in range(im.height):
+                for x in range(im.width):
+                    if sum(abs(px[x, y][i] - corner[i]) for i in range(3)) <= a.knockout:
+                        px[x, y] = (0, 0, 0, 0)
         box = im.getchannel("A").point(lambda v: 255 if v > 0 else 0).getbbox()
         if box:
             im = im.crop(box)
