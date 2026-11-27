@@ -32,6 +32,7 @@ var room_id: String = ""
 var room_w: float = 320.0
 var floor_y: float = DEFAULT_FLOOR_Y
 var room_h: float = WORLD_H
+var char_scale: float = 1.0   # mekanda "char_scale": yakın çekim mekanlarda karakterleri büyütür
 var flags: Dictionary = {}
 var clues: Dictionary = {}
 var lab_done: Dictionary = {}
@@ -261,9 +262,21 @@ func _build_atmosphere() -> void:
 	layer.add_child(dust)
 
 
+## Piksel yazı tipi (Pixelify Sans, OFL lisanslı, Türkçe karakterli); yoksa Godot'un varsayılanı.
+func _ui_font() -> Font:
+	var p := "res://fonts/PixelifySans-Medium.ttf"
+	if not ResourceLoader.exists(p):
+		return null
+	var f: FontFile = load(p)
+	f.antialiasing = TextServer.FONT_ANTIALIASING_NONE
+	f.hinting = TextServer.HINTING_NONE
+	return f
+
+
 func _make_theme() -> Theme:
 	var th := Theme.new()
-	th.default_font_size = 12
+	th.default_font = _ui_font()
+	th.default_font_size = 13
 
 	var panel := StyleBoxFlat.new()
 	panel.bg_color = Color(0.06, 0.043, 0.03, 0.94)
@@ -459,7 +472,7 @@ func _build_ui() -> void:
 			open_inspect(sel, func(): notebook_info.text = _clue_text(sel)))
 	right.add_child(notebook_inspect_btn)
 	link_button = Button.new()
-	link_button.text = "Dedüksiyon tahtası: iki ipucunu bağla"
+	link_button.text = "Kanıt tahtası: iki ipucunu bağla"
 	link_button.pressed.connect(_start_link)
 	right.add_child(link_button)
 	accuse_button = Button.new()
@@ -645,6 +658,10 @@ func load_room(id: String, spawn_x: float) -> void:
 	var r: Dictionary = data["rooms"][id]
 	room_w = float(r["width"])
 	floor_y = float(r.get("floor_y", DEFAULT_FLOOR_Y))
+	char_scale = float(r.get("char_scale", 1.0))
+	if player_sprite:
+		player_sprite.pivot_offset = Vector2(player_sprite.size.x / 2.0, player_sprite.size.y)
+		player_sprite.scale = Vector2(char_scale, char_scale)
 	var bg_tex := _art("rooms/" + id)
 	room_h = WORLD_H
 	if bg_tex:
@@ -725,8 +742,8 @@ func _spawn_object(o: Dictionary, has_bg: bool) -> void:
 			label_text = str(data["dialogues"][o["dialogue"]]["name"])
 		"door":
 			art_key = str(o.get("art", "door"))
-			w = 24.0
-			h = 54.0
+			w = float(o.get("w", 24))
+			h = float(o.get("h", 54))
 			col = C_DARK
 			label_text = str(data["rooms"][o["to"]]["name"])
 	var tex := _art(art_key)
@@ -751,6 +768,9 @@ func _spawn_object(o: Dictionary, has_bg: bool) -> void:
 				_child_rect(n, Vector2(-2, 0), Vector2(2, h), C_BROWN)
 				_child_rect(n, Vector2(w, 0), Vector2(2, h), C_BROWN)
 				_child_rect(n, Vector2(w - 6, h / 2.0), Vector2(2, 2), C_YELLOW)
+	if t == "npc":
+		n.pivot_offset = Vector2(w / 2.0, h)
+		n.scale = Vector2(char_scale, char_scale)
 	if t == "npc" and not frames.is_empty():
 		npc_anims.append({"node": n, "frames": frames, "phase": randf() * 2.0})
 	if t == "clue":
@@ -779,10 +799,13 @@ func _spawn_object(o: Dictionary, has_bg: bool) -> void:
 	if label_text != "":
 		var lb := Label.new()
 		lb.text = label_text
-		lb.position = Vector2(-40, -9)
-		lb.size = Vector2(w + 80, 8)
+		lb.position = Vector2(-40, -11)
+		lb.size = Vector2(w + 80, 10)
 		lb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		lb.add_theme_font_size_override("font_size", 6)
+		lb.add_theme_font_size_override("font_size", 8)
+		if t == "npc":
+			lb.scale = Vector2(1.0 / char_scale, 1.0 / char_scale)
+			lb.pivot_offset = Vector2(lb.size.x / 2.0, lb.size.y)
 		lb.add_theme_color_override("font_color", C_YELLOW if t == "door" else C_PALE)
 		lb.add_theme_constant_override("shadow_offset_x", 0)
 		lb.add_theme_constant_override("shadow_offset_y", 0)
@@ -822,9 +845,17 @@ func _object_at(pos: Vector2) -> Dictionary:
 		var n: Control = e["node"]
 		if not n.visible:
 			continue
-		if Rect2(n.position, n.size).grow(4).has_point(pos):
+		if _obj_rect(e).has_point(pos):
 			return e["data"]
 	return {}
+
+
+## Tıklama alanı: ölçek hesaba katılır, kişilerin alanı daha geniştir.
+func _obj_rect(e: Dictionary) -> Rect2:
+	var n: Control = e["node"]
+	var sz := n.size * n.scale
+	var r := Rect2(n.position + n.pivot_offset - n.pivot_offset * n.scale, sz)
+	return r.grow(10.0 if str(e["data"]["type"]) == "npc" else 4.0)
 
 
 func _hover_text(o: Dictionary) -> String:
@@ -934,7 +965,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		var pos := get_global_mouse_position()
 		var o := _object_at(pos)
 		if not o.is_empty():
-			walk_to(float(o["x"]), _interact.bind(o))
+			walk_to(_approach_x(o), _interact.bind(o))
 		else:
 			walk_to(pos.x, Callable())
 
@@ -965,6 +996,17 @@ func _face(dir: float) -> void:
 		player_sprite.flip_h = (dir > 0.0) != PLAYER_ART_FACES_RIGHT
 
 
+## Kişilerin dibine girmeden, durduğumuz taraftan biraz uzakta dur.
+func _approach_x(o: Dictionary) -> float:
+	var x := float(o["x"])
+	if str(o["type"]) != "npc":
+		return x
+	var gap := 26.0 * char_scale
+	if absf(player.position.x - x) <= gap:
+		return player.position.x
+	return x + (gap if player.position.x > x else -gap)
+
+
 func walk_to(x: float, cb: Callable) -> void:
 	target_x = clampf(x, 8.0, room_w - 8.0)
 	pending_action = cb
@@ -979,11 +1021,24 @@ func _interact_nearest() -> void:
 			continue
 		var o: Dictionary = e["data"]
 		var d := absf(float(o["x"]) - player.position.x)
+		if str(o["type"]) == "npc":
+			d -= 16.0 * char_scale   # kişilerle biraz uzaktan da konuşulabilir
 		if d < best_d:
 			best_d = d
 			best = o
 	if not best.is_empty():
 		_interact(best)
+
+
+## Konuşurken Oscar kişiye, kişi Oscar'a döner (çizimler sağa bakıyor varsayılır;
+## sola bakan bir çizim için JSON'da "faces": "left").
+func _face_each_other(o: Dictionary) -> void:
+	var dx := float(o["x"]) - player.position.x
+	_face(dx)
+	for e in room_objects:
+		if e["data"] == o and e["node"] is TextureRect:
+			var faces_right := str(o.get("faces", "right")) == "right"
+			(e["node"] as TextureRect).flip_h = (dx > 0.0) == faces_right
 
 
 func _interact(o: Dictionary) -> void:
@@ -996,6 +1051,7 @@ func _interact(o: Dictionary) -> void:
 			else:
 				go_room(str(o["to"]), float(o["spawn_x"]))
 		"npc":
+			_face_each_other(o)
 			start_dialogue(str(o["dialogue"]))
 
 
@@ -1054,7 +1110,7 @@ func _add_link_hint(lines: Array) -> void:
 	for d in _ready_pairs():
 		if not hinted.has(d["id"]):
 			hinted[d["id"]] = true
-			lines.append(["Oscar", "Dur bir dakika... Defterimdeki iki ipucu birbirine bağlanıyor. Dedüksiyon tahtasına bakmalıyım. [Tab]"])
+			lines.append(["Oscar", "Dur bir dakika... Defterimdeki iki ipucu birbirine bağlanıyor. Kanıt tahtasına bakmalıyım. [Tab]"])
 			return
 
 
@@ -1070,7 +1126,7 @@ func _hint_text() -> String:
 		pick = ready_list[0]
 	if not pick.is_empty():
 		var p: Array = pick["pair"]
-		return "Maya: '" + str(data["clues"][p[0]]["name"]) + "' ve '" + str(data["clues"][p[1]]["name"]) + "'. Bu ikisini dedüksiyon tahtasında bağla."
+		return "Maya: '" + str(data["clues"][p[0]]["name"]) + "' ve '" + str(data["clues"][p[1]]["name"]) + "'. Bu ikisini kanıt tahtasında bağla."
 	if _final_ready():
 		return "Maya: Yeterince kanıtın var. Üstteki SUÇLA butonuna bas."
 	if not pending_lab.is_empty():
@@ -1299,7 +1355,7 @@ func _fill_notebook(info: String) -> void:
 		"show":
 			notebook_title.text = "KANIT GÖSTER"
 		"link":
-			notebook_title.text = "DEDÜKSİYON TAHTASI"
+			notebook_title.text = "KANIT TAHTASI"
 		_:
 			notebook_title.text = "DEFTER  (" + str(clues.size()) + " ipucu)"
 	if clues.is_empty():
@@ -1308,9 +1364,21 @@ func _fill_notebook(info: String) -> void:
 		empty.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		empty.custom_minimum_size = Vector2(250, 0)
 		notebook_list.add_child(empty)
-	for id in clues.keys():
+	var shows: Dictionary = {}
+	if select_mode == "show" and current_npc != "":
+		shows = data["dialogues"][current_npc].get("show", {})
+	var ids: Array = clues.keys()
+	if not shows.is_empty():
+		# Bu kişiye gösterilebilecek kanıtlar önce ve parlak.
+		var rel: Array = ids.filter(func(i): return shows.has(i))
+		var rest: Array = ids.filter(func(i): return not shows.has(i))
+		ids = rel + rest
+	for id in ids:
 		var b := Button.new()
 		var nm := str(data["clues"][id]["name"])
+		if shows.has(id):
+			nm = "* " + nm
+			b.add_theme_color_override("font_color", C_YELLOW)
 		if id == link_first:
 			nm = "> " + nm
 			b.add_theme_color_override("font_color", C_YELLOW)
@@ -1318,6 +1386,10 @@ func _fill_notebook(info: String) -> void:
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		b.pressed.connect(_on_clue_pressed.bind(str(id)))
 		notebook_list.add_child(b)
+		if shows.has(id):
+			var gt := b.create_tween().set_loops()
+			gt.tween_property(b, "modulate", Color(1.3, 1.2, 0.8), 0.5)
+			gt.tween_property(b, "modulate", Color(1, 1, 1), 0.5)
 	if not deductions.is_empty():
 		var sep := Label.new()
 		sep.text = "SONUÇLAR"

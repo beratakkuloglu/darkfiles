@@ -2,7 +2,7 @@
 
 2D pixel art dedektiflik oyunu. Oyuncu, FCD (Federal Crimes Division) danışmanı ve eski sahne sihirbazı Oscar Penn'i yönetir.
 
-Vaka 1 "Boş Vitrin" baştan sona oynanabilir: ana menü, 6 mekan, 5 karakter, ipucu toplama, sorgu, kanıt gösterme, dedüksiyon tahtası, suçlama ve puanlı final. Karakterler PixelLab çizimi; salon, hol, güvenlik ve ofis çizildi, diğerleri çizim gelene kadar sade duvar/zemin ile gösterilir.
+Vaka 1 "Boş Vitrin" baştan sona oynanabilir: ana menü, 6 mekan, 5 karakter, ipucu toplama, sorgu, kanıt gösterme, kanıt tahtası, suçlama ve puanlı final. Karakterler PixelLab çizimi; salon, hol, güvenlik ve ofis çizildi, diğerleri çizim gelene kadar sade duvar/zemin ile gösterilir.
 
 ## Nasıl açılır
 
@@ -18,7 +18,7 @@ Vaka 1 "Boş Vitrin" baştan sona oynanabilir: ana menü, 6 mekan, 5 karakter, i
 | Yürü | Yere tıkla | A / D veya ok tuşları |
 | İncele, konuş, kapıdan geç | Nesneye tıkla (üstüne gelince ne olduğu yazar) | F (veya E) |
 | Oscar'ın Gözü (mekan başına 3, gizli ipuçlarını gösterir) | Üstteki buton | Q |
-| Defter ve dedüksiyon tahtası | Üstteki buton | Tab |
+| Defter ve kanıt tahtası | Üstteki buton | Tab |
 | Diyaloğu ilerlet / yazıyı hızlandır | Kutuya tıkla | Boşluk / Enter / F |
 | Duraklat (devam, ayarlar, ana menü, çıkış) | Sağ üstteki "Menü" | Esc |
 
@@ -76,3 +76,7 @@ Palet: `#0f0b08`, `#2b1d14`, `#5a3d2b`, `#8a6a4f`, `#e8c547`, `#f2e3b3`.
 - Sihir numaralarının mini oyunları (soğuk okuma şimdilik diyalog seçeneği, cep aşırma finalde ara sahne).
 - Yırtık belge birleştirme yapbozu.
 - Kayıt sistemi, Vaka 2+.
+
+## Yazı tipi
+
+`fonts/PixelifySans-Medium.ttf` (Pixelify Sans, SIL Open Font License, ticari kullanım serbest). Tüm arayüz bu yazı tipini kullanır.

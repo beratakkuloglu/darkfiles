@@ -29,15 +29,15 @@
   ],
   [
    "",
-   "Tıkla: yürü. Sarı nesneler: incele. Kişiler: konuş. Defter: ipuçları ve dedüksiyon tahtası. Oscar'ın Gözü: gizli ayrıntılar (mekan başına 3 kez)."
+   "Tıkla: yürü. Parlayan noktalar: incele. Kişiler: konuş. Defter: ipuçları ve kanıt tahtası. Oscar'ın Gözü: gizli ayrıntılar (mekan başına 3 kez)."
   ],
   [
    "",
-   "İpuçlarını topladıkça Defter > Dedüksiyon tahtası ile ikişer ikişer bağla. Dört ana sonuç bulunca SUÇLA butonu açılır. Takılırsan defterde 'Maya'ya sor' var."
+   "İpuçlarını topladıkça Defter > Kanıt tahtası ile ikişer ikişer bağla. Dört ana sonuç bulunca SUÇLA butonu açılır. Takılırsan defterde 'Maya'ya sor' var."
   ],
   [
    "",
-   "Klavye: A/D yürü, E etkileşim, Q Oscar'ın Gözü, Tab defter."
+   "Klavye: A/D yürü, F etkileşim, Q Oscar'ın Gözü, Tab defter."
   ]
  ],
  "wrong_quips": [
@@ -114,7 +114,9 @@
      "type": "door",
      "to": "salon",
      "x": 287,
-     "spawn_x": 52
+     "spawn_x": 52,
+     "w": 40,
+     "h": 85
     }
    ],
    "floor_y": 172
@@ -165,7 +167,9 @@
      "type": "door",
      "to": "hol",
      "x": 28,
-     "spawn_x": 265
+     "spawn_x": 265,
+     "w": 24,
+     "h": 105
     },
     {
      "type": "clue",
@@ -210,7 +214,9 @@
      "type": "door",
      "to": "guvenlik",
      "x": 292,
-     "spawn_x": 60
+     "spawn_x": 60,
+     "w": 24,
+     "h": 90
     }
    ],
    "floor_y": 172
@@ -247,7 +253,9 @@
      "type": "door",
      "to": "salon",
      "x": 33,
-     "spawn_x": 270
+     "spawn_x": 270,
+     "w": 40,
+     "h": 137
     },
     {
      "type": "clue",
@@ -284,10 +292,13 @@
      "x": 315,
      "spawn_x": 35,
      "requires_flag": "ofis_acik",
-     "locked_text": "Müdürün ofisi kilitli. Anahtar Gus'ta. Önce onu biraz konuşturmam lazım."
+     "locked_text": "Müdürün ofisi kilitli. Anahtar Gus'ta. Önce onu biraz konuşturmam lazım.",
+     "w": 36,
+     "h": 137
     }
    ],
-   "floor_y": 180
+   "floor_y": 180,
+   "char_scale": 2.0
   },
   "ofis": {
    "name": "Müdürün Ofisi",
@@ -335,7 +346,9 @@
      "type": "door",
      "to": "guvenlik",
      "x": 12,
-     "spawn_x": 290
+     "spawn_x": 290,
+     "w": 20,
+     "h": 60
     },
     {
      "type": "clue",
@@ -388,7 +401,9 @@
      "x": 256,
      "spawn_x": 62,
      "requires_flag": "depo_acik",
-     "locked_text": "Bodrum kapısı. Neden ineyim ki? Henüz bir sebebim yok."
+     "locked_text": "Bodrum kapısı. Neden ineyim ki? Henüz bir sebebim yok.",
+     "w": 40,
+     "h": 105
     },
     {
      "type": "door",
@@ -396,7 +411,9 @@
      "x": 320,
      "spawn_x": 86,
      "requires_flag": "otopark_acik",
-     "locked_text": "Otopark. Harold'ın arabası orada ama anahtarı bende değil."
+     "locked_text": "Otopark. Harold'ın arabası orada ama anahtarı bende değil.",
+     "w": 30,
+     "h": 105
     }
    ],
    "floor_y": 172
@@ -433,7 +450,9 @@
      "type": "door",
      "to": "ofis",
      "x": 45,
-     "spawn_x": 250
+     "spawn_x": 250,
+     "w": 34,
+     "h": 100
     },
     {
      "type": "clue",
@@ -510,7 +529,10 @@
      "type": "door",
      "to": "ofis",
      "x": 66,
-     "spawn_x": 300
+     "spawn_x": 300,
+     "w": 28,
+     "h": 50,
+     "y": 28
     },
     {
      "type": "npc",
@@ -523,7 +545,7 @@
      "type": "clue",
      "id": "fatura",
      "x": 200,
-     "y": 17,
+     "y": 43,
      "w": 10,
      "h": 5
     },
@@ -531,13 +553,13 @@
      "type": "clue",
      "id": "kartvizit",
      "x": 248,
-     "y": 12,
+     "y": 38,
      "w": 8,
      "h": 5
     }
    ],
    "rain": true,
-   "floor_y": 140
+   "floor_y": 166
   }
  },
  "clues": {
