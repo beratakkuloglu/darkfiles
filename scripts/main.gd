@@ -889,7 +889,7 @@ func load_room(id: String, spawn_x: float) -> void:
 	target_x = -1.0
 	pending_action = Callable()
 	_refresh_visibility()
-	show_msg(str(r["name"]))
+	show_msg((str(r["place"]) + "  ·  " if r.has("place") else "") + str(r["name"]))
 	_complete_lab()
 
 
@@ -1336,7 +1336,7 @@ func _add_link_hint(lines: Array) -> void:
 
 func _hint_text() -> String:
 	if room_id == "fcd" and not flags.has("briefed"):
-		return "Maya: Önce Şef. Masası sağda, bekletmeyi sevmez."
+		return "Maya: Önce Şef Calloway. Masası sağda, bekletmeyi sevmez."
 	var req: Array = data["final"]["required"]
 	var ready_list := _ready_pairs()
 	var pick: Dictionary = {}

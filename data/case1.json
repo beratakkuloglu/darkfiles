@@ -5,31 +5,31 @@
  "cutscene": [
   {
    "art": "cutscene/sehir",
-   "text": "2003. Bu şehirde yağmur hiç dinmez. Suç da."
+   "text": "Ravenport, 2003. Doğu kıyısının en yağmurlu liman şehri. Burada yağmur hiç dinmez. Suç da."
   },
   {
    "art": "cutscene/sahne",
-   "text": "Oscar Penn, namıdiğer Büyük Valentino. Bir zamanlar şehrin en ünlü sihirbazı."
+   "text": "Oscar Penn, namıdiğer Büyük Valentino. Gloriana Tiyatrosu'nun yıldızı, şehrin en ünlü sihirbazı."
   },
   {
    "art": "cutscene/sahne",
-   "text": "Ta ki o geceye kadar. Bir numara ters gitti, perde indi... ve bir daha hiç kalkmadı."
+   "text": "Ta ki 1998'deki o geceye kadar. 'Kaybolan Adam' numarası ters gitti, perde indi... ve bir daha hiç kalkmadı."
   },
   {
-   "text": "Şimdi elinde 12.480 dolar borç, eski bir trençkot ve tek bir yetenek var: insanları okumak."
+   "text": "Beş yıl sonra elinde 12.480 dolar borç, eski bir trençkot ve tek bir yetenek var: insanları okumak."
   },
   {
-   "text": "Federal Suçlar Birimi, kısaca FCD, bu yetenek için onu danışman olarak işe aldı. Bu gece ilk günü."
+   "text": "Federal Suçlar Birimi'nin Ravenport Bürosu, kısaca FCD, bu yetenek için onu danışman olarak işe aldı. Bu gece ilk günü."
   },
   {
    "art": "cutscene/muze",
-   "text": "Aynı gece, Finch-Moore Şehir Müzesi'nde biri imkansızı başardı."
+   "text": "Aynı gece, Finch-Moore Sanat ve Tarih Müzesi'nin yıllık Kış Yıldızı Galası'nda biri imkansızı başardı."
   }
  ],
  "intro": [
   [
    "",
-   "FCD Merkezi. Gece 23:40."
+   "FCD Ravenport Bürosu, Mercer Caddesi. Gece 23:40."
   ],
   [
    "Maya",
@@ -41,7 +41,7 @@
   ],
   [
    "Maya",
-   "Ajan Maya Cole. Ortağın. Şef seni bekliyor, ilk gününden bir vaka var."
+   "Ajan Maya Cole. Ortağın. Şef Calloway seni bekliyor, ilk gününden bir vaka var."
   ],
   [
    "Oscar",
@@ -77,7 +77,7 @@
  ],
  "rooms": {
   "hol": {
-   "name": "Giriş Holü",
+   "name": "Büyük Hol",
    "width": 344,
    "bg": "#2b1d14",
    "decor": [
@@ -147,20 +147,21 @@
    "enter_lines": [
     [
      "",
-     "Finch-Moore Şehir Müzesi. Gece yarısı."
+     "Finch-Moore Sanat ve Tarih Müzesi. Ravenport'un en eski müzesi, 1890'dan beri. Gece yarısı."
     ],
     [
      "Maya",
-     "Galadan herkes hâlâ binada. Şef'in emri, kimse çıkmayacak."
+     "Galadan herkes hâlâ binada. Şef Calloway'in emri, kimse çıkmayacak."
     ],
     [
      "Oscar",
      "Mükemmel. Sihirbazın en sevdiği şey: kaçamayan bir seyirci."
     ]
-   ]
+   ],
+   "place": "Finch-Moore Müzesi"
   },
   "salon": {
-   "name": "Sergi Salonu",
+   "name": "Mücevher Salonu",
    "width": 344,
    "bg": "#21170f",
    "decor": [
@@ -257,7 +258,8 @@
      "h": 90
     }
    ],
-   "floor_y": 172
+   "floor_y": 172,
+   "place": "Finch-Moore Müzesi"
   },
   "guvenlik": {
    "name": "Güvenlik Odası",
@@ -336,10 +338,11 @@
     }
    ],
    "floor_y": 180,
-   "char_scale": 2.0
+   "char_scale": 2.0,
+   "place": "Finch-Moore Müzesi"
   },
   "ofis": {
-   "name": "Müdürün Ofisi",
+   "name": "Müdür Ofisi",
    "width": 344,
    "bg": "#2b1d14",
    "decor": [
@@ -454,10 +457,11 @@
      "h": 105
     }
    ],
-   "floor_y": 172
+   "floor_y": 172,
+   "place": "Finch-Moore Müzesi"
   },
   "depo": {
-   "name": "Bodrum Depo",
+   "name": "Bodrum Deposu",
    "width": 344,
    "bg": "#140f0a",
    "decor": [
@@ -533,10 +537,11 @@
      "hidden": true
     }
    ],
-   "floor_y": 156
+   "floor_y": 156,
+   "place": "Finch-Moore Müzesi"
   },
   "otopark": {
-   "name": "Müze Otoparkı",
+   "name": "Arka Otopark",
    "width": 344,
    "bg": "#120d09",
    "decor": [
@@ -597,10 +602,11 @@
     }
    ],
    "rain": true,
-   "floor_y": 166
+   "floor_y": 166,
+   "place": "Finch-Moore Müzesi"
   },
   "fcd": {
-   "name": "FCD Merkezi",
+   "name": "Ofis Katı",
    "width": 344,
    "floor_y": 168,
    "bg": "#1f1a14",
@@ -667,11 +673,12 @@
      "spawn_x": 31,
      "w": 24,
      "h": 54,
-     "label": "Çıkış: Müzeye git",
+     "label": "Çıkış: Finch-Moore Müzesi",
      "lock_flag": "briefed",
-     "locked_text": "Önce Şef'le konuşmalıyım. Maaşımı o imzalıyor."
+     "locked_text": "Önce Şef Calloway'le konuşmalıyım. Maaşımı o imzalıyor."
     }
-   ]
+   ],
+   "place": "FCD Ravenport Bürosu"
   }
  },
  "clues": {
@@ -1586,27 +1593,27 @@
    }
   },
   "sef": {
-   "name": "Şef",
+   "name": "Şef Calloway",
    "intro_flag": "briefed",
    "intro": [
     [
-     "Şef",
-     "Penn. Kahveni sonra içersin. Bu gece Finch-Moore Müzesi'nde bir gala vardı."
+     "Şef Calloway",
+     "Penn. Kahveni sonra içersin. Bu gece Finch-Moore Müzesi'nde Kış Yıldızı Galası vardı. Şehrin bütün zenginleri oradaydı."
     ],
     [
-     "Şef",
-     "Gala sırasında 'Kızıl Göz' yakutu kilitli vitrinden kaybolmuş. Cam sağlam, alarm yok."
+     "Şef Calloway",
+     "Gala sırasında müzenin gözbebeği, 41 karatlık Burma yakutu 'Kızıl Göz' kilitli vitrinden kaybolmuş. Cam sağlam, alarm yok."
     ],
     [
-     "Şef",
-     "Polis 'imkansız' diyor. Sigorta şirketi şimdiden telefonumu kilitledi."
+     "Şef Calloway",
+     "Ravenport Polisi 'imkansız' diyor. Sigortacılar şimdiden telefonumu kilitledi."
     ],
     [
      "Oscar",
      "İmkansız benim eski mesleğimdi, Şef."
     ],
     [
-     "Şef",
+     "Şef Calloway",
      "O yüzden buradasın. Cole ile git, müdürle ve personelle konuş. Sabaha kadar bir isim istiyorum."
     ],
     [
@@ -1620,7 +1627,7 @@
      "q": "Neden ben?",
      "lines": [
       [
-       "Şef",
+       "Şef Calloway",
        "Sahnede yüzlerce kişiyi okudun. Bu gece o müzede yalan söyleyen biri var."
       ]
      ]
@@ -1629,7 +1636,7 @@
      "q": "Ödeme?",
      "lines": [
       [
-       "Şef",
+       "Şef Calloway",
        "Vaka başına. Borçlarını biliyorum, Penn. Herkes biliyor."
       ],
       [
@@ -1637,8 +1644,25 @@
        "Bayan Kowalski bile mi?"
       ],
       [
-       "Şef",
+       "Şef Calloway",
        "Özellikle o. Beni iki kez aradı."
+      ]
+     ]
+    },
+    {
+     "q": "Kızıl Göz'ün hikayesi ne?",
+     "lines": [
+      [
+       "Şef Calloway",
+       "1920'lerde Harold'ın dedesi Burma'dan getirmiş. Müze o taş için yaptırılmış bile denir."
+      ],
+      [
+       "Oscar",
+       "Yani hırsız sadece bir taşı değil, bir aile efsanesini çaldı."
+      ],
+      [
+       "Şef Calloway",
+       "Ve sigortacılar her saat başı arıyor. Efsaneyi değil, onları düşün."
       ]
      ]
     }
@@ -1646,10 +1670,10 @@
    "show": {}
   },
   "ajan": {
-   "name": "Ajan Diaz",
+   "name": "Ajan Rico Diaz",
    "intro": [
     [
-     "Ajan Diaz",
+     "Ajan Rico Diaz",
      "Yeni danışman sen misin? Sihirbaz, ha? Hadi bir numara yap."
     ],
     [
@@ -1657,7 +1681,7 @@
      "Zaten yaptım. Kalemin sol cebinde değil, benim elimde."
     ],
     [
-     "Ajan Diaz",
+     "Ajan Rico Diaz",
      "...Ne zaman? Ver onu!"
     ],
     [
@@ -1671,7 +1695,7 @@
      "q": "Şef nasıl biri?",
      "lines": [
       [
-       "Ajan Diaz",
+       "Ajan Rico Diaz",
        "Sert ama adil. Bağırıyorsa sorun yok. Susuyorsa kaç."
       ]
      ]
@@ -1680,7 +1704,7 @@
      "q": "Cole nasıl biri?",
      "lines": [
       [
-       "Ajan Diaz",
+       "Ajan Rico Diaz",
        "Kitabına göre oynar. Bir kez park cezasını kendine yazdı."
       ],
       [
@@ -1688,7 +1712,7 @@
        "Kendine mi?"
       ],
       [
-       "Ajan Diaz",
+       "Ajan Rico Diaz",
        "Kendine."
       ]
      ]
@@ -1830,7 +1854,7 @@
   "Vivian": "vivian",
   "Toby": "toby",
   "Maya": "maya",
-  "Şef": "sef",
-  "Ajan Diaz": "ajan"
+  "Şef Calloway": "sef",
+  "Ajan Rico Diaz": "ajan"
  }
 }

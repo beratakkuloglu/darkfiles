@@ -1,6 +1,6 @@
 # Dark Files
 
-2D pixel art dedektiflik oyunu. Oyuncu, FCD (Federal Crimes Division) danışmanı ve eski sahne sihirbazı Oscar Penn'i yönetir.
+2D pixel art dedektiflik oyunu. 2003, kurgusal liman şehri Ravenport. Oyuncu, FCD (Federal Crimes Division) danışmanı ve eski sahne sihirbazı Oscar Penn'i yönetir.
 
 Vaka 1 "Boş Vitrin" baştan sona oynanabilir: ana menü, 6 mekan, 5 karakter, ipucu toplama, sorgu, kanıt gösterme, kanıt tahtası, suçlama ve puanlı final. Karakterler PixelLab çizimi; salon, hol, güvenlik ve ofis çizildi, diğerleri çizim gelene kadar sade duvar/zemin ile gösterilir.
 
