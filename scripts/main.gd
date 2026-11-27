@@ -901,6 +901,8 @@ func _wait(sec: float, cb: Callable) -> void:
 func _room_setup(id: String, spawn_x: float) -> void:
 	player.visible = true
 	player_pose = null
+	if player_sprite:
+		player_sprite.position.y = -player_sprite.size.y
 	in_car = false
 	maya_follow()
 	match id:
@@ -908,6 +910,10 @@ func _room_setup(id: String, spawn_x: float) -> void:
 			if not flags.has("ofis_done"):
 				var sit := _art("oscar_sit")
 				player_pose = sit if sit else _art("oscar")
+				var rr: Dictionary = data["rooms"][id]
+				player.position.x = float(rr.get("sit_x", player.position.x))
+				player_sprite.position.y = -player_sprite.size.y + float(rr.get("sit_dy", 0.0))
+				camera.reset_smoothing()
 				_face(1.0)
 				if maya:
 					maya.visible = false
@@ -978,6 +984,7 @@ func _office_talk() -> void:
 		tw.tween_interval(0.6)
 		tw.tween_callback(func():
 			player_pose = null
+			player_sprite.position.y = -player_sprite.size.y
 			flags["ofis_done"] = true
 			_set_hud_visible(true)
 			var door := float(data["rooms"]["oscar_ofis"].get("door_x", room_w - 30.0))
@@ -1044,7 +1051,7 @@ func _car_w() -> float:
 
 
 ## Arabanın tekerlek hizası (ekran pikseli). Çizim gelince yola göre ayarlanır.
-const DRIVE_CAR_BOTTOM := 330.0
+const DRIVE_CAR_BOTTOM := 304.0
 
 
 func _make_drive_car(parent: Control, x: float) -> Control:
@@ -1101,8 +1108,14 @@ func _build_drive() -> void:
 	drive_street.pivot_offset = Vector2(VIEW_W / 2.0, VIEW_H * 0.75)
 	drive_panel.add_child(drive_street)
 	var st := _art("drive/street")
+	var sky_t := _art("drive/sky")
+	var road_t := _art("drive/road")
 	if st:
 		_drive_bg(drive_street, st, false)
+	elif sky_t and road_t:
+		# Ayrı sokak çizimi yoksa gökyüzü + yol katmanı durağan olarak kullanılır.
+		_drive_bg(drive_street, sky_t, false)
+		_drive_bg(drive_street, road_t, false)
 	else:
 		_build_drive_placeholder(drive_street, false)
 	drive_street_car = _make_drive_car(drive_street, -200.0)

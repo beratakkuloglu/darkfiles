@@ -71,6 +71,7 @@ Palet: `#0f0b08`, `#2b1d14`, `#5a3d2b`, `#8a6a4f`, `#e8c547`, `#f2e3b3`.
 - `tools/fix_room.py`: PixelLab'ın arka planı şeffaf bıraktığı sahnelerde boşlukları doldurur ve resmi oyunun paletine çeker. Salon böyle hazırlandı:
   `python3 tools/fix_room.py girdi.png art/rooms/salon.png --floor 145 --cone 127,10,68,183,160 --dark-left 19 --dark-top 6`
 - `tools/make_walk.py`: tek karakter çiziminden 4 karelik yürüme şeridi.
+- `tools/fill_sky.py`: şeffaf yerleri gökyüzü resmi / renk / kutularla doldurur, gerekirse genişletir (sokak, müze önü).
 - `tools/make_walk2.py`: kolu sallanmayan karakterler için temiz yürüme (Maya: `--leg-top 39 --split 17 --hem 34`).
 - `tools/make_idle.py`: tek karakter çiziminden 2 karelik nefes alma şeridi.
 - `tools/pixelize.py`: ChatGPT/Gemini gibi araçlardan gelen normal bir resmi pixel art'a çevirir (arka planı siler, 64x64 ya da 344x192'ye küçültür, renkleri azaltır).

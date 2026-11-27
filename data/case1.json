@@ -1,10 +1,10 @@
 {
  "case_name": "Vaka 1: Boş Vitrin",
  "start_room": "oscar_ofis",
- "start_x": 120,
+ "start_x": 117,
  "cutscene": [
   {
-   "art": "cutscene/sehir",
+   "art": "drive/sky",
    "text": "Ravenport, 2003. Yağmur yağıyor. Burada hep yağar."
   },
   {
@@ -22,7 +22,7 @@
    "text": "Ama hâlâ bir şeyde iyiyim. Biri bana yalan söylediğinde anlarım. FCD de tam bunun için beni işe aldı."
   },
   {
-   "art": "cutscene/muze",
+   "art": "rooms/muze_onu",
    "text": "O gece büroda kahvemi içiyordum. Şehrin öbür ucunda ise bir yakut, kilitli bir vitrinden buhar olup uçmuştu."
   }
  ],
@@ -606,7 +606,7 @@
      "type": "door",
      "to": "sokak",
      "x": 334,
-     "spawn_x": 60,
+     "spawn_x": 70,
      "w": 20,
      "h": 80,
      "label": "Çıkış"
@@ -620,51 +620,28 @@
    "width": 344,
    "floor_y": 172,
    "bg": "#241a12",
-   "door_x": 316,
-   "decor": [
-    {
-     "x": 120,
-     "y": 0,
-     "w": 70,
-     "h": 22,
-     "color": "#3a2a1e"
-    },
-    {
-     "x": 60,
-     "y": 40,
-     "w": 26,
-     "h": 36,
-     "color": "#5a3d2b"
-    },
-    {
-     "x": 250,
-     "y": 0,
-     "w": 30,
-     "h": 56,
-     "color": "#2e241a"
-    }
-   ],
+   "door_x": 330,
    "objects": [
     {
      "type": "door",
      "to": "koridor",
-     "x": 316,
+     "x": 330,
      "spawn_x": 40,
-     "w": 26,
-     "h": 60,
+     "w": 24,
+     "h": 140,
      "label": "Koridor"
     },
     {
      "type": "look",
      "name": "Eski afiş",
-     "x": 60,
-     "y": 46,
-     "w": 26,
-     "h": 36,
+     "x": 30,
+     "y": 65,
+     "w": 40,
+     "h": 90,
      "lines": [
       [
        "Oscar",
-       "Büyük Valentino. Gloriana Tiyatrosu, 1998. Biletler üç dakikada tükenmişti."
+       "'Magician'. Gloriana Tiyatrosu, 1998. Biletler üç dakikada tükenmişti."
       ],
       [
        "Oscar",
@@ -675,10 +652,10 @@
     {
      "type": "look",
      "name": "Gazete kupürü",
-     "x": 92,
-     "y": 56,
-     "w": 12,
-     "h": 14,
+     "x": 66,
+     "y": 107,
+     "w": 16,
+     "h": 32,
      "lines": [
       [
        "",
@@ -697,10 +674,10 @@
     {
      "type": "look",
      "name": "Mektup",
-     "x": 104,
-     "y": 22,
-     "w": 8,
-     "h": 4,
+     "x": 66,
+     "y": 70,
+     "w": 16,
+     "h": 30,
      "lines": [
       [
        "",
@@ -714,25 +691,43 @@
     },
     {
      "type": "look",
-     "name": "İskambil destesi",
-     "x": 136,
-     "y": 22,
-     "w": 6,
-     "h": 4,
+     "name": "Kahve fincanı",
+     "x": 154,
+     "y": 50,
+     "w": 10,
+     "h": 8,
      "lines": [
       [
        "Oscar",
-       "51 kart. Kupa ası hep kayıp. Nerede olduğunu biliyorum ama söylemem."
+       "Üçüncü fincan. Artık kafein değil, alışkanlık."
+      ]
+     ]
+    },
+    {
+     "type": "look",
+     "name": "Masadaki kağıtlar",
+     "x": 205,
+     "y": 50,
+     "w": 20,
+     "h": 8,
+     "lines": [
+      [
+       "Oscar",
+       "Bir deste iskambil ve ödenmemiş faturalar. Destede 51 kart var. Kupa ası hep kayıp."
+      ],
+      [
+       "Oscar",
+       "Nerede olduğunu biliyorum. Söylemem."
       ]
      ]
     },
     {
      "type": "look",
      "name": "Sihirbaz şapkası",
-     "x": 250,
-     "y": 56,
-     "w": 14,
-     "h": 10,
+     "x": 285,
+     "y": 60,
+     "w": 22,
+     "h": 22,
      "lines": [
       [
        "Oscar",
@@ -740,7 +735,9 @@
       ]
      ]
     }
-   ]
+   ],
+   "sit_x": 117,
+   "sit_dy": -6
   },
   "koridor": {
    "name": "Koridor",
@@ -831,31 +828,23 @@
    "name": "Mercer Caddesi",
    "place": "Ravenport",
    "width": 344,
-   "floor_y": 172,
+   "floor_y": 170,
    "bg": "#121018",
    "rain": true,
-   "decor": [
-    {
-     "x": 50,
-     "y": 0,
-     "w": 40,
-     "h": 70,
-     "color": "#2b1d14"
-    }
-   ],
    "objects": [
     {
      "type": "door",
      "to": "fcd",
-     "x": 50,
+     "x": 43,
      "spawn_x": 320,
-     "w": 28,
-     "h": 60,
+     "w": 40,
+     "h": 100,
      "label": "FCD Bürosu"
     },
     {
      "type": "car",
-     "x": 230
+     "x": 280,
+     "y": -10
     }
    ]
   },
@@ -863,18 +852,9 @@
    "name": "Müze Önü",
    "place": "Finch-Moore Müzesi",
    "width": 344,
-   "floor_y": 172,
+   "floor_y": 176,
    "bg": "#14100c",
    "rain": true,
-   "decor": [
-    {
-     "x": 290,
-     "y": 0,
-     "w": 60,
-     "h": 90,
-     "color": "#2b1d14"
-    }
-   ],
    "enter_lines": [
     [
      "Maya",
@@ -888,15 +868,17 @@
    "objects": [
     {
      "type": "car",
-     "x": 110
+     "x": 80,
+     "y": -10
     },
     {
      "type": "door",
      "to": "hol",
-     "x": 292,
+     "x": 293,
      "spawn_x": 31,
-     "w": 30,
-     "h": 60,
+     "y": 51,
+     "w": 50,
+     "h": 85,
      "label": "Finch-Moore Müzesi"
     }
    ]
