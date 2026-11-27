@@ -141,6 +141,12 @@
      "spawn_x": 52,
      "w": 40,
      "h": 85
+    },
+    {
+     "type": "npc",
+     "dialogue": "dooley",
+     "art": "memur1",
+     "x": 84
     }
    ],
    "floor_y": 172,
@@ -256,6 +262,12 @@
      "spawn_x": 60,
      "w": 24,
      "h": 90
+    },
+    {
+     "type": "npc",
+     "dialogue": "park",
+     "art": "memur2",
+     "x": 62
     }
    ],
    "floor_y": 172,
@@ -1719,6 +1731,108 @@
     }
    ],
    "show": {}
+  },
+  "dooley": {
+   "name": "Çavuş Dooley",
+   "intro": [
+    [
+     "Çavuş Dooley",
+     "Federaller, nihayet. Saat on birden beri buradayım. Kahvem bile soğudu."
+    ],
+    [
+     "Oscar",
+     "Fincanı sol elinizde tutuyorsunuz ama sağ elinizle yazıyorsunuz. Demek ki not tutmaktan vazgeçeli epey olmuş."
+    ],
+    [
+     "Çavuş Dooley",
+     "...Sen o sihirbaz olmalısın. Şef Calloway uyarmıştı."
+    ]
+   ],
+   "claim": "Ravenport Polisi, otuz bir yıl. Bu gece kimse çıkmadı, kimse girmedi.",
+   "topics": [
+    {
+     "q": "Gece ne oldu?",
+     "lines": [
+      [
+       "Çavuş Dooley",
+       "21:40'ta ışıklar gitti. Geldiğinde vitrin boştu. Herkesi holde topladık, ceplerini aradık."
+      ],
+      [
+       "Çavuş Dooley",
+       "Taş kimsenin üstünde çıkmadı."
+      ],
+      [
+       "Oscar",
+       "Yani yakut hâlâ bu binada."
+      ],
+      [
+       "Çavuş Dooley",
+       "Ya da biri benden iyi saklıyor."
+      ]
+     ]
+    },
+    {
+     "q": "Bu bina nasıl bir yer?",
+     "lines": [
+      [
+       "Çavuş Dooley",
+       "1890'dan kalma. Bodrumu labirent gibidir. Çocukken okul gezisinde gelmiştim, kaybolmuştum."
+      ],
+      [
+       "Maya",
+       "Not aldım. Bodrum."
+      ]
+     ]
+    }
+   ],
+   "show": {}
+  },
+  "park": {
+   "name": "Memur Park",
+   "intro": [
+    [
+     "Memur Park",
+     "Memur Eddie Park, Ravenport Polisi! Tutanak tutuyorum efendim. Her şeyi yazdım. Yani, çoğu şeyi."
+    ],
+    [
+     "Oscar",
+     "Dosyayı ters tutuyorsun, Park."
+    ],
+    [
+     "Memur Park",
+     "...Ah. Teşekkürler."
+    ]
+   ],
+   "claim": "Vitrini ben bekledim. Sadece bir kere tuvalete gittim. İki kere.",
+   "topics": [
+    {
+     "q": "Tutanakta ne var?",
+     "lines": [
+      [
+       "Memur Park",
+       "Galada 112 misafir vardı. Işıklar tam 4 saniye gitti. Kimse çığlık atmadı, herkes alkış sandı."
+      ],
+      [
+       "Oscar",
+       "Karanlıkta alkış... Bunu bir yerden hatırlıyorum."
+      ]
+     ]
+    },
+    {
+     "q": "Polislik nasıl gidiyor?",
+     "lines": [
+      [
+       "Memur Park",
+       "İlk haftam. Çavuş Dooley bana sadece kahve aldırıyor."
+      ],
+      [
+       "Oscar",
+       "Ben de ilk günümdeyim. Kahvemi kendim alıyorum. Bu yüzden borçluyum."
+      ]
+     ]
+    }
+   ],
+   "show": {}
   }
  },
  "final": {
@@ -1855,6 +1969,8 @@
   "Toby": "toby",
   "Maya": "maya",
   "Şef Calloway": "sef",
-  "Ajan Rico Diaz": "ajan"
+  "Ajan Rico Diaz": "ajan",
+  "Çavuş Dooley": "memur1",
+  "Memur Park": "memur2"
  }
 }
