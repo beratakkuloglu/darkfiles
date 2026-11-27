@@ -3,14 +3,42 @@
   "start_room": "hol",
   "start_x": 80,
   "intro": [
-    ["", "2003. Gece yarısı. Finch-Moore Şehir Müzesi."],
-    ["Maya", "Sen Oscar Penn olmalısın. Sihirbaz."],
-    ["Oscar", "Eski sihirbaz. Artık danışmanım. Daha az alkış, daha çok kahve."],
-    ["Maya", "Gala sırasında 'Kızıl Göz' yakutu kilitli vitrinden kaybolmuş. Cam sağlam, alarm yok. Polis 'imkansız' diyor."],
-    ["Oscar", "İmkansız benim eski mesleğimdi, Ajan Cole."],
-    ["Maya", "Ajan Cole değil, sadece Cole. Ve hiçbir şeye dokunma."],
-    ["", "Tıkla: yürü. Sarı nesneler: incele. Kişiler: konuş. Defter: ipuçları ve dedüksiyon tahtası. Oscar'ın Gözü: gizli ayrıntılar (mekan başına 3 kez)."],
-    ["", "Klavye: A/D yürü, E etkileşim, Q Oscar'ın Gözü, Tab defter."]
+    [
+      "",
+      "2003. Gece yarısı. Finch-Moore Şehir Müzesi."
+    ],
+    [
+      "Maya",
+      "Sen Oscar Penn olmalısın. Sihirbaz."
+    ],
+    [
+      "Oscar",
+      "Eski sihirbaz. Artık danışmanım. Daha az alkış, daha çok kahve."
+    ],
+    [
+      "Maya",
+      "Gala sırasında 'Kızıl Göz' yakutu kilitli vitrinden kaybolmuş. Cam sağlam, alarm yok. Polis 'imkansız' diyor."
+    ],
+    [
+      "Oscar",
+      "İmkansız benim eski mesleğimdi, Ajan Cole."
+    ],
+    [
+      "Maya",
+      "Ajan Cole değil, sadece Cole. Ve hiçbir şeye dokunma."
+    ],
+    [
+      "",
+      "Tıkla: yürü. Sarı nesneler: incele. Kişiler: konuş. Defter: ipuçları ve dedüksiyon tahtası. Oscar'ın Gözü: gizli ayrıntılar (mekan başına 3 kez)."
+    ],
+    [
+      "",
+      "İpuçlarını topladıkça Defter > Dedüksiyon tahtası ile ikişer ikişer bağla. Dört ana sonuç bulunca SUÇLA butonu açılır. Takılırsan defterde 'Maya'ya sor' var."
+    ],
+    [
+      "",
+      "Klavye: A/D yürü, E etkileşim, Q Oscar'ın Gözü, Tab defter."
+    ]
   ],
   "wrong_quips": [
     "Penn, bu kanıtın konuyla ne alakası var?",
@@ -29,16 +57,65 @@
       "width": 900,
       "bg": "#2b1d14",
       "decor": [
-        {"x": 260, "y": 0, "w": 90, "h": 36, "color": "#3a2a1e"},
-        {"x": 500, "y": 0, "w": 70, "h": 100, "color": "#3a2a1e"},
-        {"x": 420, "y": 230, "w": 70, "h": 8, "color": "#b8942f"}
+        {
+          "x": 260,
+          "y": 0,
+          "w": 90,
+          "h": 36,
+          "color": "#3a2a1e"
+        },
+        {
+          "x": 500,
+          "y": 0,
+          "w": 70,
+          "h": 100,
+          "color": "#3a2a1e"
+        },
+        {
+          "x": 420,
+          "y": 230,
+          "w": 70,
+          "h": 8,
+          "color": "#b8942f"
+        }
       ],
       "objects": [
-        {"type": "clue", "id": "ruj", "x": 245, "y": 36, "w": 6, "h": 10},
-        {"type": "clue", "id": "misafir", "x": 520, "y": 40, "w": 12, "h": 14},
-        {"type": "clue", "id": "sakiz", "x": 720, "y": 0, "w": 6, "h": 3},
-        {"type": "npc", "dialogue": "toby", "x": 640, "hide_if_flag": "depo_acik"},
-        {"type": "door", "to": "salon", "x": 870, "spawn_x": 70}
+        {
+          "type": "clue",
+          "id": "ruj",
+          "x": 245,
+          "y": 36,
+          "w": 6,
+          "h": 10
+        },
+        {
+          "type": "clue",
+          "id": "misafir",
+          "x": 520,
+          "y": 40,
+          "w": 12,
+          "h": 14
+        },
+        {
+          "type": "clue",
+          "id": "sakiz",
+          "x": 720,
+          "y": 0,
+          "w": 6,
+          "h": 3
+        },
+        {
+          "type": "npc",
+          "dialogue": "toby",
+          "x": 640,
+          "hide_if_flag": "depo_acik"
+        },
+        {
+          "type": "door",
+          "to": "salon",
+          "x": 870,
+          "spawn_x": 70
+        }
       ]
     },
     "salon": {
@@ -46,20 +123,94 @@
       "width": 1000,
       "bg": "#21170f",
       "decor": [
-        {"x": 500, "y": 0, "w": 60, "h": 46, "color": "#3a2a1e"},
-        {"x": 500, "y": 46, "w": 50, "h": 30, "color": "#4a3a2c"},
-        {"x": 500, "y": 200, "w": 24, "h": 40, "color": "#b8942f"},
-        {"x": 250, "y": 60, "w": 50, "h": 70, "color": "#3a2a1e"},
-        {"x": 780, "y": 60, "w": 50, "h": 70, "color": "#3a2a1e"}
+        {
+          "x": 500,
+          "y": 0,
+          "w": 60,
+          "h": 46,
+          "color": "#3a2a1e"
+        },
+        {
+          "x": 500,
+          "y": 46,
+          "w": 50,
+          "h": 30,
+          "color": "#4a3a2c"
+        },
+        {
+          "x": 500,
+          "y": 200,
+          "w": 24,
+          "h": 40,
+          "color": "#b8942f"
+        },
+        {
+          "x": 250,
+          "y": 60,
+          "w": 50,
+          "h": 70,
+          "color": "#3a2a1e"
+        },
+        {
+          "x": 780,
+          "y": 60,
+          "w": 50,
+          "h": 70,
+          "color": "#3a2a1e"
+        }
       ],
       "objects": [
-        {"type": "door", "to": "hol", "x": 30, "spawn_x": 830},
-        {"type": "clue", "id": "kilit", "x": 500, "y": 58, "w": 10, "h": 8},
-        {"type": "clue", "id": "taban", "x": 500, "y": 44, "w": 50, "h": 3, "hidden": true},
-        {"type": "clue", "id": "kupe", "x": 545, "y": 0, "w": 4, "h": 4},
-        {"type": "clue", "id": "sac", "x": 472, "y": 50, "w": 2, "h": 7},
-        {"type": "npc", "dialogue": "vivian", "x": 700, "hide_if_flag": "otopark_acik"},
-        {"type": "door", "to": "guvenlik", "x": 970, "spawn_x": 70}
+        {
+          "type": "door",
+          "to": "hol",
+          "x": 30,
+          "spawn_x": 830
+        },
+        {
+          "type": "clue",
+          "id": "kilit",
+          "x": 500,
+          "y": 58,
+          "w": 10,
+          "h": 8
+        },
+        {
+          "type": "clue",
+          "id": "taban",
+          "x": 500,
+          "y": 44,
+          "w": 50,
+          "h": 3,
+          "hidden": true
+        },
+        {
+          "type": "clue",
+          "id": "kupe",
+          "x": 545,
+          "y": 0,
+          "w": 4,
+          "h": 4
+        },
+        {
+          "type": "clue",
+          "id": "sac",
+          "x": 472,
+          "y": 50,
+          "w": 2,
+          "h": 7
+        },
+        {
+          "type": "npc",
+          "dialogue": "vivian",
+          "x": 700,
+          "hide_if_flag": "otopark_acik"
+        },
+        {
+          "type": "door",
+          "to": "guvenlik",
+          "x": 970,
+          "spawn_x": 70
+        }
       ]
     },
     "guvenlik": {
@@ -67,17 +218,72 @@
       "width": 700,
       "bg": "#1c140e",
       "decor": [
-        {"x": 300, "y": 0, "w": 160, "h": 40, "color": "#3a2a1e"},
-        {"x": 290, "y": 40, "w": 40, "h": 30, "color": "#5a4a2c"},
-        {"x": 360, "y": 40, "w": 20, "h": 12, "color": "#4a3a2c"}
+        {
+          "x": 300,
+          "y": 0,
+          "w": 160,
+          "h": 40,
+          "color": "#3a2a1e"
+        },
+        {
+          "x": 290,
+          "y": 40,
+          "w": 40,
+          "h": 30,
+          "color": "#5a4a2c"
+        },
+        {
+          "x": 360,
+          "y": 40,
+          "w": 20,
+          "h": 12,
+          "color": "#4a3a2c"
+        }
       ],
       "objects": [
-        {"type": "door", "to": "salon", "x": 30, "spawn_x": 930},
-        {"type": "clue", "id": "kamera", "x": 290, "y": 50, "w": 30, "h": 16},
-        {"type": "clue", "id": "kart", "x": 395, "y": 40, "w": 10, "h": 6},
-        {"type": "clue", "id": "fincan", "x": 235, "y": 40, "w": 6, "h": 7},
-        {"type": "npc", "dialogue": "gus", "x": 480},
-        {"type": "door", "to": "ofis", "x": 670, "spawn_x": 70, "requires_flag": "ofis_acik", "locked_text": "Müdürün ofisi kilitli. Anahtar Gus'ta. Önce onu biraz konuşturmam lazım."}
+        {
+          "type": "door",
+          "to": "salon",
+          "x": 30,
+          "spawn_x": 930
+        },
+        {
+          "type": "clue",
+          "id": "kamera",
+          "x": 290,
+          "y": 50,
+          "w": 30,
+          "h": 16
+        },
+        {
+          "type": "clue",
+          "id": "kart",
+          "x": 395,
+          "y": 40,
+          "w": 10,
+          "h": 6
+        },
+        {
+          "type": "clue",
+          "id": "fincan",
+          "x": 235,
+          "y": 40,
+          "w": 6,
+          "h": 7
+        },
+        {
+          "type": "npc",
+          "dialogue": "gus",
+          "x": 480
+        },
+        {
+          "type": "door",
+          "to": "ofis",
+          "x": 670,
+          "spawn_x": 70,
+          "requires_flag": "ofis_acik",
+          "locked_text": "Müdürün ofisi kilitli. Anahtar Gus'ta. Önce onu biraz konuşturmam lazım."
+        }
       ]
     },
     "ofis": {
@@ -85,22 +291,110 @@
       "width": 900,
       "bg": "#2b1d14",
       "decor": [
-        {"x": 200, "y": 0, "w": 60, "h": 110, "color": "#3a2a1e"},
-        {"x": 430, "y": 0, "w": 120, "h": 38, "color": "#3a2a1e"},
-        {"x": 470, "y": 38, "w": 8, "h": 20, "color": "#b8942f"},
-        {"x": 540, "y": 0, "w": 18, "h": 22, "color": "#4a3a2c"},
-        {"x": 620, "y": 70, "w": 50, "h": 40, "color": "#4a3a2c"}
+        {
+          "x": 200,
+          "y": 0,
+          "w": 60,
+          "h": 110,
+          "color": "#3a2a1e"
+        },
+        {
+          "x": 430,
+          "y": 0,
+          "w": 120,
+          "h": 38,
+          "color": "#3a2a1e"
+        },
+        {
+          "x": 470,
+          "y": 38,
+          "w": 8,
+          "h": 20,
+          "color": "#b8942f"
+        },
+        {
+          "x": 540,
+          "y": 0,
+          "w": 18,
+          "h": 22,
+          "color": "#4a3a2c"
+        },
+        {
+          "x": 620,
+          "y": 70,
+          "w": 50,
+          "h": 40,
+          "color": "#4a3a2c"
+        }
       ],
       "objects": [
-        {"type": "door", "to": "guvenlik", "x": 30, "spawn_x": 630},
-        {"type": "clue", "id": "krem", "x": 195, "y": 72, "w": 6, "h": 10},
-        {"type": "npc", "dialogue": "harold", "x": 330},
-        {"type": "clue", "id": "kol1", "x": 400, "y": 38, "w": 4, "h": 3},
-        {"type": "clue", "id": "anahtar", "x": 445, "y": 38, "w": 8, "h": 4},
-        {"type": "clue", "id": "sigorta", "x": 540, "y": 22, "w": 10, "h": 5},
-        {"type": "clue", "id": "plan", "x": 620, "y": 80, "w": 30, "h": 20},
-        {"type": "door", "to": "depo", "x": 760, "spawn_x": 70, "requires_flag": "depo_acik", "locked_text": "Bodrum kapısı. Neden ineyim ki? Henüz bir sebebim yok."},
-        {"type": "door", "to": "otopark", "x": 870, "spawn_x": 70, "requires_flag": "otopark_acik", "locked_text": "Otopark. Harold'ın arabası orada ama anahtarı bende değil."}
+        {
+          "type": "door",
+          "to": "guvenlik",
+          "x": 30,
+          "spawn_x": 630
+        },
+        {
+          "type": "clue",
+          "id": "krem",
+          "x": 195,
+          "y": 72,
+          "w": 6,
+          "h": 10
+        },
+        {
+          "type": "npc",
+          "dialogue": "harold",
+          "x": 330
+        },
+        {
+          "type": "clue",
+          "id": "kol1",
+          "x": 400,
+          "y": 38,
+          "w": 4,
+          "h": 3
+        },
+        {
+          "type": "clue",
+          "id": "anahtar",
+          "x": 445,
+          "y": 38,
+          "w": 8,
+          "h": 4
+        },
+        {
+          "type": "clue",
+          "id": "sigorta",
+          "x": 540,
+          "y": 22,
+          "w": 10,
+          "h": 5
+        },
+        {
+          "type": "clue",
+          "id": "plan",
+          "x": 620,
+          "y": 80,
+          "w": 30,
+          "h": 20
+        },
+        {
+          "type": "door",
+          "to": "depo",
+          "x": 760,
+          "spawn_x": 70,
+          "requires_flag": "depo_acik",
+          "locked_text": "Bodrum kapısı. Neden ineyim ki? Henüz bir sebebim yok."
+        },
+        {
+          "type": "door",
+          "to": "otopark",
+          "x": 870,
+          "spawn_x": 70,
+          "requires_flag": "otopark_acik",
+          "locked_text": "Otopark. Harold'ın arabası orada ama anahtarı bende değil."
+        }
       ]
     },
     "depo": {
@@ -108,17 +402,75 @@
       "width": 800,
       "bg": "#140f0a",
       "decor": [
-        {"x": 150, "y": 0, "w": 60, "h": 50, "color": "#3a2a1e"},
-        {"x": 500, "y": 30, "w": 10, "h": 230, "color": "#4a3a2c"},
-        {"x": 620, "y": 0, "w": 70, "h": 40, "color": "#3a2a1e"}
+        {
+          "x": 150,
+          "y": 0,
+          "w": 60,
+          "h": 50,
+          "color": "#3a2a1e"
+        },
+        {
+          "x": 500,
+          "y": 30,
+          "w": 10,
+          "h": 230,
+          "color": "#4a3a2c"
+        },
+        {
+          "x": 620,
+          "y": 0,
+          "w": 70,
+          "h": 40,
+          "color": "#3a2a1e"
+        }
       ],
       "objects": [
-        {"type": "door", "to": "ofis", "x": 30, "spawn_x": 730},
-        {"type": "clue", "id": "bileklik", "x": 210, "y": 0, "w": 8, "h": 3},
-        {"type": "npc", "dialogue": "toby2", "x": 300, "requires_flag": "depo_acik"},
-        {"type": "clue", "id": "oluk", "x": 500, "y": 0, "w": 40, "h": 30},
-        {"type": "clue", "id": "kol2", "x": 540, "y": 0, "w": 4, "h": 3},
-        {"type": "clue", "id": "afis", "x": 700, "y": 70, "w": 24, "h": 34, "hidden": true}
+        {
+          "type": "door",
+          "to": "ofis",
+          "x": 30,
+          "spawn_x": 730
+        },
+        {
+          "type": "clue",
+          "id": "bileklik",
+          "x": 210,
+          "y": 0,
+          "w": 8,
+          "h": 3
+        },
+        {
+          "type": "npc",
+          "dialogue": "toby2",
+          "x": 300,
+          "requires_flag": "depo_acik",
+          "art": "toby"
+        },
+        {
+          "type": "clue",
+          "id": "oluk",
+          "x": 500,
+          "y": 0,
+          "w": 40,
+          "h": 30
+        },
+        {
+          "type": "clue",
+          "id": "kol2",
+          "x": 540,
+          "y": 0,
+          "w": 4,
+          "h": 3
+        },
+        {
+          "type": "clue",
+          "id": "afis",
+          "x": 700,
+          "y": 70,
+          "w": 24,
+          "h": 34,
+          "hidden": true
+        }
       ]
     },
     "otopark": {
@@ -126,172 +478,705 @@
       "width": 700,
       "bg": "#120d09",
       "decor": [
-        {"x": 420, "y": 0, "w": 150, "h": 40, "color": "#3a2a1e"},
-        {"x": 600, "y": 0, "w": 6, "h": 180, "color": "#3a2a1e"},
-        {"x": 600, "y": 180, "w": 20, "h": 8, "color": "#b8942f"}
+        {
+          "x": 420,
+          "y": 0,
+          "w": 150,
+          "h": 40,
+          "color": "#3a2a1e"
+        },
+        {
+          "x": 600,
+          "y": 0,
+          "w": 6,
+          "h": 180,
+          "color": "#3a2a1e"
+        },
+        {
+          "x": 600,
+          "y": 180,
+          "w": 20,
+          "h": 8,
+          "color": "#b8942f"
+        }
       ],
       "objects": [
-        {"type": "door", "to": "ofis", "x": 30, "spawn_x": 830},
-        {"type": "npc", "dialogue": "vivian2", "x": 230, "requires_flag": "otopark_acik"},
-        {"type": "clue", "id": "fatura", "x": 380, "y": 22, "w": 10, "h": 6},
-        {"type": "clue", "id": "kartvizit", "x": 480, "y": 10, "w": 8, "h": 5}
+        {
+          "type": "door",
+          "to": "ofis",
+          "x": 30,
+          "spawn_x": 830
+        },
+        {
+          "type": "npc",
+          "dialogue": "vivian2",
+          "x": 230,
+          "requires_flag": "otopark_acik",
+          "art": "vivian"
+        },
+        {
+          "type": "clue",
+          "id": "fatura",
+          "x": 380,
+          "y": 22,
+          "w": 10,
+          "h": 6
+        },
+        {
+          "type": "clue",
+          "id": "kartvizit",
+          "x": 480,
+          "y": 10,
+          "w": 8,
+          "h": 5
+        }
       ]
     }
   },
   "clues": {
-    "ruj": {"name": "Ruj izli kadeh", "desc": "Şampanya kadehinde koyu kırmızı ruj izi. Kadeh hâlâ soğuk.", "comment": "Bu tonu yalnızca kendinden çok emin biri sürer.", "analysis": "Ruj, Vivian Lark'ın kullandığı markayla aynı. Kadeh 21:35'ten sonra bırakılmış."},
-    "misafir": {"name": "Misafir listesi", "desc": "Herkesin giriş ve çıkış saati yazıyor. Vivian Lark'ın çıkış saati boş."},
-    "sakiz": {"name": "Naneli sakız kağıdı", "desc": "Yerde buruşuk bir sakız kağıdı. Toby'nin çiğnediği sakızla aynı marka.", "comment": "Ya biri çok gergindi, ya da nefesi çok kötüydü."},
-    "kilit": {"name": "Sağlam vitrin kilidi", "desc": "Cam çizik bile değil. Kilit zorlanmamış. Kimse vitrini açmamış."},
-    "taban": {"name": "Vitrindeki ince çizgi", "desc": "Tabanı çevreleyen kıl inceliğinde bir çizgi. Bu bir sahte taban, klasik sahne numarası.", "comment": "Bu numarayı ben 1997'de daha temiz yapıyordum."},
-    "kupe": {"name": "Zümrüt küpe", "desc": "Vitrinin tam dibinde, yerde. Biri buraya eğilmiş."},
-    "sac": {"name": "Kır saç teli", "desc": "Vitrinin kenarına takılmış kısa, kır bir saç. Harold da Gus da kır saçlı.", "analysis": "Saçta lavanta kokulu, pahalı bir saç kremi kalıntısı var."},
-    "kamera": {"name": "Kamera kaydı", "desc": "21:40'ta salon ışıkları tam 4 saniye sönüyor. Işık gelince yakut yok."},
-    "kart": {"name": "Kapı kartı kaydı", "desc": "21:39: Harold Finch-Moore'un kartıyla müdür ofisine giriş."},
-    "fincan": {"name": "MÜDÜR yazılı fincan", "desc": "Gus'ın masasında. Dibinde beyaz bir toz var.", "analysis": "Toz güçlü bir uyku ilacı."},
-    "gus_ifadesi": {"name": "Gus'ın ifadesi", "desc": "Gus: 'Kahveyi müdür getirdi. Salon ışıkları da sadece müdürün ofisinden açılıp kapanır.'", "sets_flag": "ofis_acik"},
-    "krem": {"name": "Lavanta saç kremi", "desc": "Müdürün rafında pahalı bir saç kremi şişesi. Lavanta kokuyor."},
-    "kol1": {"name": "Tek kol düğmesi", "desc": "Gümüş, üzerinde H.F.M. harfleri. Eşi kayıp."},
-    "anahtar": {"name": "Araba anahtarı", "desc": "Harold'ın masasında eski bir Mercedes anahtarı.", "sets_flag": "otopark_acik", "comment": "Hiç kimse araba anahtarını masada unutmaz. Ben hariç. Ve Harold."},
-    "sigorta": {"name": "Yırtık sigorta belgesi", "desc": "Çöpten çıkan parçalar birleşince: yakutun sigorta değeri iki hafta önce iki katına çıkarılmış."},
-    "plan": {"name": "Bina planı", "desc": "Sergi salonundaki vitrin tam bodrum deponun üstüne denk geliyor.", "sets_flag": "depo_acik", "comment": "Bodrum. Kötü fikirlerin her zaman gittiği yer."},
-    "bileklik": {"name": "Kopuk deri bileklik", "desc": "Yanında boş bir içki şişesi. Toby'nin bileği bu akşam çıplaktı."},
-    "oluk": {"name": "Metal oluk ve sandık", "desc": "Tavandan inen oluk, 'Vesper & Co.' yazılı kilitli bir sandığa iniyor. İçinden tıkırtı geliyor."},
-    "kol2": {"name": "İkinci kol düğmesi", "desc": "Sandığın dibinde, tozun altında. Gümüş, H.F.M. harfli."},
-    "afis": {"name": "Eski gösteri afişi", "desc": "'Oscar Penn'in Büyük Gösterisi'. Köşede Vesper & Co. logosu. Oscar bunu kimseye söylemiyor.", "comment": "...Bunu sonra düşüneceğim."},
-    "fatura": {"name": "Vesper & Co. faturası", "desc": "Torpidoda. 'Özel vitrin ve oluk sistemi', üç ay önce, Harold adına."},
-    "kartvizit": {"name": "Notlu kartvizit", "desc": "Bagajda. Arkasında el yazısı: 'Alıcı Cuma, şehir dışı. Nakit.'"}
+    "ruj": {
+      "name": "Ruj izli kadeh",
+      "desc": "Şampanya kadehinde koyu kırmızı ruj izi. Kadeh hâlâ soğuk.",
+      "comment": "Bu tonu yalnızca kendinden çok emin biri sürer.",
+      "analysis": "Ruj, Vivian Lark'ın kullandığı markayla aynı. Kadeh 21:35'ten sonra bırakılmış."
+    },
+    "misafir": {
+      "name": "Misafir listesi",
+      "desc": "Herkesin giriş ve çıkış saati yazıyor. Vivian Lark'ın çıkış saati boş."
+    },
+    "sakiz": {
+      "name": "Naneli sakız kağıdı",
+      "desc": "Yerde buruşuk bir sakız kağıdı. Toby'nin çiğnediği sakızla aynı marka.",
+      "comment": "Ya biri çok gergindi, ya da nefesi çok kötüydü."
+    },
+    "kilit": {
+      "name": "Sağlam vitrin kilidi",
+      "desc": "Cam çizik bile değil. Kilit zorlanmamış. Kimse vitrini açmamış."
+    },
+    "taban": {
+      "name": "Vitrindeki ince çizgi",
+      "desc": "Tabanı çevreleyen kıl inceliğinde bir çizgi. Bu bir sahte taban, klasik sahne numarası.",
+      "comment": "Bu numarayı ben 1997'de daha temiz yapıyordum."
+    },
+    "kupe": {
+      "name": "Zümrüt küpe",
+      "desc": "Vitrinin tam dibinde, yerde. Biri buraya eğilmiş."
+    },
+    "sac": {
+      "name": "Kır saç teli",
+      "desc": "Vitrinin kenarına takılmış kısa, kır bir saç. Harold da Gus da kır saçlı.",
+      "analysis": "Saçta lavanta kokulu, pahalı bir saç kremi kalıntısı var."
+    },
+    "kamera": {
+      "name": "Kamera kaydı",
+      "desc": "21:40'ta salon ışıkları tam 4 saniye sönüyor. Işık gelince yakut yok."
+    },
+    "kart": {
+      "name": "Kapı kartı kaydı",
+      "desc": "21:39: Harold Finch-Moore'un kartıyla müdür ofisine giriş."
+    },
+    "fincan": {
+      "name": "MÜDÜR yazılı fincan",
+      "desc": "Gus'ın masasında. Dibinde beyaz bir toz var.",
+      "analysis": "Toz güçlü bir uyku ilacı."
+    },
+    "gus_ifadesi": {
+      "name": "Gus'ın ifadesi",
+      "desc": "Gus: 'Kahveyi müdür getirdi. Salon ışıkları da sadece müdürün ofisinden açılıp kapanır.'",
+      "sets_flag": "ofis_acik"
+    },
+    "krem": {
+      "name": "Lavanta saç kremi",
+      "desc": "Müdürün rafında pahalı bir saç kremi şişesi. Lavanta kokuyor."
+    },
+    "kol1": {
+      "name": "Tek kol düğmesi",
+      "desc": "Gümüş, üzerinde H.F.M. harfleri. Eşi kayıp."
+    },
+    "anahtar": {
+      "name": "Araba anahtarı",
+      "desc": "Harold'ın masasında eski bir Mercedes anahtarı.",
+      "sets_flag": "otopark_acik",
+      "comment": "Hiç kimse araba anahtarını masada unutmaz. Ben hariç. Ve Harold."
+    },
+    "sigorta": {
+      "name": "Yırtık sigorta belgesi",
+      "desc": "Çöpten çıkan parçalar birleşince: yakutun sigorta değeri iki hafta önce iki katına çıkarılmış."
+    },
+    "plan": {
+      "name": "Bina planı",
+      "desc": "Sergi salonundaki vitrin tam bodrum deponun üstüne denk geliyor.",
+      "sets_flag": "depo_acik",
+      "comment": "Bodrum. Kötü fikirlerin her zaman gittiği yer."
+    },
+    "bileklik": {
+      "name": "Kopuk deri bileklik",
+      "desc": "Yanında boş bir içki şişesi. Toby'nin bileği bu akşam çıplaktı."
+    },
+    "oluk": {
+      "name": "Metal oluk ve sandık",
+      "desc": "Tavandan inen oluk, 'Vesper & Co.' yazılı kilitli bir sandığa iniyor. İçinden tıkırtı geliyor."
+    },
+    "kol2": {
+      "name": "İkinci kol düğmesi",
+      "desc": "Sandığın dibinde, tozun altında. Gümüş, H.F.M. harfli."
+    },
+    "afis": {
+      "name": "Eski gösteri afişi",
+      "desc": "'Oscar Penn'in Büyük Gösterisi'. Köşede Vesper & Co. logosu. Oscar bunu kimseye söylemiyor.",
+      "comment": "...Bunu sonra düşüneceğim."
+    },
+    "fatura": {
+      "name": "Vesper & Co. faturası",
+      "desc": "Torpidoda. 'Özel vitrin ve oluk sistemi', üç ay önce, Harold adına."
+    },
+    "kartvizit": {
+      "name": "Notlu kartvizit",
+      "desc": "Bagajda. Arkasında el yazısı: 'Alıcı Cuma, şehir dışı. Nakit.'"
+    }
   },
   "deductions": [
-    {"id": "d_bodrum", "pair": ["taban", "plan"], "text": "Yakut sahte tabandan bodruma düştü. (NASIL)"},
-    {"id": "d_uyutma", "pair": ["fincan", "gus_ifadesi"], "text": "Harold bekçiyi uyuttu ve ışıkları kendi ofisinden kapattı. (FIRSAT)"},
-    {"id": "d_cift", "pair": ["sigorta", "kartvizit"], "text": "Harold hem sigortayı hem karaborsayı planlıyordu. (MOTİF)"},
-    {"id": "d_kol", "pair": ["kol1", "kol2"], "text": "Harold oluk sistemini kendi elleriyle kurdu. (FİZİKSEL KANIT)"},
-    {"id": "d_harold_vitrin", "pair": ["sac", "krem"], "text": "Harold olaydan önce vitrinin dibindeydi."},
-    {"id": "d_vivian", "pair": ["kupe", "misafir"], "text": "Vivian gala bitti dediği saatte vitrinin dibindeydi."},
-    {"id": "d_hazirlik", "pair": ["fatura", "oluk"], "text": "Plan üç ay önce hazırlanmış."}
+    {
+      "id": "d_bodrum",
+      "pair": [
+        "taban",
+        "plan"
+      ],
+      "text": "Yakut sahte tabandan bodruma düştü. (NASIL)",
+      "where": "Vitrine Oscar'ın Gözü ile bak. Ofiste de binanın planını ara."
+    },
+    {
+      "id": "d_uyutma",
+      "pair": [
+        "fincan",
+        "gus_ifadesi"
+      ],
+      "text": "Harold bekçiyi uyuttu ve ışıkları kendi ofisinden kapattı. (FIRSAT)",
+      "where": "Güvenlik odasındaki fincanı bul ve Gus'a göster."
+    },
+    {
+      "id": "d_cift",
+      "pair": [
+        "sigorta",
+        "kartvizit"
+      ],
+      "text": "Harold hem sigortayı hem karaborsayı planlıyordu. (MOTİF)",
+      "where": "Ofisteki çöp kutusuna ve Harold'ın arabasına bak."
+    },
+    {
+      "id": "d_kol",
+      "pair": [
+        "kol1",
+        "kol2"
+      ],
+      "text": "Harold oluk sistemini kendi elleriyle kurdu. (FİZİKSEL KANIT)",
+      "where": "Harold'ın masasına ve bodrumdaki sandığın çevresine iyi bak."
+    },
+    {
+      "id": "d_harold_vitrin",
+      "pair": [
+        "sac",
+        "krem"
+      ],
+      "text": "Harold olaydan önce vitrinin dibindeydi."
+    },
+    {
+      "id": "d_vivian",
+      "pair": [
+        "kupe",
+        "misafir"
+      ],
+      "text": "Vivian gala bitti dediği saatte vitrinin dibindeydi."
+    },
+    {
+      "id": "d_hazirlik",
+      "pair": [
+        "fatura",
+        "oluk"
+      ],
+      "text": "Plan üç ay önce hazırlanmış."
+    }
   ],
   "dialogues": {
     "toby": {
       "name": "Toby",
       "intro": [
-        ["Toby", "FBI mısınız? Ben hiçbir şey yapmadım."],
-        ["Maya", "FCD. Ve henüz kimse bir şey demedi."],
-        ["Oscar", "Sakız çiğneme hızından anladığım kadarıyla, bir şey yapmışsın. Ama belki yakutu çalmak değil."]
+        [
+          "Toby",
+          "FBI mısınız? Ben hiçbir şey yapmadım."
+        ],
+        [
+          "Maya",
+          "FCD. Ve henüz kimse bir şey demedi."
+        ],
+        [
+          "Oscar",
+          "Sakız çiğneme hızından anladığım kadarıyla, bir şey yapmışsın. Ama belki yakutu çalmak değil."
+        ]
       ],
       "claim": "Galanın sonunu hatırlamıyorum, tamam mı?",
       "topics": [
-        {"q": "Gala sırasında neredeydin?", "lines": [["Toby", "Buralarda. Herkes gibi. Kalabalıktı."], ["Oscar", "'Buralarda'. Klasik yalancı adresi."]]},
-        {"q": "Amcan Harold nasıl biridir?", "lines": [["Toby", "Müzeyi benden çok seviyor. Son zamanlarda çok gergin ama. Hep telefonda."]]}
+        {
+          "q": "Gala sırasında neredeydin?",
+          "lines": [
+            [
+              "Toby",
+              "Buralarda. Herkes gibi. Kalabalıktı."
+            ],
+            [
+              "Oscar",
+              "'Buralarda'. Klasik yalancı adresi."
+            ]
+          ]
+        },
+        {
+          "q": "Amcan Harold nasıl biridir?",
+          "lines": [
+            [
+              "Toby",
+              "Müzeyi benden çok seviyor. Son zamanlarda çok gergin ama. Hep telefonda."
+            ]
+          ]
+        }
       ],
       "show": {
-        "sakiz": {"lines": [["Toby", "Herkes sakız çiğner!"], ["Oscar", "Ama herkes galanın ortasında hole kaçıp kağıdı yere atmaz."], ["Toby", "Ben... biraz hava almaya çıktım. O kadar."]]}
+        "sakiz": {
+          "lines": [
+            [
+              "Toby",
+              "Herkes sakız çiğner!"
+            ],
+            [
+              "Oscar",
+              "Ama herkes galanın ortasında hole kaçıp kağıdı yere atmaz."
+            ],
+            [
+              "Toby",
+              "Ben... biraz hava almaya çıktım. O kadar."
+            ]
+          ]
+        }
       }
     },
     "vivian": {
       "name": "Vivian Lark",
       "intro": [
-        ["Vivian", "Oscar Penn. Kartlarını kaybeden sihirbaz. Gazetede okumuştum."],
-        ["Oscar", "Kartlarımı değil, seyircimi kaybettim. Farklı şey."],
-        ["Vivian", "Ben mücevher eksperiyim. Yakutu galadan önce görmem gerekiyordu. Harold izin vermedi."]
+        [
+          "Vivian",
+          "Oscar Penn. Kartlarını kaybeden sihirbaz. Gazetede okumuştum."
+        ],
+        [
+          "Oscar",
+          "Kartlarımı değil, seyircimi kaybettim. Farklı şey."
+        ],
+        [
+          "Vivian",
+          "Ben mücevher eksperiyim. Yakutu galadan önce görmem gerekiyordu. Harold izin vermedi."
+        ]
       ],
       "claim": "21:30'da çıktım. Sıkıcı bir partiydi.",
       "topics": [
-        {"q": "Ellerine ve dizine bak (soğuk okuma)", "lines": [["Oscar", "Avucunuzda toz, dizinizde iz. Yere eğildiniz. Bu salonda yere eğilecek tek ilginç yer vitrinin dibi."], ["Vivian", "Etkileyici. Ama hiçbir şey kanıtlamaz."]]},
-        {"q": "Harold yakutu neden göstermedi?", "lines": [["Vivian", "Bana sorarsan bir şey saklıyordu. Ama bana kimse sormaz."]]}
+        {
+          "q": "Ellerine ve dizine bak (soğuk okuma)",
+          "lines": [
+            [
+              "Oscar",
+              "Avucunuzda toz, dizinizde iz. Yere eğildiniz. Bu salonda yere eğilecek tek ilginç yer vitrinin dibi."
+            ],
+            [
+              "Vivian",
+              "Etkileyici. Ama hiçbir şey kanıtlamaz."
+            ]
+          ]
+        },
+        {
+          "q": "Harold yakutu neden göstermedi?",
+          "lines": [
+            [
+              "Vivian",
+              "Bana sorarsan bir şey saklıyordu. Ama bana kimse sormaz."
+            ]
+          ]
+        }
       ],
       "show": {
-        "ruj": {"lines": [["Vivian", "Peki. Belki biraz daha kaldım. Şampanya bedavaydı."]]},
-        "misafir": {"lines": [["Vivian", "Listeyi tutan çocuk Toby'ydi. Yarısını boş bıraktı."], ["Oscar", "Ama sadece sizinkini boş bıraktı."]]},
-        "kupe": {"lines": [["Vivian", "Onu kaybettiğimi fark etmemiştim."], ["Oscar", "Vitrinin dibinde kaybetmişsiniz."], ["Vivian", "Daha fazla bir şey söylemem, Penn."]]}
+        "ruj": {
+          "lines": [
+            [
+              "Vivian",
+              "Peki. Belki biraz daha kaldım. Şampanya bedavaydı."
+            ]
+          ]
+        },
+        "misafir": {
+          "lines": [
+            [
+              "Vivian",
+              "Listeyi tutan çocuk Toby'ydi. Yarısını boş bıraktı."
+            ],
+            [
+              "Oscar",
+              "Ama sadece sizinkini boş bıraktı."
+            ]
+          ]
+        },
+        "kupe": {
+          "lines": [
+            [
+              "Vivian",
+              "Onu kaybettiğimi fark etmemiştim."
+            ],
+            [
+              "Oscar",
+              "Vitrinin dibinde kaybetmişsiniz."
+            ],
+            [
+              "Vivian",
+              "Daha fazla bir şey söylemem, Penn."
+            ]
+          ]
+        }
       }
     },
     "gus": {
       "name": "Gus",
       "intro": [
-        ["Gus", "Yankees 3, Red Sox 2... Ah! Merhaba. Gece bekçisi Gus."],
-        ["Maya", "Olay anında neredeydiniz?"],
-        ["Gus", "Burada. Monitörün başında. Gözümü bir an ayırmadım."]
+        [
+          "Gus",
+          "Yankees 3, Red Sox 2... Ah! Merhaba. Gece bekçisi Gus."
+        ],
+        [
+          "Maya",
+          "Olay anında neredeydiniz?"
+        ],
+        [
+          "Gus",
+          "Burada. Monitörün başında. Gözümü bir an ayırmadım."
+        ]
       ],
       "claim": "Ben uyumam! Gece boyu gözüm salondaydı.",
       "topics": [
-        {"q": "Işıklar neden söndü?", "lines": [["Gus", "Sigorta atmıştır. Bu bina 1890'dan kalma."], ["Oscar", "Sigorta 4 saniye sonra kendiliğinden düzelmez, Gus."]]}
+        {
+          "q": "Işıklar neden söndü?",
+          "lines": [
+            [
+              "Gus",
+              "Sigorta atmıştır. Bu bina 1890'dan kalma."
+            ],
+            [
+              "Oscar",
+              "Sigorta 4 saniye sonra kendiliğinden düzelmez, Gus."
+            ]
+          ]
+        }
       ],
       "show": {
-        "fincan": {"lines": [["Gus", "Bu benim fincanım değil. Müdür getirdi, 'uzun gece olacak' dedi."], ["Gus", "Sonra... tamam, tamam, biraz kestirmiş olabilirim."], ["Gus", "Işıklara gelince: salon ışıkları sadece müdürün ofisinden açılıp kapanır. Al, ofisin anahtarı."]], "gives_clue": "gus_ifadesi"},
-        "kamera": {"lines": [["Gus", "Dört saniye karanlık. Benim gördüğüm bu. Yani, görmüş olsaydım göreceğim bu."]]}
+        "fincan": {
+          "lines": [
+            [
+              "Gus",
+              "Bu benim fincanım değil. Müdür getirdi, 'uzun gece olacak' dedi."
+            ],
+            [
+              "Gus",
+              "Sonra... tamam, tamam, biraz kestirmiş olabilirim."
+            ],
+            [
+              "Gus",
+              "Işıklara gelince: salon ışıkları sadece müdürün ofisinden açılıp kapanır. Al, ofisin anahtarı."
+            ]
+          ],
+          "gives_clue": "gus_ifadesi"
+        },
+        "kamera": {
+          "lines": [
+            [
+              "Gus",
+              "Dört saniye karanlık. Benim gördüğüm bu. Yani, görmüş olsaydım göreceğim bu."
+            ]
+          ]
+        }
       }
     },
     "harold": {
       "name": "Harold Finch-Moore",
       "intro": [
-        ["Harold", "Ajanlar, hoş geldiniz. Korkunç bir gece. Kızıl Göz bu müzenin kalbiydi."],
-        ["Oscar", "Kravatınızı son bir dakikada dört kez düzelttiniz. Kalp ritminiz de korkunç görünüyor."],
-        ["Harold", "Ben... gerginim, o kadar."]
+        [
+          "Harold",
+          "Ajanlar, hoş geldiniz. Korkunç bir gece. Kızıl Göz bu müzenin kalbiydi."
+        ],
+        [
+          "Oscar",
+          "Kravatınızı son bir dakikada dört kez düzelttiniz. Kalp ritminiz de korkunç görünüyor."
+        ],
+        [
+          "Harold",
+          "Ben... gerginim, o kadar."
+        ]
       ],
       "claim": "Eminim yeğenim Toby'nin işidir. Çocuk hep para istiyor.",
       "topics": [
-        {"q": "21:39'da ofisinizde ne yapıyordunuz?", "requires_clue": "kart", "lines": [["Harold", "Gözlüğümü almaya geldim. Konuşma yapacaktım."], ["Oscar", "Gözlüğünüz şu an cebinizde. Konuşmanızı hiç yapmadınız."]]}
+        {
+          "q": "21:39'da ofisinizde ne yapıyordunuz?",
+          "requires_clue": "kart",
+          "lines": [
+            [
+              "Harold",
+              "Gözlüğümü almaya geldim. Konuşma yapacaktım."
+            ],
+            [
+              "Oscar",
+              "Gözlüğünüz şu an cebinizde. Konuşmanızı hiç yapmadınız."
+            ]
+          ]
+        }
       ],
       "show": {
-        "kart": {"lines": [["Harold", "Burası benim ofisim, ajan. İstediğim zaman girerim."]]},
-        "sigorta": {"lines": [["Harold", "Bu rutin bir güncelleme! Değerli taşların fiyatı artıyor."], ["Oscar", "İki haftada iki katına mı?"]]},
-        "kol1": {"lines": [["Harold", "Diğerini bir yerde kaybettim. Ne olmuş?"], ["Oscar", "Bir yerde. Bakalım nerede."]]},
-        "fincan": {"lines": [["Harold", "Gus'a kahve götürdüm, evet. İyi bir patronum."]]}
+        "kart": {
+          "lines": [
+            [
+              "Harold",
+              "Burası benim ofisim, ajan. İstediğim zaman girerim."
+            ]
+          ]
+        },
+        "sigorta": {
+          "lines": [
+            [
+              "Harold",
+              "Bu rutin bir güncelleme! Değerli taşların fiyatı artıyor."
+            ],
+            [
+              "Oscar",
+              "İki haftada iki katına mı?"
+            ]
+          ]
+        },
+        "kol1": {
+          "lines": [
+            [
+              "Harold",
+              "Diğerini bir yerde kaybettim. Ne olmuş?"
+            ],
+            [
+              "Oscar",
+              "Bir yerde. Bakalım nerede."
+            ]
+          ]
+        },
+        "fincan": {
+          "lines": [
+            [
+              "Harold",
+              "Gus'a kahve götürdüm, evet. İyi bir patronum."
+            ]
+          ]
+        }
       }
     },
     "toby2": {
       "name": "Toby",
       "claim": "Beni burada görmedin, tamam mı?",
       "intro": [
-        ["Toby", "Ne... beni nasıl buldunuz?"],
-        ["Oscar", "Bodrum. Kötü fikirlerin gittiği yer, demiştim."]
+        [
+          "Toby",
+          "Ne... beni nasıl buldunuz?"
+        ],
+        [
+          "Oscar",
+          "Bodrum. Kötü fikirlerin gittiği yer, demiştim."
+        ]
       ],
       "show": {
-        "bileklik": {"lines": [["Toby", "Tamam! Galada buraya inip içtim. Amcam öğrenirse beni kovar."], ["Toby", "Ama yakutla bir ilgim yok. Yemin ederim. Burada sadece o garip sandığı gördüm. Amcam ona kimsenin dokunmasını istemiyor."]], "set_flag": "toby_temiz"},
-        "oluk": {"lines": [["Toby", "O sandık üç ay önce geldi. Amcam kendisi kurdu, kimseye yardım ettirmedi."]]}
+        "bileklik": {
+          "lines": [
+            [
+              "Toby",
+              "Tamam! Galada buraya inip içtim. Amcam öğrenirse beni kovar."
+            ],
+            [
+              "Toby",
+              "Ama yakutla bir ilgim yok. Yemin ederim. Burada sadece o garip sandığı gördüm. Amcam ona kimsenin dokunmasını istemiyor."
+            ]
+          ],
+          "set_flag": "toby_temiz"
+        },
+        "oluk": {
+          "lines": [
+            [
+              "Toby",
+              "O sandık üç ay önce geldi. Amcam kendisi kurdu, kimseye yardım ettirmedi."
+            ]
+          ]
+        }
       }
     },
     "vivian2": {
       "name": "Vivian Lark",
       "claim": "Beni takip mi ediyorsun, Penn?",
       "intro": [
-        ["Vivian", "Yağmurda Harold'ın arabasının yanında ne işin var, sihirbaz?"],
-        ["Oscar", "Aynı soruyu ben de soracaktım."]
+        [
+          "Vivian",
+          "Yağmurda Harold'ın arabasının yanında ne işin var, sihirbaz?"
+        ],
+        [
+          "Oscar",
+          "Aynı soruyu ben de soracaktım."
+        ]
       ],
       "show": {
-        "kupe": {"lines": [["Vivian", "Peki. Vitrinin altına baktım. Bir etiket vardı: Vesper & Co. Sahne ekipmanı firması."], ["Vivian", "Harold'ın yaptığını anladım. Ondan biraz pay isteyecektim. Bu suç mu?"], ["Maya", "Evet. Adı şantaj."]], "set_flag": "vivian_temiz"},
-        "ruj": {"lines": [["Vivian", "Yine mi o kadeh? Yaratıcı ol biraz."]]}
+        "kupe": {
+          "lines": [
+            [
+              "Vivian",
+              "Peki. Vitrinin altına baktım. Bir etiket vardı: Vesper & Co. Sahne ekipmanı firması."
+            ],
+            [
+              "Vivian",
+              "Harold'ın yaptığını anladım. Ondan biraz pay isteyecektim. Bu suç mu?"
+            ],
+            [
+              "Maya",
+              "Evet. Adı şantaj."
+            ]
+          ],
+          "set_flag": "vivian_temiz"
+        },
+        "ruj": {
+          "lines": [
+            [
+              "Vivian",
+              "Yine mi o kadeh? Yaratıcı ol biraz."
+            ]
+          ]
+        }
       }
     }
   },
   "final": {
-    "required": ["d_bodrum", "d_uyutma", "d_cift", "d_kol"],
+    "required": [
+      "d_bodrum",
+      "d_uyutma",
+      "d_cift",
+      "d_kol"
+    ],
     "culprit": "harold",
     "reward": 500,
-    "suspects": [["harold", "Harold Finch-Moore"], ["toby", "Toby Finch-Moore"], ["vivian", "Vivian Lark"], ["gus", "Gus Bailey"]],
+    "suspects": [
+      [
+        "harold",
+        "Harold Finch-Moore"
+      ],
+      [
+        "toby",
+        "Toby Finch-Moore"
+      ],
+      [
+        "vivian",
+        "Vivian Lark"
+      ],
+      [
+        "gus",
+        "Gus Bailey"
+      ]
+    ],
     "lines": [
-      ["", "FCD sorgu odası. Tek ampul, metal masa."],
-      ["Harold", "Bu bir hakaret. Avukatımı istiyorum."],
-      ["Oscar", "Vitriniz bir sahne illüzyonu. Sahte taban, Vesper & Co. yapımı. Faturası arabanızda."],
-      ["Oscar", "Gus'a ilaçlı kahve verdiniz. 21:39'da ofisinize girdiniz, 21:40'ta ışıkları kapattınız."],
-      ["Oscar", "Yakutun sigortasını iki katına çıkardınız ve Cuma günü bir alıcınız var."],
-      ["Oscar", "Ve oluğu kurarken kol düğmenizi sandığın dibine düşürdünüz."],
-      ["Harold", "Sandığı açamazsınız. Anahtarı kimseye vermem."],
-      ["Oscar", "Bu anahtarı mı?"],
-      ["", "Oscar avucunu açar. Harold'ın anahtarı orada."],
-      ["Harold", "Ne zaman... nasıl..."],
-      ["Oscar", "El çabukluğu, Harold. Eski meslek."],
-      ["", "Bodrumda sandık açılır. Kızıl Göz içindedir."],
-      ["Maya", "Fena değildin, Penn."],
-      ["Oscar", "Bu bir iltifat mıydı?"],
-      ["Maya", "Hayır."],
-      ["", "Oscar cebindeki Vesper & Co. etiketine bakar. Kimseye bir şey söylemez."]
+      [
+        "",
+        "FCD sorgu odası. Tek ampul, metal masa."
+      ],
+      [
+        "Harold",
+        "Bu bir hakaret. Avukatımı istiyorum."
+      ],
+      [
+        "Oscar",
+        "Vitriniz bir sahne illüzyonu. Sahte taban, Vesper & Co. yapımı. Faturası arabanızda."
+      ],
+      [
+        "Oscar",
+        "Gus'a ilaçlı kahve verdiniz. 21:39'da ofisinize girdiniz, 21:40'ta ışıkları kapattınız."
+      ],
+      [
+        "Oscar",
+        "Yakutun sigortasını iki katına çıkardınız ve Cuma günü bir alıcınız var."
+      ],
+      [
+        "Oscar",
+        "Ve oluğu kurarken kol düğmenizi sandığın dibine düşürdünüz."
+      ],
+      [
+        "Harold",
+        "Sandığı açamazsınız. Anahtarı kimseye vermem."
+      ],
+      [
+        "Oscar",
+        "Bu anahtarı mı?"
+      ],
+      [
+        "",
+        "Oscar avucunu açar. Harold'ın anahtarı orada."
+      ],
+      [
+        "Harold",
+        "Ne zaman... nasıl..."
+      ],
+      [
+        "Oscar",
+        "El çabukluğu, Harold. Eski meslek."
+      ],
+      [
+        "",
+        "Bodrumda sandık açılır. Kızıl Göz içindedir."
+      ],
+      [
+        "Maya",
+        "Fena değildin, Penn."
+      ],
+      [
+        "Oscar",
+        "Bu bir iltifat mıydı?"
+      ],
+      [
+        "Maya",
+        "Hayır."
+      ],
+      [
+        "",
+        "Oscar cebindeki Vesper & Co. etiketine bakar. Kimseye bir şey söylemez."
+      ]
     ],
     "wrong": {
-      "toby": [["Toby", "Ben sadece içtim! Bodrumda! Hepsi bu!"], ["Maya", "Penn, çocuk sarhoş, hırsız değil. Tekrar düşün."]],
-      "vivian": [["Vivian", "Şantajcıyım belki. Hırsız değilim."], ["Maya", "Yanlış kadın, Penn."]],
-      "gus": [["Gus", "Ben uyuyordum! Uyuyan adam nasıl çalar?"], ["Maya", "Adam uyutulmuştu, Penn. Kim uyuttu?"]]
+      "toby": [
+        [
+          "Toby",
+          "Ben sadece içtim! Bodrumda! Hepsi bu!"
+        ],
+        [
+          "Maya",
+          "Penn, çocuk sarhoş, hırsız değil. Tekrar düşün."
+        ]
+      ],
+      "vivian": [
+        [
+          "Vivian",
+          "Şantajcıyım belki. Hırsız değilim."
+        ],
+        [
+          "Maya",
+          "Yanlış kadın, Penn."
+        ]
+      ],
+      "gus": [
+        [
+          "Gus",
+          "Ben uyuyordum! Uyuyan adam nasıl çalar?"
+        ],
+        [
+          "Maya",
+          "Adam uyutulmuştu, Penn. Kim uyuttu?"
+        ]
+      ]
     }
   }
 }

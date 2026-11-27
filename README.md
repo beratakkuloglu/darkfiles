@@ -34,3 +34,19 @@ Renkler: sarı kutular ipucu, açık kahve kutular kişi, koyu kahve kutular kap
 - Sihir numaralarının mini oyunları (soğuk okuma şimdilik diyalog seçeneği, cep aşırma finalde ara sahne).
 - Yırtık belge birleştirme yapbozu.
 - Kayıt sistemi, ana menü, Vaka 2+.
+
+## Çizimleri oyuna takmak
+
+`art/` klasörüne doğru isimle bir PNG koyduğunda oyun o nesne için kutu yerine çizimi kullanır. Kod değişikliği gerekmez.
+
+| Ne | Dosya adı | Önerilen boyut |
+| --- | --- | --- |
+| Oscar | `art/oscar.png` | 20x48 |
+| Şüpheliler | `art/toby.png`, `art/vivian.png`, `art/gus.png`, `art/harold.png` | 20x48 |
+| İpucu | `art/<ipucu id>.png` (ör. `art/kupe.png`, `art/fincan.png`) | 4-30 px |
+| Kapı | `art/door.png` | 34x64 |
+| Mekan arka planı | `art/rooms/<mekan id>.png` (ör. `art/rooms/hol.png`) | mekan genişliği x 360 (hol: 900x360) |
+
+İpucu ve mekan id'leri `data/case1.json` içinde. Zemin çizgisi y=290'da. Palet: `#0f0b08`, `#2b1d14`, `#5a3d2b`, `#8a6a4f`, `#e8c547`, `#f2e3b3`.
+
+Şu anki karakter sprite'ları `tools/make_sprites.py` ile üretilmiş geçici çizimler. Pixelorama'da açıp üzerine çizebilirsin.

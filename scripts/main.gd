@@ -28,6 +28,7 @@ var eye_uses: int = 3
 var debt: int = 12480
 var wrong_shows: int = 0
 var final_hint_shown: bool = false
+var hinted: Dictionary = {}
 
 var room_layer: Node2D
 var player: Node2D
@@ -52,6 +53,8 @@ var link_button: Button
 var accuse_button: Button
 var accuse_panel: PanelContainer
 var accuse_list: VBoxContainer
+var accuse_hud: Button
+var progress_label: Label
 
 var line_queue: Array = []
 var after_lines: Callable = Callable()
@@ -78,8 +81,12 @@ func _ready() -> void:
 func _build_player() -> void:
 	player = Node2D.new()
 	add_child(player)
-	_child_rect(player, Vector2(-8, -40), Vector2(16, 40), C_PALE)
-	_child_rect(player, Vector2(-11, -45), Vector2(22, 6), C_BROWN) # şapka
+	var tex := _art("oscar")
+	if tex:
+		_child_tex(player, Vector2(-tex.get_width() / 2.0, -tex.get_height()), tex)
+	else:
+		_child_rect(player, Vector2(-8, -40), Vector2(16, 40), C_PALE)
+		_child_rect(player, Vector2(-11, -45), Vector2(22, 6), C_BROWN) # şapka
 	camera = Camera2D.new()
 	camera.position = Vector2(0, VIEW_H / 2.0 - FLOOR_Y)
 	camera.limit_left = 0
@@ -98,6 +105,24 @@ func _child_rect(parent: Node, pos: Vector2, sz: Vector2, col: Color) -> ColorRe
 	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	parent.add_child(r)
 	return r
+
+
+## art/<anahtar>.png varsa kutu yerine o çizim kullanılır.
+func _art(key: String) -> Texture2D:
+	var p := "res://art/" + key + ".png"
+	if ResourceLoader.exists(p):
+		return load(p)
+	return null
+
+
+func _child_tex(parent: Node, pos: Vector2, tex: Texture2D) -> TextureRect:
+	var t := TextureRect.new()
+	t.texture = tex
+	t.position = pos
+	t.size = tex.get_size()
+	t.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(t)
+	return t
 
 
 func _build_ui() -> void:
@@ -137,6 +162,18 @@ func _build_ui() -> void:
 	ui_root.add_child(eye_button)
 	_update_eye_button()
 
+	accuse_hud = Button.new()
+	accuse_hud.text = "SUÇLA"
+	accuse_hud.position = Vector2(200, 8)
+	accuse_hud.add_theme_color_override("font_color", C_YELLOW)
+	accuse_hud.visible = false
+	accuse_hud.pressed.connect(func():
+		if busy:
+			return
+		busy = true
+		_open_accuse())
+	ui_root.add_child(accuse_hud)
+
 	# Diyalog kutusu
 	dialog_panel = PanelContainer.new()
 	dialog_panel.position = Vector2(20, 240)
@@ -174,10 +211,19 @@ func _build_ui() -> void:
 	var right := VBoxContainer.new()
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	hb.add_child(right)
+	progress_label = Label.new()
+	progress_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	progress_label.custom_minimum_size = Vector2(270, 0)
+	progress_label.add_theme_color_override("font_color", C_YELLOW)
+	right.add_child(progress_label)
 	notebook_info = Label.new()
 	notebook_info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	notebook_info.custom_minimum_size = Vector2(270, 200)
+	notebook_info.custom_minimum_size = Vector2(270, 160)
 	right.add_child(notebook_info)
+	var hint_btn := Button.new()
+	hint_btn.text = "Maya'ya sor (ipucu)"
+	hint_btn.pressed.connect(func(): notebook_info.text = _hint_text())
+	right.add_child(hint_btn)
 	link_button = Button.new()
 	link_button.text = "Dedüksiyon tahtası: iki ipucunu bağla"
 	link_button.pressed.connect(_start_link)
@@ -212,10 +258,15 @@ func load_room(id: String, spawn_x: float) -> void:
 	bg_nodes.clear()
 	var r: Dictionary = data["rooms"][id]
 	room_w = float(r["width"])
-	bg_nodes.append(_child_rect(room_layer, Vector2.ZERO, Vector2(room_w, VIEW_H), Color.html(str(r["bg"]))))
-	bg_nodes.append(_child_rect(room_layer, Vector2(0, FLOOR_Y - 8), Vector2(room_w, 8), C_BROWN))
-	bg_nodes.append(_child_rect(room_layer, Vector2(0, FLOOR_Y), Vector2(room_w, VIEW_H - FLOOR_Y), C_BLACK))
-	for d in r.get("decor", []):
+	var bg_tex := _art("rooms/" + id)
+	if bg_tex:
+		bg_nodes.append(_child_tex(room_layer, Vector2.ZERO, bg_tex))
+	else:
+		bg_nodes.append(_child_rect(room_layer, Vector2.ZERO, Vector2(room_w, VIEW_H), Color.html(str(r["bg"]))))
+		bg_nodes.append(_child_rect(room_layer, Vector2(0, FLOOR_Y - 8), Vector2(room_w, 8), C_BROWN))
+		bg_nodes.append(_child_rect(room_layer, Vector2(0, FLOOR_Y), Vector2(room_w, VIEW_H - FLOOR_Y), C_BLACK))
+	var decor: Array = [] if bg_tex else r.get("decor", [])
+	for d in decor:
 		var w: float = float(d["w"])
 		var h: float = float(d["h"])
 		var pos := Vector2(float(d["x"]) - w / 2.0, FLOOR_Y - float(d.get("y", 0)) - h)
@@ -251,8 +302,24 @@ func _spawn_object(o: Dictionary) -> void:
 		h = 64.0
 		col = C_BROWN
 		label_text = "> " + str(data["rooms"][o["to"]]["name"])
+	var art_key := ""
+	match t:
+		"clue":
+			art_key = str(o["id"])
+		"npc":
+			art_key = str(o.get("art", o["dialogue"]))
+		"door":
+			art_key = "door"
+	var tex := _art(art_key)
+	if tex:
+		w = tex.get_width()
+		h = tex.get_height()
 	var pos := Vector2(float(o["x"]) - w / 2.0, FLOOR_Y - float(o.get("y", 0)) - h)
-	var n := _child_rect(room_layer, pos, Vector2(w, h), col)
+	var n: Control
+	if tex:
+		n = _child_tex(room_layer, pos, tex)
+	else:
+		n = _child_rect(room_layer, pos, Vector2(w, h), col)
 	if label_text != "":
 		var lb := Label.new()
 		lb.text = label_text
@@ -280,7 +347,7 @@ func _obj_visible(o: Dictionary) -> bool:
 func _refresh_visibility() -> void:
 	for e in room_objects:
 		var o: Dictionary = e["data"]
-		var n: ColorRect = e["node"]
+		var n: Control = e["node"]
 		n.visible = _obj_visible(o)
 		if eye_on and str(o["type"]) != "clue":
 			n.modulate = Color(0.35, 0.35, 0.35)
@@ -342,7 +409,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		var pos := get_global_mouse_position()
 		for i in range(room_objects.size() - 1, -1, -1):
 			var e: Dictionary = room_objects[i]
-			var n: ColorRect = e["node"]
+			var n: Control = e["node"]
 			if not n.visible:
 				continue
 			if Rect2(n.position, n.size).grow(6).has_point(pos):
@@ -361,7 +428,7 @@ func _interact_nearest() -> void:
 	var best: Dictionary = {}
 	var best_d := INTERACT_RANGE
 	for e in room_objects:
-		var n: ColorRect = e["node"]
+		var n: Control = e["node"]
 		if not n.visible:
 			continue
 		var o: Dictionary = e["data"]
@@ -403,6 +470,7 @@ func give_clue(id: String, done: Callable) -> void:
 	if c.has("analysis"):
 		pending_lab.append(id)
 		lines.append(["Maya", "Bunu laboratuvara yolluyorum. Sonuç bir sonraki mekanda gelir."])
+	_add_link_hint(lines)
 	_refresh_visibility()
 	play_lines(lines, done)
 
@@ -416,7 +484,55 @@ func _complete_lab() -> void:
 		var c: Dictionary = data["clues"][id]
 		lines.append(["Maya", "Lab sonucu, " + str(c["name"]) + ": " + str(c["analysis"])])
 	pending_lab.clear()
+	_add_link_hint(lines)
 	play_lines(lines, Callable())
+
+
+## Bağlanmaya hazır (iki ipucu da elde, lab bitmiş, henüz bağlanmamış) dedüksiyonlar.
+func _ready_pairs() -> Array:
+	var out: Array = []
+	for d in data["deductions"]:
+		if deductions.has(d["id"]):
+			continue
+		var p: Array = d["pair"]
+		if clues.has(p[0]) and clues.has(p[1]) and not pending_lab.has(p[0]) and not pending_lab.has(p[1]):
+			out.append(d)
+	return out
+
+
+func _add_link_hint(lines: Array) -> void:
+	for d in _ready_pairs():
+		if not hinted.has(d["id"]):
+			hinted[d["id"]] = true
+			lines.append(["Oscar", "Dur bir dakika... Defterimdeki iki ipucu birbirine bağlanıyor. Dedüksiyon tahtasına bakmalıyım."])
+			return
+
+
+func _hint_text() -> String:
+	var req: Array = data["final"]["required"]
+	var ready_list := _ready_pairs()
+	var pick: Dictionary = {}
+	for d in ready_list:
+		if req.has(d["id"]):
+			pick = d
+			break
+	if pick.is_empty() and not ready_list.is_empty():
+		pick = ready_list[0]
+	if not pick.is_empty():
+		var p: Array = pick["pair"]
+		return "Maya: '" + str(data["clues"][p[0]]["name"]) + "' ve '" + str(data["clues"][p[1]]["name"]) + "'. Bu ikisini dedüksiyon tahtasında bağla."
+	if _final_ready():
+		return "Maya: Yeterince kanıtın var. Üstteki SUÇLA butonuna bas."
+	if not pending_lab.is_empty():
+		return "Maya: Laboratuvar sonucu bekleniyor. Başka bir mekana geç, sonuç gelir."
+	for d in data["deductions"]:
+		if req.has(d["id"]) and not deductions.has(d["id"]):
+			return "Maya: " + str(d.get("where", "Bir şey eksik. Mekanları tekrar ara."))
+	return "Maya: Bilmiyorum, Penn. Sen danışmansın."
+
+
+func _update_hud() -> void:
+	accuse_hud.visible = _final_ready()
 
 
 func _clue_text(id: String) -> String:
@@ -586,6 +702,13 @@ func _fill_notebook(info: String) -> void:
 				lb.custom_minimum_size = Vector2(240, 0)
 				notebook_list.add_child(lb)
 	notebook_info.text = info
+	var req: Array = data["final"]["required"]
+	var done := 0
+	for rid in req:
+		if deductions.has(rid):
+			done += 1
+	progress_label.text = "Gerekli sonuçlar: " + str(done) + "/" + str(req.size()) + "  (NASIL, FIRSAT, MOTİF, FİZİKSEL KANIT)"
+	_update_hud()
 	link_button.visible = select_mode == ""
 	accuse_button.visible = select_mode == "" and _final_ready()
 
