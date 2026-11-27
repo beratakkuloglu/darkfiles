@@ -7,6 +7,8 @@ const VIEW_H := 360.0
 const FLOOR_Y := 290.0
 const SPEED := 140.0
 const INTERACT_RANGE := 40.0
+## art/oscar.png sağa bakıyorsa true, sola bakıyorsa false yap.
+const PLAYER_ART_FACES_RIGHT := false
 
 # Palet: siyah, kahverengi, sarı
 const C_BLACK := Color("#0f0b08")
@@ -32,6 +34,7 @@ var hinted: Dictionary = {}
 
 var room_layer: Node2D
 var player: Node2D
+var player_sprite: TextureRect
 var camera: Camera2D
 var target_x: float = -1.0
 var pending_action: Callable = Callable()
@@ -83,7 +86,7 @@ func _build_player() -> void:
 	add_child(player)
 	var tex := _art("oscar")
 	if tex:
-		_child_tex(player, Vector2(-tex.get_width() / 2.0, -tex.get_height()), tex)
+		player_sprite = _child_tex(player, Vector2(-tex.get_width() / 2.0, -tex.get_height()), tex)
 	else:
 		_child_rect(player, Vector2(-8, -40), Vector2(16, 40), C_PALE)
 		_child_rect(player, Vector2(-11, -45), Vector2(22, 6), C_BROWN) # şapka
@@ -371,6 +374,7 @@ func _process(delta: float) -> void:
 		target_x = -1.0
 		pending_action = Callable()
 		player.position.x = clampf(player.position.x + dir * SPEED * delta, 8.0, room_w - 8.0)
+		_face(dir)
 		return
 	if target_x >= 0.0:
 		var dx: float = target_x - player.position.x
@@ -384,6 +388,7 @@ func _process(delta: float) -> void:
 				cb.call()
 		else:
 			player.position.x += signf(dx) * step
+			_face(dx)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -417,6 +422,11 @@ func _unhandled_input(event: InputEvent) -> void:
 				walk_to(float(o["x"]), _interact.bind(o))
 				return
 		walk_to(pos.x, Callable())
+
+
+func _face(dir: float) -> void:
+	if player_sprite and dir != 0.0:
+		player_sprite.flip_h = (dir > 0.0) != PLAYER_ART_FACES_RIGHT
 
 
 func walk_to(x: float, cb: Callable) -> void:
