@@ -102,6 +102,15 @@ var type_acc: float = 0.0
 var blip_count: int = 0
 var msg_tween: Tween
 
+# Ayarlar ve duraklatma
+const SETTINGS_PATH := "user://settings.cfg"
+var settings := {"music": 0.7, "sfx": 0.8, "fullscreen": false}
+var pause_panel: Control
+var settings_panel: Control
+var menu_button: Button
+var paused: bool = false
+var busy_before_pause: bool = false
+
 
 func _ready() -> void:
 	var f := FileAccess.open("res://data/case1.json", FileAccess.READ)
@@ -439,6 +448,12 @@ func _build_ui() -> void:
 	accuse_list = VBoxContainer.new()
 	accuse_panel.add_child(accuse_list)
 
+	menu_button = Button.new()
+	menu_button.text = "Menü [Esc]"
+	menu_button.position = Vector2(VIEW_W - 92, 32)
+	menu_button.pressed.connect(open_pause)
+	ui_root.add_child(menu_button)
+
 	# Sahne geçişi için kararma (her şeyin üstünde)
 	var fade_layer := CanvasLayer.new()
 	fade_layer.layer = 10
@@ -492,9 +507,16 @@ func _build_menu() -> void:
 	help.add_theme_font_size_override("font_size", 10)
 	help.add_theme_color_override("font_color", C_LIGHT)
 	menu_panel.add_child(help)
+	var settings_btn := Button.new()
+	settings_btn.text = "Ayarlar"
+	settings_btn.pressed.connect(open_settings)
+	box.add_child(settings_btn)
+	box.move_child(settings_btn, 1)
 	_set_hud_visible(false)
 	busy = true
 	in_menu = true
+	_build_pause()
+	_build_settings()
 
 
 func _start_game() -> void:
@@ -512,6 +534,7 @@ func _start_game() -> void:
 
 func _set_hud_visible(v: bool) -> void:
 	notebook_button.visible = v
+	menu_button.visible = v
 	eye_button.visible = v
 	debt_label.visible = v
 	if not v:
@@ -520,12 +543,18 @@ func _set_hud_visible(v: bool) -> void:
 
 ## sfx/<ad>.wav dosyaları varsa çalınır; yoksa sessiz geçer.
 func _build_sfx() -> void:
+	for bus_name in ["Music", "SFX"]:
+		if AudioServer.get_bus_index(bus_name) == -1:
+			AudioServer.add_bus()
+			AudioServer.set_bus_name(AudioServer.bus_count - 1, bus_name)
+	_load_settings()
 	for n in ["blip", "pickup", "door", "click", "deduce", "wrong", "solve", "eye"]:
 		var p: String = "res://sfx/" + n + ".wav"
 		if ResourceLoader.exists(p):
 			var a := AudioStreamPlayer.new()
 			a.stream = load(p)
 			a.volume_db = -8.0 if n == "blip" else -4.0
+			a.bus = "SFX"
 			add_child(a)
 			sfx[n] = a
 	# Arka plan müziği: sfx/music.wav varsa döngüde çalar.
@@ -533,6 +562,7 @@ func _build_sfx() -> void:
 		var m := AudioStreamPlayer.new()
 		m.stream = load("res://sfx/music.wav")
 		m.volume_db = -6.0
+		m.bus = "Music"
 		add_child(m)
 		m.finished.connect(m.play)
 		m.play()
@@ -557,7 +587,10 @@ func go_room(id: String, spawn_x: float) -> void:
 	tw.tween_property(fade_rect, "color:a", 0.0, 0.3)
 	tw.tween_callback(func():
 		if not dialog_panel.visible and not notebook_panel.visible:
-			busy = false)
+			if paused:
+				busy_before_pause = false
+			else:
+				busy = false)
 
 
 func load_room(id: String, spawn_x: float) -> void:
@@ -773,7 +806,7 @@ func _process(delta: float) -> void:
 	_animate(delta)
 	_type_step(delta)
 	_update_hover()
-	if busy:
+	if busy or paused:
 		return
 	var dir := 0.0
 	if Input.is_action_pressed("ui_left") or Input.is_key_pressed(KEY_A):
@@ -818,6 +851,16 @@ func _unhandled_input(event: InputEvent) -> void:
 	var key := event as InputEventKey
 	if key != null:
 		if not key.pressed or key.echo:
+			return
+		if key.keycode == KEY_ESCAPE:
+			if settings_panel.visible:
+				_close_settings()
+			elif paused:
+				close_pause()
+			elif not in_menu:
+				open_pause()
+			return
+		if paused or settings_panel.visible:
 			return
 		if in_menu:
 			if key.keycode == KEY_ENTER or key.keycode == KEY_SPACE:
@@ -1400,3 +1443,140 @@ func show_msg(t: String) -> void:
 	msg_tween = create_tween()
 	msg_tween.tween_interval(2.0)
 	msg_tween.tween_property(msg_label, "modulate:a", 0.0, 0.8)
+
+
+# ================================================================ ayarlar ve duraklatma
+
+func _overlay(title_text: String) -> Array:
+	var bg := ColorRect.new()
+	bg.color = Color(0.02, 0.015, 0.01, 0.78)
+	bg.size = Vector2(VIEW_W, VIEW_H)
+	bg.visible = false
+	ui_root.add_child(bg)
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(240, 0)
+	panel.position = Vector2(VIEW_W / 2.0 - 120, 80)
+	bg.add_child(panel)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 8)
+	panel.add_child(box)
+	var t := Label.new()
+	t.text = title_text
+	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	t.add_theme_color_override("font_color", C_YELLOW)
+	t.add_theme_font_size_override("font_size", 18)
+	box.add_child(t)
+	return [bg, box]
+
+
+func _menu_btn(box: Control, text: String, cb: Callable) -> void:
+	var b := Button.new()
+	b.text = text
+	b.pressed.connect(func():
+		_sfx("click")
+		cb.call())
+	box.add_child(b)
+
+
+func _build_pause() -> void:
+	var o := _overlay("DURAKLATILDI")
+	pause_panel = o[0]
+	var box: VBoxContainer = o[1]
+	_menu_btn(box, "Devam et", close_pause)
+	_menu_btn(box, "Ayarlar", open_settings)
+	_menu_btn(box, "Ana menüye dön", func(): get_tree().reload_current_scene())
+	_menu_btn(box, "Oyundan çık", func(): get_tree().quit())
+
+
+func _build_settings() -> void:
+	var o := _overlay("AYARLAR")
+	settings_panel = o[0]
+	var box: VBoxContainer = o[1]
+	_add_slider(box, "Müzik", "music")
+	_add_slider(box, "Efekt sesleri", "sfx")
+	var fs := CheckButton.new()
+	fs.text = "Tam ekran"
+	fs.button_pressed = bool(settings["fullscreen"])
+	fs.add_theme_color_override("font_color", C_PALE)
+	fs.toggled.connect(func(on: bool):
+		settings["fullscreen"] = on
+		_apply_settings()
+		_save_settings())
+	box.add_child(fs)
+	_menu_btn(box, "Geri [Esc]", _close_settings)
+
+
+func _add_slider(box: Control, label_text: String, key: String) -> void:
+	var lb := Label.new()
+	box.add_child(lb)
+	var sl := HSlider.new()
+	sl.min_value = 0.0
+	sl.max_value = 1.0
+	sl.step = 0.05
+	sl.value = float(settings[key])
+	sl.custom_minimum_size = Vector2(200, 16)
+	box.add_child(sl)
+	lb.text = label_text + ": %d%%" % int(round(sl.value * 100))
+	sl.value_changed.connect(func(v: float):
+		settings[key] = v
+		lb.text = label_text + ": %d%%" % int(round(v * 100))
+		_apply_settings()
+		if key == "sfx":
+			_sfx("blip"))
+	sl.drag_ended.connect(func(_changed: bool): _save_settings())
+
+
+func open_pause() -> void:
+	if in_menu or paused:
+		return
+	paused = true
+	busy_before_pause = busy
+	busy = true
+	target_x = -1.0
+	pending_action = Callable()
+	pause_panel.visible = true
+
+
+func close_pause() -> void:
+	paused = false
+	pause_panel.visible = false
+	busy = busy_before_pause
+
+
+func open_settings() -> void:
+	_sfx("click")
+	settings_panel.visible = true
+	ui_root.move_child(settings_panel, ui_root.get_child_count() - 1)
+
+
+func _close_settings() -> void:
+	settings_panel.visible = false
+	_save_settings()
+
+
+func _load_settings() -> void:
+	var cf := ConfigFile.new()
+	if cf.load(SETTINGS_PATH) == OK:
+		for k in settings.keys():
+			settings[k] = cf.get_value("settings", k, settings[k])
+	_apply_settings()
+
+
+func _save_settings() -> void:
+	var cf := ConfigFile.new()
+	for k in settings.keys():
+		cf.set_value("settings", k, settings[k])
+	cf.save(SETTINGS_PATH)
+
+
+func _apply_settings() -> void:
+	for pair in [["Music", "music"], ["SFX", "sfx"]]:
+		var idx := AudioServer.get_bus_index(pair[0])
+		if idx == -1:
+			continue
+		var v: float = float(settings[pair[1]])
+		AudioServer.set_bus_mute(idx, v <= 0.001)
+		AudioServer.set_bus_volume_db(idx, linear_to_db(maxf(v, 0.001)))
+	var want: DisplayServer.WindowMode = DisplayServer.WINDOW_MODE_FULLSCREEN if bool(settings["fullscreen"]) else DisplayServer.WINDOW_MODE_WINDOWED
+	if DisplayServer.window_get_mode() != want:
+		DisplayServer.window_set_mode(want)
