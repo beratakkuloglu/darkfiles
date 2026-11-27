@@ -82,4 +82,4 @@ Palet: `#0f0b08`, `#2b1d14`, `#5a3d2b`, `#8a6a4f`, `#e8c547`, `#f2e3b3`.
 
 ## Yazı tipi
 
-`fonts/PixelifySans-Medium.ttf` (Pixelify Sans, SIL Open Font License, ticari kullanım serbest). Tüm arayüz bu yazı tipini kullanır.
+`fonts/Rubik-Medium.ttf` (Rubik, SIL Open Font License): diyalog ve arayüz, okunaklı olsun diye. `fonts/PixelifySans-Medium.ttf` (Pixelify Sans, OFL): sadece büyük başlık. İkisi de ticari kullanımda serbest.

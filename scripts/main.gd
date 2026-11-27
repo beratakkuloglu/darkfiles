@@ -292,7 +292,20 @@ func _build_atmosphere() -> void:
 
 
 ## Piksel yazı tipi (Pixelify Sans, OFL lisanslı, Türkçe karakterli); yoksa Godot'un varsayılanı.
+## Okunaklı yazı tipi (Rubik, OFL): diyalog ve arayüz. Ekran çözünürlüğünde net çizilir.
 func _ui_font() -> Font:
+	var p := "res://fonts/Rubik-Medium.ttf"
+	if not ResourceLoader.exists(p):
+		return null
+	var f: FontFile = load(p)
+	f.antialiasing = TextServer.FONT_ANTIALIASING_GRAY
+	f.hinting = TextServer.HINTING_LIGHT
+	f.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
+	return f
+
+
+## Pixel yazı tipi (Pixelify Sans, OFL): sadece büyük başlıklar.
+func _title_font() -> Font:
 	var p := "res://fonts/PixelifySans-Medium.ttf"
 	if not ResourceLoader.exists(p):
 		return null
@@ -614,6 +627,9 @@ func _build_menu() -> void:
 	title.size = Vector2(VIEW_W, 50)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 44)
+	var tf := _title_font()
+	if tf:
+		title.add_theme_font_override("font", tf)
 	title.add_theme_color_override("font_color", C_YELLOW)
 	title.add_theme_constant_override("shadow_offset_x", 3)
 	title.add_theme_constant_override("shadow_offset_y", 3)
