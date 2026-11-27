@@ -79,7 +79,12 @@ var dialog_text: Label
 var continue_label: Label
 var dialog_choices: VBoxContainer
 var notebook_panel: PanelContainer
-var notebook_list: VBoxContainer
+var notebook_list: Control
+var board_content: Control
+var board_strings: Control
+var board_preview: TextureRect
+var board_cards: Dictionary = {}
+var board_default_info: String = ""
 var notebook_info: Label
 var notebook_title: Label
 var progress_label: Label
@@ -278,27 +283,40 @@ func _make_theme() -> Theme:
 	th.default_font = _ui_font()
 	th.default_font_size = 13
 
+	# 2003 dosya odası havası: koyu deri panel, pirinç çerçeve, gölge.
 	var panel := StyleBoxFlat.new()
-	panel.bg_color = Color(0.06, 0.043, 0.03, 0.94)
-	panel.border_color = C_BROWN
+	panel.bg_color = Color(0.07, 0.05, 0.035, 0.96)
+	panel.border_color = Color("#9c7a3c")
 	panel.set_border_width_all(2)
-	panel.set_content_margin_all(10)
+	panel.border_width_top = 3
+	panel.set_content_margin_all(12)
+	panel.shadow_color = Color(0, 0, 0, 0.7)
+	panel.shadow_size = 6
+	panel.shadow_offset = Vector2(3, 4)
 	th.set_stylebox("panel", "PanelContainer", panel)
 
+	# Kabartmalı (bevel) butonlar: üst kenar açık, alt kenar koyu, basınca içeri göçer.
 	var btn := StyleBoxFlat.new()
-	btn.bg_color = C_DARK
-	btn.border_color = C_BROWN
+	btn.bg_color = Color("#3a281b")
+	btn.border_color = Color("#6b4e2e")
 	btn.set_border_width_all(1)
-	btn.content_margin_left = 8
-	btn.content_margin_right = 8
+	btn.border_width_bottom = 3
+	btn.content_margin_left = 10
+	btn.content_margin_right = 10
 	btn.content_margin_top = 3
-	btn.content_margin_bottom = 3
+	btn.content_margin_bottom = 2
+	btn.shadow_color = Color(0, 0, 0, 0.5)
+	btn.shadow_size = 2
+	btn.shadow_offset = Vector2(1, 2)
 	var btn_hover := btn.duplicate() as StyleBoxFlat
 	btn_hover.border_color = C_YELLOW
-	btn_hover.bg_color = Color("#3a281b")
+	btn_hover.bg_color = Color("#4a3423")
 	var btn_pressed := btn.duplicate() as StyleBoxFlat
-	btn_pressed.bg_color = C_BROWN
+	btn_pressed.bg_color = Color("#2b1d14")
 	btn_pressed.border_color = C_YELLOW
+	btn_pressed.border_width_bottom = 1
+	btn_pressed.border_width_top = 3
+	btn_pressed.shadow_size = 0
 	var btn_disabled := btn.duplicate() as StyleBoxFlat
 	btn_disabled.bg_color = Color(0.1, 0.07, 0.05)
 	th.set_stylebox("normal", "Button", btn)
@@ -406,7 +424,18 @@ func _build_ui() -> void:
 	vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	hb.add_child(vb)
 	name_label = Label.new()
-	name_label.add_theme_color_override("font_color", C_YELLOW)
+	# Konuşanın adı, dosya sekmesi gibi sarı etiket üstünde koyu yazı.
+	var tag := StyleBoxFlat.new()
+	tag.bg_color = C_YELLOW
+	tag.content_margin_left = 6
+	tag.content_margin_right = 6
+	tag.content_margin_top = 1
+	tag.content_margin_bottom = 1
+	name_label.add_theme_stylebox_override("normal", tag)
+	name_label.add_theme_color_override("font_color", C_BLACK)
+	name_label.add_theme_constant_override("shadow_offset_x", 0)
+	name_label.add_theme_constant_override("shadow_offset_y", 0)
+	name_label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	vb.add_child(name_label)
 	dialog_text = Label.new()
 	dialog_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -422,49 +451,86 @@ func _build_ui() -> void:
 	continue_label.add_theme_font_size_override("font_size", 9)
 	vb.add_child(continue_label)
 
-	# Defter
+	# Defter: mantar pano. Kanıtlar raptiyeli polaroidler, bağlantılar kırmızı ip.
 	notebook_panel = PanelContainer.new()
-	notebook_panel.position = Vector2(24, 40)
-	notebook_panel.custom_minimum_size = Vector2(VIEW_W - 48, VIEW_H - 56)
+	notebook_panel.position = Vector2(8, 8)
+	notebook_panel.custom_minimum_size = Vector2(VIEW_W - 16, VIEW_H - 16)
 	notebook_panel.visible = false
+	notebook_panel.add_theme_stylebox_override("panel", _board_style())
 	ui_root.add_child(notebook_panel)
 	var nhb := HBoxContainer.new()
+	nhb.add_theme_constant_override("separation", 10)
 	notebook_panel.add_child(nhb)
 	var left := VBoxContainer.new()
-	left.custom_minimum_size = Vector2(270, 0)
+	left.custom_minimum_size = Vector2(392, 0)
 	nhb.add_child(left)
 	notebook_title = Label.new()
-	notebook_title.add_theme_color_override("font_color", C_YELLOW)
-	notebook_title.add_theme_font_size_override("font_size", 14)
+	notebook_title.add_theme_color_override("font_color", C_PALE)
+	notebook_title.add_theme_font_size_override("font_size", 16)
+	notebook_title.add_theme_constant_override("shadow_offset_x", 2)
+	notebook_title.add_theme_constant_override("shadow_offset_y", 2)
 	left.add_child(notebook_title)
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(270, 255)
+	scroll.custom_minimum_size = Vector2(392, 300)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	left.add_child(scroll)
-	notebook_list = VBoxContainer.new()
-	notebook_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(notebook_list)
+	board_content = Control.new()
+	scroll.add_child(board_content)
+	notebook_list = GridContainer.new()
+	(notebook_list as GridContainer).columns = 6
+	notebook_list.position = Vector2(6, 6)
+	notebook_list.add_theme_constant_override("h_separation", 6)
+	notebook_list.add_theme_constant_override("v_separation", 8)
+	board_content.add_child(notebook_list)
+	board_strings = Control.new()
+	board_strings.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	board_content.add_child(board_strings)
+
+	# Sağda manila dosya kağıdı
+	var paper := PanelContainer.new()
+	paper.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var pst := StyleBoxFlat.new()
+	pst.bg_color = Color("#d8c493")
+	pst.border_color = Color("#8a6a3a")
+	pst.set_border_width_all(1)
+	pst.set_content_margin_all(8)
+	pst.shadow_color = Color(0, 0, 0, 0.5)
+	pst.shadow_size = 4
+	pst.shadow_offset = Vector2(2, 3)
+	paper.add_theme_stylebox_override("panel", pst)
+	nhb.add_child(paper)
 	var right := VBoxContainer.new()
-	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	nhb.add_child(right)
+	right.add_theme_constant_override("separation", 4)
+	paper.add_child(right)
 	progress_label = Label.new()
 	progress_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	progress_label.custom_minimum_size = Vector2(280, 0)
-	progress_label.add_theme_color_override("font_color", C_YELLOW)
+	progress_label.custom_minimum_size = Vector2(190, 0)
+	_paper_label(progress_label, 11, Color("#7a1f12"))
 	right.add_child(progress_label)
+	board_preview = TextureRect.new()
+	board_preview.custom_minimum_size = Vector2(190, 72)
+	board_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	board_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	right.add_child(board_preview)
+	var info_scroll := ScrollContainer.new()
+	info_scroll.custom_minimum_size = Vector2(190, 86)
+	info_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	info_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	right.add_child(info_scroll)
 	notebook_info = Label.new()
 	notebook_info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	notebook_info.custom_minimum_size = Vector2(280, 140)
-	notebook_info.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	right.add_child(notebook_info)
+	notebook_info.custom_minimum_size = Vector2(180, 0)
+	_paper_label(notebook_info, 11, Color("#2b1d14"))
+	info_scroll.add_child(notebook_info)
 	var hint_btn := Button.new()
 	hint_btn.text = "Maya'ya sor (ipucu)"
 	hint_btn.pressed.connect(func():
 		_sfx("click")
+		board_preview.texture = null
 		notebook_info.text = _hint_text())
 	right.add_child(hint_btn)
 	notebook_inspect_btn = Button.new()
-	notebook_inspect_btn.text = "Seçili ipucunu yakından incele"
+	notebook_inspect_btn.text = "Yakından incele"
 	notebook_inspect_btn.visible = false
 	notebook_inspect_btn.pressed.connect(func():
 		if notebook_selected != "":
@@ -472,11 +538,11 @@ func _build_ui() -> void:
 			open_inspect(sel, func(): notebook_info.text = _clue_text(sel)))
 	right.add_child(notebook_inspect_btn)
 	link_button = Button.new()
-	link_button.text = "Kanıt tahtası: iki ipucunu bağla"
+	link_button.text = "İki kanıtı iple bağla"
 	link_button.pressed.connect(_start_link)
 	right.add_child(link_button)
 	accuse_button = Button.new()
-	accuse_button.text = "FCD sorgu odasına git ve suçla"
+	accuse_button.text = "Sorgu odasına git ve suçla"
 	accuse_button.add_theme_color_override("font_color", C_YELLOW)
 	accuse_button.pressed.connect(_open_accuse)
 	right.add_child(accuse_button)
@@ -1351,58 +1417,35 @@ func _fill_notebook(info: String) -> void:
 	for c in notebook_list.get_children():
 		notebook_list.remove_child(c)
 		c.queue_free()
+	board_cards.clear()
 	match select_mode:
 		"show":
-			notebook_title.text = "KANIT GÖSTER"
+			notebook_title.text = "KANIT GÖSTER  (parlayanlar bu kişiyle ilgili)"
 		"link":
-			notebook_title.text = "KANIT TAHTASI"
+			notebook_title.text = "KANIT TAHTASI  (bağlanacak iki kanıtı seç)"
 		_:
-			notebook_title.text = "DEFTER  (" + str(clues.size()) + " ipucu)"
-	if clues.is_empty():
-		var empty := Label.new()
-		empty.text = "Henüz ipucu yok. Mekanlardaki parlayan noktalara tıkla."
-		empty.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		empty.custom_minimum_size = Vector2(250, 0)
-		notebook_list.add_child(empty)
+			notebook_title.text = "KANIT TAHTASI  (" + str(clues.size()) + " kanıt)"
 	var shows: Dictionary = {}
 	if select_mode == "show" and current_npc != "":
 		shows = data["dialogues"][current_npc].get("show", {})
 	var ids: Array = clues.keys()
 	if not shows.is_empty():
-		# Bu kişiye gösterilebilecek kanıtlar önce ve parlak.
 		var rel: Array = ids.filter(func(i): return shows.has(i))
 		var rest: Array = ids.filter(func(i): return not shows.has(i))
 		ids = rel + rest
 	for id in ids:
-		var b := Button.new()
-		var nm := str(data["clues"][id]["name"])
-		if shows.has(id):
-			nm = "* " + nm
-			b.add_theme_color_override("font_color", C_YELLOW)
-		if id == link_first:
-			nm = "> " + nm
-			b.add_theme_color_override("font_color", C_YELLOW)
-		b.text = nm
-		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		b.pressed.connect(_on_clue_pressed.bind(str(id)))
-		notebook_list.add_child(b)
-		if shows.has(id):
-			var gt := b.create_tween().set_loops()
-			gt.tween_property(b, "modulate", Color(1.3, 1.2, 0.8), 0.5)
-			gt.tween_property(b, "modulate", Color(1, 1, 1), 0.5)
-	if not deductions.is_empty():
-		var sep := Label.new()
-		sep.text = "SONUÇLAR"
-		sep.add_theme_color_override("font_color", C_YELLOW)
-		notebook_list.add_child(sep)
-		for d in data["deductions"]:
-			if deductions.has(d["id"]):
-				var lb := Label.new()
-				lb.text = "- " + str(d["text"])
-				lb.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-				lb.custom_minimum_size = Vector2(250, 0)
-				notebook_list.add_child(lb)
-	notebook_info.text = info
+		_add_board_card(str(id), shows.has(id))
+	board_content.custom_minimum_size = notebook_list.get_combined_minimum_size() + Vector2(12, 12)
+	_draw_board_strings.call_deferred()
+	if clues.is_empty():
+		info = "Henüz kanıt yok. Mekanlardaki parlayan noktalara tıkla."
+	var concl := ""
+	for d in data["deductions"]:
+		if deductions.has(d["id"]):
+			concl += "\n- " + str(d["text"])
+	board_default_info = info + ("\n\nSONUÇLAR" + concl if concl != "" else "")
+	board_preview.texture = null
+	notebook_info.text = board_default_info
 	notebook_selected = ""
 	notebook_inspect_btn.visible = false
 	var req: Array = data["final"]["required"]
@@ -1410,10 +1453,135 @@ func _fill_notebook(info: String) -> void:
 	for rid in req:
 		if deductions.has(rid):
 			done += 1
-	progress_label.text = "Gerekli sonuçlar: " + str(done) + "/" + str(req.size()) + "\n(NASIL, FIRSAT, MOTİF, FİZİKSEL KANIT)"
+	progress_label.text = "Gerekli sonuçlar: " + str(done) + "/" + str(req.size()) + "\nNASIL, FIRSAT, MOTİF, FİZİKSEL KANIT"
 	_update_hud()
 	link_button.visible = select_mode == ""
 	accuse_button.visible = select_mode == "" and _final_ready()
+
+
+## Bir kanıt polaroidi: çizim, ad, raptiye; üstüne gelince büyür ve sağda detayı gösterir.
+func _add_board_card(id: String, relevant: bool) -> void:
+	var b := Button.new()
+	b.custom_minimum_size = Vector2(58, 70)
+	b.focus_mode = Control.FOCUS_NONE
+	var st := StyleBoxFlat.new()
+	st.bg_color = Color("#efe6cf")
+	st.shadow_color = Color(0, 0, 0, 0.55)
+	st.shadow_size = 3
+	st.shadow_offset = Vector2(2, 2)
+	st.set_border_width_all(2)
+	st.border_color = Color("#efe6cf")
+	if relevant:
+		st.border_color = C_YELLOW
+	if id == link_first:
+		st.border_color = Color("#b3261e")
+	var hv := st.duplicate() as StyleBoxFlat
+	hv.border_color = C_YELLOW if id != link_first else Color("#b3261e")
+	b.add_theme_stylebox_override("normal", st)
+	b.add_theme_stylebox_override("hover", hv)
+	b.add_theme_stylebox_override("pressed", hv)
+	notebook_list.add_child(b)
+	var icon := TextureRect.new()
+	icon.position = Vector2(5, 5)
+	icon.size = Vector2(48, 46)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.texture = _art("items/" + id)
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	b.add_child(icon)
+	if icon.texture == null:
+		var ph := ColorRect.new()
+		ph.position = icon.position
+		ph.size = icon.size
+		ph.color = Color("#3a2a1e")
+		ph.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		b.add_child(ph)
+	var lb := Label.new()
+	lb.text = str(data["clues"][id]["name"])
+	lb.position = Vector2(2, 52)
+	lb.size = Vector2(54, 16)
+	lb.clip_text = true
+	lb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_paper_label(lb, 8, Color("#2b1d14"))
+	lb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	b.add_child(lb)
+	var pin := ColorRect.new()
+	pin.size = Vector2(5, 5)
+	pin.position = Vector2(26, -2)
+	pin.color = Color("#b3261e")
+	pin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	b.add_child(pin)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash(id)
+	b.pivot_offset = Vector2(29, 35)
+	b.rotation = deg_to_rad(rng.randf_range(-4.0, 4.0))
+	b.pressed.connect(_on_clue_pressed.bind(id))
+	b.mouse_entered.connect(func():
+		b.scale = Vector2(1.18, 1.18)
+		b.z_index = 2
+		board_preview.texture = _art("items/" + id)
+		notebook_info.text = _clue_text(id))
+	b.mouse_exited.connect(func():
+		b.scale = Vector2.ONE
+		b.z_index = 0
+		if notebook_selected != "":
+			board_preview.texture = _art("items/" + notebook_selected)
+			notebook_info.text = _clue_text(notebook_selected)
+		else:
+			board_preview.texture = null
+			notebook_info.text = board_default_info)
+	if relevant:
+		var gt := b.create_tween().set_loops()
+		gt.tween_property(b, "modulate", Color(1.3, 1.2, 0.85), 0.5)
+		gt.tween_property(b, "modulate", Color(1, 1, 1), 0.5)
+	board_cards[id] = b
+
+
+## Bulunan her sonuç için iki kanıtın raptiyeleri arasına kırmızı ip.
+func _draw_board_strings() -> void:
+	for c in board_strings.get_children():
+		board_strings.remove_child(c)
+		c.queue_free()
+	for d in data["deductions"]:
+		if not deductions.has(d["id"]):
+			continue
+		var p: Array = d["pair"]
+		if not board_cards.has(p[0]) or not board_cards.has(p[1]):
+			continue
+		var a: Control = board_cards[p[0]]
+		var b: Control = board_cards[p[1]]
+		var line := Line2D.new()
+		line.width = 1.5
+		line.default_color = Color("#b3261e")
+		var pa := notebook_list.position + a.position + Vector2(28, 0)
+		var pb := notebook_list.position + b.position + Vector2(28, 0)
+		var mid := (pa + pb) / 2.0 + Vector2(0, 10)   # ip biraz sarkar
+		line.points = PackedVector2Array([pa, mid, pb])
+		board_strings.add_child(line)
+
+
+func _board_style() -> StyleBox:
+	var tex := _art("ui/board")
+	if tex:
+		var sb := StyleBoxTexture.new()
+		sb.texture = tex
+		sb.set_content_margin_all(14)
+		return sb
+	var f := StyleBoxFlat.new()
+	f.bg_color = Color("#7a5232")
+	f.border_color = Color("#2b1d14")
+	f.set_border_width_all(6)
+	f.set_content_margin_all(12)
+	f.shadow_color = Color(0, 0, 0, 0.6)
+	f.shadow_size = 6
+	return f
+
+
+func _paper_label(lb: Label, size: int, col: Color) -> void:
+	lb.add_theme_font_size_override("font_size", size)
+	lb.add_theme_color_override("font_color", col)
+	lb.add_theme_constant_override("shadow_offset_x", 0)
+	lb.add_theme_constant_override("shadow_offset_y", 0)
 
 
 func _on_clue_pressed(id: String) -> void:
