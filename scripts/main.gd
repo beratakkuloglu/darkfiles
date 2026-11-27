@@ -847,7 +847,7 @@ func _build_sfx() -> void:
 			AudioServer.add_bus()
 			AudioServer.set_bus_name(AudioServer.bus_count - 1, bus_name)
 	_load_settings()
-	for n in ["blip", "pickup", "door", "click", "deduce", "wrong", "solve", "eye"]:
+	for n in ["blip", "pickup", "door", "click", "deduce", "wrong", "solve", "eye", "car_door"]:
 		var p: String = "res://sfx/" + n + ".wav"
 		if ResourceLoader.exists(p):
 			var a := AudioStreamPlayer.new()
@@ -1249,7 +1249,7 @@ func _build_drive_placeholder(parent: Control, moving: bool) -> void:
 	var lamps := Control.new()
 	parent.add_child(lamps)
 	for i in range(8):
-		var x := i * 120.0
+		var x: float = i * 120.0
 		var pole := ColorRect.new()
 		pole.color = C_DARK
 		pole.size = Vector2(4, 130)
@@ -2926,7 +2926,7 @@ func _next_spot_key(id: String) -> String:
 	for side in ["front", "back"]:
 		var spots: Array = ins.get(side, [])
 		for i in range(spots.size()):
-			var key := id + ":" + side + ":" + str(i)
+			var key: String = id + ":" + side + ":" + str(i)
 			if not found_details.has(key):
 				return key
 	return ""
