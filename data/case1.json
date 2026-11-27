@@ -818,14 +818,14 @@
     "front": [
      {
       "x": 0.5,
-      "y": 0.45,
+      "y": 0.48,
       "text": "Gümüş üzerine H.F.M. harfleri."
      }
     ],
     "back": [
      {
-      "x": 0.5,
-      "y": 0.5,
+      "x": 0.6,
+      "y": 0.6,
       "text": "Tutturma iğnesi bükülmüş. Bir yere takılıp kopmuş."
      }
     ]
@@ -859,16 +859,16 @@
    "inspect": {
     "front": [
      {
-      "x": 0.4,
-      "y": 0.4,
-      "text": "Değer: 2.000.000 dolar. Eskiden 1.000.000'du."
+      "x": 0.25,
+      "y": 0.17,
+      "text": "Yakutun sigorta değeri: 50.000 dolar. Eski poliçede bunun yarısıydı."
      }
     ],
     "back": [
      {
-      "x": 0.5,
-      "y": 0.55,
-      "text": "Tarih: iki hafta önce. İmza: H. Finch-Moore."
+      "x": 0.65,
+      "y": 0.82,
+      "text": "Tarih iki hafta önce. İmza 'H.' ile başlıyor, gerisi aceleyle karalanmış."
      }
     ]
    }
@@ -881,14 +881,21 @@
    "inspect": {
     "front": [
      {
-      "x": 0.45,
-      "y": 0.35,
+      "x": 0.5,
+      "y": 0.33,
       "text": "Sergi salonu, vitrin noktası işaretli."
      },
      {
-      "x": 0.45,
-      "y": 0.7,
+      "x": 0.5,
+      "y": 0.62,
       "text": "Tam altında: bodrum depo. Kurşun kalemle bir ok çizilmiş."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.45,
+      "y": 0.72,
+      "text": "Büyüteçle bakınca: salonun tam altında 'bodrum girişi' işareti. Bir şey yukarıdan aşağı inebilir."
      }
     ]
    }
@@ -920,19 +927,19 @@
     "front": [
      {
       "x": 0.5,
-      "y": 0.25,
+      "y": 0.2,
       "text": "Oluk tavandan, tam vitrinin altından iniyor."
      },
      {
-      "x": 0.5,
-      "y": 0.75,
+      "x": 0.42,
+      "y": 0.74,
       "text": "Sandıkta 'Vesper & Co.' yazısı."
      }
     ],
     "back": [
      {
-      "x": 0.5,
-      "y": 0.5,
+      "x": 0.55,
+      "y": 0.38,
       "text": "Sandığın arkasında nakliye etiketi: 'Teslim: Cuma'."
      }
     ]
@@ -945,14 +952,14 @@
     "front": [
      {
       "x": 0.5,
-      "y": 0.45,
+      "y": 0.48,
       "text": "Gümüş, H.F.M. harfli. Birincinin eşi."
      }
     ],
     "back": [
      {
-      "x": 0.5,
-      "y": 0.5,
+      "x": 0.6,
+      "y": 0.6,
       "text": "Üzerinde bodrum tozu. Uzun süredir burada değil, bu akşam düşmüş."
      }
     ]
