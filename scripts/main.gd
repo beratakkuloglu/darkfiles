@@ -158,7 +158,7 @@ var msg_tween: Tween
 
 # Ayarlar ve duraklatma
 const SETTINGS_PATH := "user://settings.cfg"
-var settings := {"music": 0.7, "sfx": 0.8, "fullscreen": false, "text_speed": 1, "atmosphere": true}
+var settings := {"music": 0.7, "sfx": 0.8, "fullscreen": true, "text_speed": 1, "atmosphere": true}
 var pause_panel: Control
 var settings_panel: Control
 var atmo_dust: CPUParticles2D
@@ -2033,6 +2033,11 @@ func _unhandled_input(event: InputEvent) -> void:
 				close_pause()
 			elif not in_menu:
 				open_pause()
+			return
+		if key.keycode == KEY_F11:
+			settings["fullscreen"] = not bool(settings["fullscreen"])
+			_apply_settings()
+			_save_settings()
 			return
 		if paused or settings_panel.visible:
 			return
