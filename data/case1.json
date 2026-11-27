@@ -598,15 +598,15 @@
    "inspect": {
     "front": [
      {
-      "x": 0.5,
+      "x": 0.42,
       "y": 0.45,
-      "text": "Marka: Polar Nane. Toby'nin cebinden çıkanla aynı."
+      "text": "Marka: Mint Julep. Toby'nin cebinden çıkanla aynı."
      }
     ],
     "back": [
      {
-      "x": 0.5,
-      "y": 0.5,
+      "x": 0.55,
+      "y": 0.55,
       "text": "İç yüzünde diş izi yok, sadece buruşturulmuş. Gergin bir el."
      }
     ]
