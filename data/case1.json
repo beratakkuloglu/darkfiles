@@ -730,16 +730,16 @@
    "inspect": {
     "front": [
      {
-      "x": 0.5,
-      "y": 0.4,
+      "x": 0.45,
+      "y": 0.23,
       "text": "21:39 - H. Finch-Moore - Müdür ofisi."
      }
     ],
     "back": [
      {
-      "x": 0.5,
+      "x": 0.58,
       "y": 0.55,
-      "text": "Kartın arkasına yapıştırılmış not: 'Işık paneli: 3. şalter'."
+      "text": "Kartın arkasında yapışkan not: 'Güvenlik masasına iade et.' Etrafında taze parmak izleri var."
      }
     ]
    }
@@ -833,21 +833,21 @@
   },
   "anahtar": {
    "name": "Araba anahtarı",
-   "desc": "Harold'ın masasında eski bir Mercedes anahtarı.",
+   "desc": "Harold'ın masasında eski, kumandalı bir araba anahtarı. Etiketinde 'P3' yazıyor.",
    "sets_flag": "otopark_acik",
    "comment": "Hiç kimse araba anahtarını masada unutmaz. Ben hariç. Ve Harold.",
    "inspect": {
     "front": [
      {
-      "x": 0.5,
-      "y": 0.35,
-      "text": "Eski bir Mercedes anahtarı."
+      "x": 0.48,
+      "y": 0.22,
+      "text": "Eski, kumandalı bir araba anahtarı. Müdürün masasında."
      }
     ],
     "back": [
      {
-      "x": 0.5,
-      "y": 0.6,
+      "x": 0.3,
+      "y": 0.68,
       "text": "Anahtarlıkta küçük bir etiket: 'Otopark, P3'."
      }
     ]
