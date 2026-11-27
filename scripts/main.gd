@@ -976,12 +976,18 @@ func _office_talk() -> void:
 		busy = true
 		# son yudum, sonra ayağa kalk
 		var sip := _art("oscar_sip")
-		if sip:
-			player_pose = sip
+		var sit := player_pose
 		var tw := create_tween()
-		tw.tween_property(player_sprite, "position:y", player_sprite.position.y - 1.0, 0.4)
-		tw.tween_property(player_sprite, "position:y", player_sprite.position.y, 0.4)
-		tw.tween_interval(0.6)
+		tw.tween_interval(0.4)
+		if sip:
+			tw.tween_callback(func(): player_pose = sip)
+			tw.tween_interval(1.3)
+			tw.tween_callback(func(): player_pose = sit)
+			tw.tween_interval(0.5)
+		else:
+			tw.tween_property(player_sprite, "position:y", player_sprite.position.y - 1.0, 0.4)
+			tw.tween_property(player_sprite, "position:y", player_sprite.position.y, 0.4)
+			tw.tween_interval(0.6)
 		tw.tween_callback(func():
 			player_pose = null
 			player_sprite.position.y = -player_sprite.size.y
