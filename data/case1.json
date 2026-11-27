@@ -585,7 +585,7 @@
      "type": "door",
      "to": "koridor",
      "x": 18,
-     "spawn_x": 596,
+     "spawn_x": 648,
      "w": 30,
      "h": 100,
      "label": "Asansör"
@@ -626,7 +626,7 @@
      "type": "door",
      "to": "koridor",
      "x": 330,
-     "spawn_x": 40,
+     "spawn_x": 140,
      "w": 24,
      "h": 140,
      "label": "Koridor"
@@ -742,56 +742,26 @@
   "koridor": {
    "name": "Koridor",
    "place": "FCD Ravenport Bürosu",
-   "width": 640,
-   "floor_y": 172,
+   "width": 688,
+   "floor_y": 162,
    "bg": "#2a2018",
-   "elevator_x": 612,
-   "decor": [
-    {
-     "x": 140,
-     "y": 0,
-     "w": 24,
-     "h": 56,
-     "color": "#3a2a1e"
-    },
-    {
-     "x": 260,
-     "y": 0,
-     "w": 24,
-     "h": 56,
-     "color": "#3a2a1e"
-    },
-    {
-     "x": 380,
-     "y": 0,
-     "w": 24,
-     "h": 56,
-     "color": "#3a2a1e"
-    },
-    {
-     "x": 500,
-     "y": 0,
-     "w": 24,
-     "h": 56,
-     "color": "#3a2a1e"
-    }
-   ],
+   "elevator_x": 668,
    "objects": [
     {
      "type": "door",
      "to": "oscar_ofis",
-     "x": 28,
-     "spawn_x": 290,
-     "w": 24,
-     "h": 56,
+     "x": 118,
+     "spawn_x": 316,
+     "w": 36,
+     "h": 75,
      "label": "Oscar'ın Odası"
     },
     {
      "type": "look",
      "name": "Su sebili",
-     "x": 320,
-     "w": 12,
-     "h": 30,
+     "x": 205,
+     "w": 16,
+     "h": 40,
      "lines": [
       [
        "Oscar",
@@ -802,10 +772,10 @@
     {
      "type": "look",
      "name": "İlan panosu",
-     "x": 445,
-     "y": 40,
+     "x": 500,
+     "y": 62,
      "w": 30,
-     "h": 20,
+     "h": 25,
      "lines": [
       [
        "",
@@ -816,10 +786,10 @@
     {
      "type": "door",
      "to": "fcd",
-     "x": 612,
+     "x": 668,
      "spawn_x": 40,
      "w": 30,
-     "h": 100,
+     "h": 90,
      "label": "Asansör"
     }
    ]
