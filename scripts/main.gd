@@ -35,6 +35,7 @@ var hinted: Dictionary = {}
 var room_layer: Node2D
 var player: Node2D
 var player_sprite: TextureRect
+var walk_time: float = 0.0
 var camera: Camera2D
 var target_x: float = -1.0
 var pending_action: Callable = Callable()
@@ -363,6 +364,7 @@ func _refresh_visibility() -> void:
 # ---------------------------------------------------------------- hareket ve girdi
 
 func _process(delta: float) -> void:
+	_bob(delta)
 	if busy:
 		return
 	var dir := 0.0
@@ -422,6 +424,23 @@ func _unhandled_input(event: InputEvent) -> void:
 				walk_to(float(o["x"]), _interact.bind(o))
 				return
 		walk_to(pos.x, Callable())
+
+
+## Animasyon kareleri gelene kadar: yürürken hafif zıplama ve sallanma.
+func _bob(delta: float) -> void:
+	if not player_sprite:
+		return
+	var moving := not busy and (target_x >= 0.0 or Input.is_action_pressed("ui_left") or Input.is_action_pressed("ui_right") or Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_D))
+	var base_y := -player_sprite.size.y
+	if moving:
+		walk_time += delta * 10.0
+		player_sprite.position.y = base_y - absf(sin(walk_time)) * 2.0
+		player_sprite.pivot_offset = Vector2(player_sprite.size.x / 2.0, player_sprite.size.y)
+		player_sprite.rotation = sin(walk_time) * 0.04
+	else:
+		walk_time = 0.0
+		player_sprite.position.y = base_y
+		player_sprite.rotation = 0.0
 
 
 func _face(dir: float) -> void:
