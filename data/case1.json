@@ -27,10 +27,46 @@
   }
  ],
  "wrong_quips": [
-  "Penn, bu kanıtın konuyla ne alakası var?",
-  "Etkileyici. Hiçbir şey kanıtlamadın.",
-  "Bunu gösterdiğin için kendini zeki mi hissettin?",
-  "Devam et, biraz daha utandır beni."
+  [
+   "Maya",
+   "Penn, bu kanıtın konuyla ne alakası var?"
+  ],
+  [
+   "Maya",
+   "Etkileyici. Hiçbir şey kanıtlamadın."
+  ],
+  [
+   "Maya",
+   "Bunu gösterdiğin için kendini zeki mi hissettin?"
+  ],
+  [
+   "Maya",
+   "Devam et, biraz daha utandır beni."
+  ],
+  [
+   "Oscar",
+   "...Bunu neden gösterdiğimi ben de bilmiyorum."
+  ],
+  [
+   "Maya",
+   "Bir dahaki sefere önce düşün, sonra göster."
+  ],
+  [
+   "Oscar",
+   "Seyirci alkışlamadı. Yanlış numara."
+  ],
+  [
+   "Maya",
+   "Bu, ilgisiz bir şeyi ciddi bir yüzle göstermek oldu."
+  ],
+  [
+   "Oscar",
+   "Hmm. Yüzünde hiçbir şey kıpırdamadı. Demek ki alakası yok."
+  ],
+  [
+   "Maya",
+   "Şef bunu duysa maaşından keserdi. Bence de kessin."
+  ]
  ],
  "link_fail_quips": [
   "Hmm. Hayır. Bu ikisi birbirini tanımıyor.",
@@ -39,7 +75,7 @@
  ],
  "rooms": {
   "hol": {
-   "name": "Büyük Hol",
+   "name": "Main Hall",
    "width": 344,
    "bg": "#2b1d14",
    "decor": [
@@ -128,10 +164,10 @@
      "Parlayan yerleri incele, insanlarla konuş. Kanıtları defterdeki Kanıt tahtasında ikişer bağla. Q: Oscar'ın Gözü, gizli ayrıntıları gösterir. Takılırsan Maya'ya tıkla."
     ]
    ],
-   "place": "Finch-Moore Müzesi"
+   "place": "Finch-Moore Museum"
   },
   "salon": {
-   "name": "Mücevher Salonu",
+   "name": "Jewel Gallery",
    "width": 344,
    "bg": "#21170f",
    "decor": [
@@ -229,10 +265,10 @@
     }
    ],
    "floor_y": 172,
-   "place": "Finch-Moore Müzesi"
+   "place": "Finch-Moore Museum"
   },
   "guvenlik": {
-   "name": "Güvenlik Odası",
+   "name": "Security Room",
    "width": 344,
    "bg": "#1c140e",
    "decor": [
@@ -309,10 +345,10 @@
    ],
    "floor_y": 180,
    "char_scale": 2.0,
-   "place": "Finch-Moore Müzesi"
+   "place": "Finch-Moore Museum"
   },
   "ofis": {
-   "name": "Müdür Ofisi",
+   "name": "Director's Office",
    "width": 344,
    "bg": "#2b1d14",
    "decor": [
@@ -428,10 +464,10 @@
     }
    ],
    "floor_y": 172,
-   "place": "Finch-Moore Müzesi"
+   "place": "Finch-Moore Museum"
   },
   "depo": {
-   "name": "Bodrum Deposu",
+   "name": "Basement Storage",
    "width": 344,
    "bg": "#140f0a",
    "decor": [
@@ -508,10 +544,10 @@
     }
    ],
    "floor_y": 156,
-   "place": "Finch-Moore Müzesi"
+   "place": "Finch-Moore Museum"
   },
   "otopark": {
-   "name": "Arka Otopark",
+   "name": "Back Parking Lot",
    "width": 344,
    "bg": "#120d09",
    "decor": [
@@ -548,6 +584,32 @@
      "y": 28
     },
     {
+     "type": "look",
+     "name": "Harold'ın arabası",
+     "x": 224,
+     "y": 20,
+     "w": 70,
+     "h": 30,
+     "set_flag": "araba_acik",
+     "sfx": "car_door",
+     "lines": [
+      [
+       "",
+       "Oscar anahtarın düğmesine basar. Kilitler 'klik' diye açılır."
+      ],
+      [
+       "Oscar",
+       "P3. Harold'ın arabası. Bakalım torpidoda ne saklıyor."
+      ]
+     ],
+     "lines_after": [
+      [
+       "Oscar",
+       "Kapı açık. Torpidoya ve bagaja bakabilirim."
+      ]
+     ]
+    },
+    {
      "type": "npc",
      "dialogue": "vivian2",
      "x": 120,
@@ -560,7 +622,8 @@
      "x": 200,
      "y": 43,
      "w": 10,
-     "h": 5
+     "h": 5,
+     "requires_flag": "araba_acik"
     },
     {
      "type": "clue",
@@ -568,15 +631,16 @@
      "x": 248,
      "y": 38,
      "w": 8,
-     "h": 5
+     "h": 5,
+     "requires_flag": "araba_acik"
     }
    ],
    "rain": true,
    "floor_y": 166,
-   "place": "Finch-Moore Müzesi"
+   "place": "Finch-Moore Museum"
   },
   "fcd": {
-   "name": "Ofis Katı",
+   "name": "Bullpen",
    "width": 344,
    "floor_y": 172,
    "bg": "#1f1a14",
@@ -585,10 +649,10 @@
      "type": "door",
      "to": "koridor",
      "x": 18,
-     "spawn_x": 648,
+     "spawn_x": 595,
      "w": 30,
      "h": 100,
-     "label": "Asansör"
+     "label": "Elevator"
     },
     {
      "type": "npc",
@@ -609,16 +673,17 @@
      "spawn_x": 70,
      "w": 20,
      "h": 80,
-     "label": "Çıkış"
+     "label": "Exit"
     }
    ],
-   "place": "FCD Ravenport Bürosu"
+   "place": "FCD · Ravenport",
+   "char_scale": 1.25
   },
   "oscar_ofis": {
-   "name": "Oscar'ın Odası",
-   "place": "FCD Ravenport Bürosu",
+   "name": "Oscar's Room",
+   "place": "FCD · Ravenport",
    "width": 344,
-   "floor_y": 172,
+   "floor_y": 188,
    "bg": "#241a12",
    "door_x": 330,
    "objects": [
@@ -629,7 +694,7 @@
      "spawn_x": 140,
      "w": 24,
      "h": 140,
-     "label": "Koridor"
+     "label": "Hallway"
     },
     {
      "type": "look",
@@ -736,16 +801,17 @@
      ]
     }
    ],
-   "sit_x": 117,
-   "sit_dy": -6
+   "sit_x": 112,
+   "sit_dy": -21,
+   "char_scale": 2.0
   },
   "koridor": {
-   "name": "Koridor",
-   "place": "FCD Ravenport Bürosu",
-   "width": 688,
+   "name": "Hallway",
+   "place": "FCD · Ravenport",
+   "width": 635,
    "floor_y": 162,
    "bg": "#2a2018",
-   "elevator_x": 668,
+   "elevator_x": 615,
    "objects": [
     {
      "type": "door",
@@ -754,7 +820,7 @@
      "spawn_x": 316,
      "w": 36,
      "h": 75,
-     "label": "Oscar'ın Odası"
+     "label": "Oscar's Room"
     },
     {
      "type": "look",
@@ -772,7 +838,7 @@
     {
      "type": "look",
      "name": "İlan panosu",
-     "x": 500,
+     "x": 368,
      "y": 62,
      "w": 30,
      "h": 25,
@@ -786,16 +852,17 @@
     {
      "type": "door",
      "to": "fcd",
-     "x": 668,
+     "x": 615,
      "spawn_x": 40,
      "w": 30,
      "h": 90,
-     "label": "Asansör"
+     "label": "Elevator"
     }
-   ]
+   ],
+   "char_scale": 1.3
   },
   "sokak": {
-   "name": "Mercer Caddesi",
+   "name": "Mercer St.",
    "place": "Ravenport",
    "width": 344,
    "floor_y": 170,
@@ -809,7 +876,7 @@
      "spawn_x": 320,
      "w": 40,
      "h": 100,
-     "label": "FCD Bürosu"
+     "label": "FCD Office"
     },
     {
      "type": "car",
@@ -819,8 +886,8 @@
    ]
   },
   "muze_onu": {
-   "name": "Müze Önü",
-   "place": "Finch-Moore Müzesi",
+   "name": "Museum Entrance",
+   "place": "Finch-Moore Museum",
    "width": 344,
    "floor_y": 176,
    "bg": "#14100c",
@@ -849,9 +916,40 @@
      "y": 51,
      "w": 50,
      "h": 85,
-     "label": "Finch-Moore Müzesi"
+     "label": "Finch-Moore Museum"
     }
    ]
+  },
+  "sorgu": {
+   "name": "Interrogation Room",
+   "place": "FCD · Ravenport",
+   "width": 344,
+   "floor_y": 172,
+   "bg": "#1a1410",
+   "decor": [
+    {
+     "x": 172,
+     "y": 0,
+     "w": 90,
+     "h": 26,
+     "color": "#3a3a3a"
+    },
+    {
+     "x": 172,
+     "y": 150,
+     "w": 4,
+     "h": 30,
+     "color": "#5a3d2b"
+    },
+    {
+     "x": 172,
+     "y": 140,
+     "w": 12,
+     "h": 6,
+     "color": "#e8c547"
+    }
+   ],
+   "objects": []
   }
  },
  "clues": {
@@ -880,7 +978,8 @@
       "text": "Arka tarafta ikinci, daha soluk bir ruj izi. İki kez içilmiş."
      }
     ]
-   }
+   },
+   "short": "Ruj izli kadeh"
   },
   "misafir": {
    "name": "Misafir listesi",
@@ -905,7 +1004,8 @@
       "text": "Arka kapakta kurşun kalemle: '21:40'. Altı çizili."
      }
     ]
-   }
+   },
+   "short": "Misafir listesi"
   },
   "sakiz": {
    "name": "Naneli sakız kağıdı",
@@ -926,7 +1026,8 @@
       "text": "İç yüzünde diş izi yok, sadece buruşturulmuş. Gergin bir el."
      }
     ]
-   }
+   },
+   "short": "Sakız kağıdı"
   },
   "kilit": {
    "name": "Sağlam vitrin kilidi",
@@ -946,7 +1047,8 @@
       "text": "Vida başları boyalı ve boya çatlamamış. Kilit hiç sökülmemiş."
      }
     ]
-   }
+   },
+   "short": "Vitrin kilidi"
   },
   "taban": {
    "name": "Vitrindeki ince çizgi",
@@ -972,7 +1074,8 @@
       "text": "Alttan bakınca: bir yay mekanizması. Sahnede 'kaybolan kuş' numarası böyle yapılır."
      }
     ]
-   }
+   },
+   "short": "İnce çizgi"
   },
   "kupe": {
    "name": "Zümrüt küpe",
@@ -992,7 +1095,8 @@
       "text": "Kilidi kırık değil, açık. Düşmüş, koparılmamış."
      }
     ]
-   }
+   },
+   "short": "Zümrüt küpe"
   },
   "sac": {
    "name": "Kır saç teli",
@@ -1010,10 +1114,11 @@
      {
       "x": 0.5,
       "y": 0.5,
-      "text": "Hafif lavanta kokusu. Gus'ın saçı kokmuyordu."
+      "text": "Hafif lavanta kokusu. Ucuz şampuan değil, pahalı bir krem."
      }
     ]
-   }
+   },
+   "short": "Saç teli"
   },
   "kamera": {
    "name": "Kamera kaydı",
@@ -1038,7 +1143,8 @@
       "text": "Kaset etiketinde müdürün el yazısı: 'Yedek. Dokunma.'"
      }
     ]
-   }
+   },
+   "short": "Kamera kaydı"
   },
   "kart": {
    "name": "Kapı kartı kaydı",
@@ -1058,7 +1164,8 @@
       "text": "Kartın arkasında yapışkan not: 'Güvenlik masasına iade et.' Etrafında taze parmak izleri var."
      }
     ]
-   }
+   },
+   "short": "Kart kaydı"
   },
   "fincan": {
    "name": "MÜDÜR yazılı fincan",
@@ -1084,7 +1191,8 @@
       "text": "Kulpta iki farklı parmak izi lekesi."
      }
     ]
-   }
+   },
+   "short": "MÜDÜR fincanı"
   },
   "gus_ifadesi": {
    "name": "Gus'ın ifadesi",
@@ -1105,7 +1213,8 @@
       "text": "Maya'nın notu: 'Vesper & Co.'yu araştır? 5-3240'. Bu numara bir yerde daha var."
      }
     ]
-   }
+   },
+   "short": "Gus'ın ifadesi"
   },
   "krem": {
    "name": "Lavanta saç kremi",
@@ -1125,7 +1234,8 @@
       "text": "Etikette eczane fişi: Harold Finch-Moore."
      }
     ]
-   }
+   },
+   "short": "Saç kremi"
   },
   "kol1": {
    "name": "Tek kol düğmesi",
@@ -1145,7 +1255,8 @@
       "text": "Tutturma iğnesi bükülmüş. Bir yere takılıp kopmuş."
      }
     ]
-   }
+   },
+   "short": "Kol düğmesi"
   },
   "anahtar": {
    "name": "Araba anahtarı",
@@ -1167,7 +1278,8 @@
       "text": "Anahtarlıkta küçük bir etiket: 'Otopark, P3'."
      }
     ]
-   }
+   },
+   "short": "Araba anahtarı"
   },
   "sigorta": {
    "name": "Yırtık sigorta belgesi",
@@ -1187,7 +1299,8 @@
       "text": "Tarih iki hafta önce. İmza 'H.' ile başlıyor, gerisi aceleyle karalanmış."
      }
     ]
-   }
+   },
+   "short": "Sigorta belgesi"
   },
   "plan": {
    "name": "Bina planı",
@@ -1214,7 +1327,8 @@
       "text": "Büyüteçle bakınca: salonun tam altında 'bodrum girişi' işareti. Bir şey yukarıdan aşağı inebilir."
      }
     ]
-   }
+   },
+   "short": "Bina planı"
   },
   "bileklik": {
    "name": "Kopuk deri bileklik",
@@ -1234,7 +1348,8 @@
       "text": "Üzerinde içki lekesi. Sahibi burada içip uyuyakalmış."
      }
     ]
-   }
+   },
+   "short": "Deri bileklik"
   },
   "oluk": {
    "name": "Metal oluk ve sandık",
@@ -1259,7 +1374,8 @@
       "text": "Sandığın arkasında nakliye etiketi: 'Teslim: Cuma'."
      }
     ]
-   }
+   },
+   "short": "Oluk ve sandık"
   },
   "kol2": {
    "name": "İkinci kol düğmesi",
@@ -1279,7 +1395,8 @@
       "text": "Üzerinde bodrum tozu. Uzun süredir burada değil, bu akşam düşmüş."
      }
     ]
-   }
+   },
+   "short": "2. kol düğmesi"
   },
   "afis": {
    "name": "Eski gösteri afişi",
@@ -1305,7 +1422,8 @@
       "text": "El yazısı: 'Final perdesinden sonra kuliste buluşalım. -V' V... Vesper mi?"
      }
     ]
-   }
+   },
+   "short": "Eski afiş"
   },
   "fatura": {
    "name": "Vesper & Co. faturası",
@@ -1325,7 +1443,8 @@
       "text": "Tarih üç ay önce. Ödeme nakit."
      }
     ]
-   }
+   },
+   "short": "Vesper faturası"
   },
   "kartvizit": {
    "name": "Notlu kartvizit",
@@ -1343,6 +1462,28 @@
       "x": 0.5,
       "y": 0.48,
       "text": "El yazısı: 'İskele 14, 23:30. Takip edilme.' Sandıktaki 'Teslim: Cuma' etiketiyle birleşince: alıcı Cuma gecesi iskelede."
+     }
+    ]
+   },
+   "short": "Kartvizit"
+  },
+  "yakut": {
+   "name": "Kızıl Göz",
+   "short": "Kızıl Göz",
+   "desc": "41 karatlık Burma yakutu. Sandığın dibinde, kadife bir keseye sarılı.",
+   "inspect": {
+    "front": [
+     {
+      "x": 0.5,
+      "y": 0.45,
+      "text": "Kenarında küçük bir çentik. Müze kataloğundaki fotoğrafla birebir aynı."
+     }
+    ],
+    "back": [
+     {
+      "x": 0.5,
+      "y": 0.55,
+      "text": "Kesenin içinde katlanmış bir not: 'Cuma, İskele 14.' Alıcı gelmeyecek artık."
      }
     ]
    }
@@ -1892,7 +2033,7 @@
    "d_kol"
   ],
   "culprit": "harold",
-  "reward": 500,
+  "reward": 900,
   "suspects": [
    [
     "harold",
@@ -1912,10 +2053,6 @@
    ]
   ],
   "lines": [
-   [
-    "",
-    "FCD sorgu odası. Tek ampul, metal masa."
-   ],
    [
     "Harold",
     "Bu bir hakaret. Avukatımı istiyorum."
@@ -1958,23 +2095,7 @@
    ],
    [
     "",
-    "Bodrumda sandık açılır. Kızıl Göz içindedir."
-   ],
-   [
-    "Maya",
-    "Fena değildin, Penn."
-   ],
-   [
-    "Oscar",
-    "Bu bir iltifat mıydı?"
-   ],
-   [
-    "Maya",
-    "Hayır."
-   ],
-   [
-    "",
-    "Oscar cebindeki Vesper & Co. etiketine bakar. Kimseye bir şey söylemez."
+    "Bir saat sonra, bodrumdaki sandık açılır. İçinde kadife bir kese var."
    ]
   ],
   "wrong": {
@@ -2006,6 +2127,61 @@
     [
      "Maya",
      "Adam uyutulmuştu, Penn. Kim uyuttu?"
+    ]
+   ]
+  },
+  "interrogation_intro": [
+   [
+    "",
+    "FCD sorgu odası. Tek ampul, metal masa."
+   ],
+   [
+    "Maya",
+    "Kayıt başladı. Sorular Oscar Penn'den."
+   ]
+  ],
+  "reveal_item": "yakut",
+  "reveal_lines": [
+   [
+    "Maya",
+    "Fena değildin, Penn."
+   ],
+   [
+    "Oscar",
+    "Bu bir iltifat mıydı?"
+   ],
+   [
+    "Maya",
+    "Hayır."
+   ],
+   [
+    "",
+    "Oscar cebindeki Vesper & Co. etiketine bakar. Kimseye bir şey söylemez."
+   ]
+  ],
+  "summon": {
+   "harold": [
+    [
+     "Harold",
+     "Ben bu müzenin müdürüyüm! ...Pekala. Ama bu aileye yapılan bir hakarettir."
+    ]
+   ],
+   "toby": [
+    [
+     "Toby",
+     "Ne? Ben mi? Amcam bunu duyarsa... Tamam, tamam, geliyorum."
+    ]
+   ],
+   "vivian": [
+    [
+     "Vivian",
+     "Beni kelepçelemeyi deneyin de görelim. ...Şaka. Gelirim. Ama arabada sigara içeceğim."
+    ]
+   ],
+   "gus": [
+    [
+     "Gus",
+     "Vardiyam bitmedi ki! ...Kim nöbet tutacak peki? Tamam, geliyorum."
     ]
    ]
   }
@@ -2077,5 +2253,173 @@
     "Eskiden alkışları ben toplardım."
    ]
   ]
- }
+ },
+ "accuse_quips": [
+  [
+   "Maya",
+   "Yanlış kişiyi sorgu odasına getirdin. Şef bunu rapora yazacak."
+  ],
+  [
+   "Maya",
+   "Tebrikler Penn. Masum birine kelepçe göstermiş oldun."
+  ],
+  [
+   "Oscar",
+   "Sahnede de bazen yanlış kartı çekerdim. Seyirci fark etmezdi."
+  ],
+  [
+   "Maya",
+   "Bir dahaki sefere kanıtlara bak, Penn. Hepsine."
+  ]
+ ],
+ "interjections": [
+  {
+   "id": "vivian_kupe",
+   "room": "salon",
+   "npc": "vivian",
+   "clue": "kupe",
+   "lines": [
+    [
+     "Vivian",
+     "Hâlâ o küpeyle mi uğraşıyorsunuz? Galada yüz kişi vardı, ajanlar."
+    ]
+   ],
+   "choices": [
+    {
+     "text": "Küpe senin, Vivian.",
+     "lines": [
+      [
+       "Vivian",
+       "Belki benimdir. Vitrinin yanında durmak hırsızlık değil."
+      ],
+      [
+       "Maya",
+       "Değil. Ama yalan söylediğini gösterir."
+      ]
+     ]
+    },
+    {
+     "text": "Kimseyi suçlamıyoruz.",
+     "lines": [
+      [
+       "Vivian",
+       "Henüz."
+      ],
+      [
+       "Oscar",
+       "Henüz."
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gus_fincan",
+   "room": "guvenlik",
+   "npc": "gus",
+   "clue": "fincan",
+   "lines": [
+    [
+     "Gus",
+     "Hey! O fincanı neden aldınız? Kahvemi bile içemeyecek miyim?"
+    ]
+   ],
+   "choices": [
+    {
+     "text": "O kahve senin değildi, Gus.",
+     "lines": [
+      [
+       "Gus",
+       "...Müdür getirdi. 'Uzun gece olacak' dedi."
+      ],
+      [
+       "Oscar",
+       "Haklıymış."
+      ]
+     ]
+    },
+    {
+     "text": "Laboratuvara gidiyor.",
+     "lines": [
+      [
+       "Gus",
+       "Laboratuvar mı? Kahve için mi? Bu ülke ne hale geldi."
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "harold_sigorta",
+   "room": "ofis",
+   "npc": "harold",
+   "clue": "sigorta",
+   "lines": [
+    [
+     "Harold",
+     "Çöpümü mü karıştırıyorsunuz? Bu düpedüz saygısızlık."
+    ]
+   ],
+   "choices": [
+    {
+     "text": "Sigortayı neden artırdınız?",
+     "lines": [
+      [
+       "Harold",
+       "Taşın değeri arttı. Piyasa, ajan. Anlamazsınız."
+      ],
+      [
+       "Maya",
+       "Anlamaya çalışıyoruz, Bay Finch-Moore."
+      ]
+     ]
+    },
+    {
+     "text": "Sadece bakıyoruz.",
+     "lines": [
+      [
+       "Harold",
+       "Bakın o zaman. Ama dokunmayın."
+      ],
+      [
+       "Oscar",
+       "Çoktan dokundum."
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "toby_sakiz",
+   "room": "hol",
+   "npc": "toby",
+   "clue": "sakiz",
+   "lines": [
+    [
+     "Toby",
+     "O benim sakızım mı? Ne yani, sakız çiğnemek de mi suç oldu?"
+    ]
+   ],
+   "choices": [
+    {
+     "text": "Galada hole neden kaçtın?",
+     "lines": [
+      [
+       "Toby",
+       "Hava almaya. İçerisi boğucuydu. Amcam da."
+      ]
+     ]
+    },
+    {
+     "text": "Çiğneme hızına bakılırsa gerginsin.",
+     "lines": [
+      [
+       "Toby",
+       "Gergin değilim! ...Tamam, biraz."
+      ]
+     ]
+    }
+   ]
+  }
+ ]
 }

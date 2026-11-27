@@ -89,6 +89,18 @@ var drive_layers: Array = []      # [{node, speed, wrap}]
 var drive_offset: float = 0.0
 var driving: bool = false
 var car_tween: Tween
+const EYE_TIME := 8.0
+var eye_time: float = 0.0
+var eye_bar: ColorRect
+var quip_bag: Dictionary = {}     # tekrarsız rastgele replik torbaları
+var npc_marks: Array = []         # [{data, mark, label}]
+const CAR_SCALE := 1.6            # arabanın mekandaki büyüklüğü
+const CAR_WHEELS := [Vector2(17, 21), Vector2(62, 21)]  # araba.png'de teker merkezleri
+var wheels: Array = []            # [{node, car, last_x, road}]
+var wrong_accuse: int = 0
+var summoned: String = ""
+var return_room: String = ""
+var return_x: float = 0.0
 var drive_street: Control
 var drive_road: Control
 var drive_street_car: Control
@@ -419,6 +431,13 @@ func _build_ui() -> void:
 	notebook_button.pressed.connect(func(): open_notebook(""))
 	ui_root.add_child(notebook_button)
 
+	eye_bar = ColorRect.new()
+	eye_bar.color = Color(1, 1, 1, 0.9)
+	eye_bar.size = Vector2(300, 3)
+	eye_bar.position = Vector2(VIEW_W / 2.0 - 150, 36)
+	eye_bar.visible = false
+	eye_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ui_root.add_child(eye_bar)
 	eye_button = Button.new()
 	eye_button.position = Vector2(104, 8)
 	eye_button.pressed.connect(toggle_eye)
@@ -515,6 +534,18 @@ func _build_ui() -> void:
 	var left := VBoxContainer.new()
 	left.custom_minimum_size = Vector2(392, 0)
 	nhb.add_child(left)
+	var case_lb := Label.new()
+	case_lb.text = str(data.get("case_name", "")).to_upper()
+	case_lb.add_theme_font_size_override("font_size", 20)
+	case_lb.add_theme_color_override("font_color", C_YELLOW)
+	case_lb.add_theme_color_override("font_shadow_color", Color(0.91, 0.77, 0.28, 0.45))
+	case_lb.add_theme_constant_override("shadow_offset_x", 0)
+	case_lb.add_theme_constant_override("shadow_offset_y", 0)
+	case_lb.add_theme_constant_override("shadow_outline_size", 6)
+	left.add_child(case_lb)
+	var glow := case_lb.create_tween().set_loops()
+	glow.tween_property(case_lb, "modulate", Color(1.25, 1.2, 1.0), 0.9).set_trans(Tween.TRANS_SINE)
+	glow.tween_property(case_lb, "modulate", Color(1, 1, 1), 0.9).set_trans(Tween.TRANS_SINE)
 	notebook_title = Label.new()
 	notebook_title.add_theme_color_override("font_color", C_PALE)
 	notebook_title.add_theme_font_size_override("font_size", 16)
@@ -522,7 +553,7 @@ func _build_ui() -> void:
 	notebook_title.add_theme_constant_override("shadow_offset_y", 2)
 	left.add_child(notebook_title)
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(392, 300)
+	scroll.custom_minimum_size = Vector2(392, 274)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	left.add_child(scroll)
 	board_content = Control.new()
@@ -917,6 +948,10 @@ func _room_setup(id: String, spawn_x: float) -> void:
 				_face(1.0)
 				if maya:
 					maya.visible = false
+		"sorgu":
+			if summoned != "":
+				_spawn_object({"type": "npc", "dialogue": summoned, "art": _npc_art(summoned), "x": 230}, _art("rooms/sorgu") != null)
+				_refresh_npc_marks()
 		"koridor":
 			if not flags.has("koridor_done") and maya:
 				maya_x = spawn_x + 20.0
@@ -947,6 +982,12 @@ func _room_event() -> void:
 		"muze_onu":
 			if not flags.has("arrived"):
 				_car_arrive()
+				return
+		"sorgu":
+			if summoned != "":
+				var who := summoned
+				current_npc = who
+				play_lines(data["final"].get("interrogation_intro", []), func(): _accuse(who))
 				return
 	_play_enter_lines()
 
@@ -1009,7 +1050,7 @@ func _office_talk() -> void:
 
 func _start_drive() -> void:
 	busy = true
-	_sfx("door")
+	_sfx("car_door")
 	_build_drive()   # tween'ler düğümlere şimdiden bağlanabilsin diye önce kur
 	drive_panel.visible = false
 	var tw := create_tween()
@@ -1049,6 +1090,40 @@ func _start_drive() -> void:
 				load_room("muze_onu", 0.0))
 			t2.tween_property(fade_rect, "color:a", 0.0, 0.8)
 			t2.tween_callback(_car_arrive)))
+
+
+## Arabanın üstüne iki dönen teker koyar (art/araba_wheel.png). road: yolculukta sürekli döner.
+func _add_wheels(car: Control, road: bool) -> void:
+	var wt := _art("araba_wheel")
+	if wt == null or not (car is TextureRect):
+		return
+	for c in CAR_WHEELS:
+		var w := TextureRect.new()
+		w.texture = wt
+		w.size = wt.get_size()
+		w.pivot_offset = wt.get_size() / 2.0
+		w.position = (c as Vector2) - wt.get_size() / 2.0
+		w.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		car.add_child(w)
+		wheels.append({"node": w, "car": car, "last_x": car.global_position.x, "road": road})
+
+
+func _spin_wheels(delta: float) -> void:
+	var keep: Array = []
+	for e in wheels:
+		var w = e["node"]
+		if not is_instance_valid(w):
+			continue
+		keep.append(e)
+		var car: Control = e["car"]
+		var sc := car.get_global_transform().get_scale().x
+		var x := car.global_position.x
+		var spin := (x - float(e["last_x"])) / (5.0 * sc)
+		if bool(e["road"]) and driving:
+			spin += 220.0 / (5.0 * sc) * delta
+		e["last_x"] = x
+		(w as Control).rotation += spin
+	wheels = keep
 
 
 func _car_w() -> float:
@@ -1125,6 +1200,7 @@ func _build_drive() -> void:
 	else:
 		_build_drive_placeholder(drive_street, false)
 	drive_street_car = _make_drive_car(drive_street, -200.0)
+	_add_wheels(drive_street_car, false)
 	# yolculuk sahnesi
 	drive_road = Control.new()
 	drive_road.size = Vector2(VIEW_W, VIEW_H)
@@ -1142,6 +1218,7 @@ func _build_drive() -> void:
 	if not any_layer:
 		_build_drive_placeholder(drive_road, true)
 	var car := _make_drive_car(drive_road, VIEW_W / 2.0 - _car_w() / 2.0)
+	_add_wheels(car, true)
 	var bob := car.create_tween().set_loops()
 	bob.tween_property(car, "position:y", car.position.y - 2.0, 0.18)
 	bob.tween_property(car, "position:y", car.position.y, 0.18)
@@ -1242,18 +1319,101 @@ func _exit_car() -> void:
 	if maya:
 		maya_x = clampf(cx - 6.0, 8.0, room_w - 8.0)
 		maya_follow()
-	_sfx("door")
+	_sfx("car_door")
 	busy = false
 	_play_enter_lines()
 
 
-## Mekanın "enter_lines" satırları ilk girişte bir kez oynar.
+## Torbadan tekrarsız bir replik çeker; torba bitince karıştırılıp yeniden dolar.
+## Replik "metin" ya da ["Konuşan", "metin"] olabilir.
+func _pick_quip(key: String) -> Array:
+	var bag: Array = quip_bag.get(key, [])
+	if bag.is_empty():
+		bag = (data.get(key, ["..."]) as Array).duplicate()
+		bag.shuffle()
+	var q = bag.pop_back()
+	quip_bag[key] = bag
+	if q is Array:
+		return q
+	return ["Maya", str(q)]
+
+
+## Tanışılmamış kişinin adı görünmez.
+func _npc_label(did: String) -> String:
+	if not flags.has("seen_" + did) and not flags.has("seen_" + did.rstrip("0123456789")):
+		return "???"
+	return str(data["dialogues"][did]["name"])
+
+
+## Kafadaki ünlem: tanışılmadıysa ya da sorulmamış soru varsa görünür.
+func _refresh_npc_marks() -> void:
+	for m in npc_marks:
+		var did := str(m["data"]["dialogue"])
+		(m["label"] as Label).text = _npc_label(did)
+		var open := _npc_label(did) == "???"
+		for t in data["dialogues"][did].get("topics", []):
+			if t.has("requires_clue") and not clues.has(t["requires_clue"]):
+				continue
+			if t.has("requires_flag") and not flags.has(t["requires_flag"]):
+				continue
+			if not flags.has("asked:" + did + ":" + str(t["q"])):
+				open = true
+		(m["mark"] as Label).visible = open
+
+
+## Bir diyaloğun portre çizimi: speakers tablosu, yoksa id'nin rakamsız hali (vivian2 -> vivian).
+func _npc_art(did: String) -> String:
+	var d: Dictionary = data["dialogues"][did]
+	if d.has("art"):
+		return str(d["art"])
+	var speakers: Dictionary = data.get("speakers", {})
+	var nm := str(d["name"])
+	if speakers.has(nm):
+		return str(speakers[nm])
+	if speakers.has(nm.split(" ")[0]):
+		return str(speakers[nm.split(" ")[0]])
+	return did.rstrip("0123456789")
+
+
+## Mekanın "enter_lines" satırları ilk girişte bir kez oynar; yoksa sırası gelen bir NPC çıkışı.
 func _play_enter_lines() -> void:
 	var r: Dictionary = data["rooms"][room_id]
 	var key := "entered_" + room_id
 	if r.has("enter_lines") and not flags.has(key):
 		flags[key] = true
 		play_lines(r["enter_lines"], Callable())
+		return
+	_try_interjection()
+
+
+## Şüpheli, Oscar odaya girince yanına gelip itiraz eder; oyuncu cevap seçer.
+func _try_interjection() -> void:
+	for it in data.get("interjections", []):
+		var id := "inter_" + str(it["id"])
+		if flags.has(id) or str(it["room"]) != room_id:
+			continue
+		if it.has("clue") and not clues.has(it["clue"]):
+			continue
+		var npc := {}
+		for e in room_objects:
+			if str(e["data"]["type"]) == "npc" and str(e["data"]["dialogue"]).rstrip("0123456789") == str(it["npc"]) and (e["node"] as Control).visible:
+				npc = e
+		if npc.is_empty():
+			continue
+		flags[id] = true
+		current_npc = str(npc["data"]["dialogue"])
+		_face_each_other(npc["data"])
+		_sfx("blip")
+		play_lines(it["lines"], func():
+			_clear_choices()
+			busy = true
+			dialog_panel.visible = true
+			for ch in it.get("choices", []):
+				var c: Dictionary = ch
+				_add_choice(str(c["text"]), func():
+					play_lines(c.get("lines", []), Callable()))
+			_layout_dialog())
+		return
 
 
 func load_room(id: String, spawn_x: float) -> void:
@@ -1265,6 +1425,7 @@ func load_room(id: String, spawn_x: float) -> void:
 		fx_layer.remove_child(c)
 		c.queue_free()
 	room_objects.clear()
+	npc_marks.clear()
 	bg_nodes.clear()
 	npc_anims.clear()
 	var r: Dictionary = data["rooms"][id]
@@ -1299,6 +1460,7 @@ func load_room(id: String, spawn_x: float) -> void:
 	target_x = -1.0
 	pending_action = Callable()
 	_refresh_visibility()
+	_refresh_npc_marks()
 	show_msg((str(r["place"]) + "  ·  " if r.has("place") else "") + str(r["name"]))
 	_complete_lab()
 	_room_setup(id, spawn_x)
@@ -1353,7 +1515,7 @@ func _spawn_object(o: Dictionary, has_bg: bool) -> void:
 			w = 18.0
 			h = 44.0
 			col = C_LIGHT
-			label_text = str(data["dialogues"][o["dialogue"]]["name"])
+			label_text = _npc_label(str(o["dialogue"]))
 		"look":
 			art_key = str(o.get("art", ""))
 			col = C_LIGHT
@@ -1393,6 +1555,12 @@ func _spawn_object(o: Dictionary, has_bg: bool) -> void:
 	if t == "npc":
 		n.pivot_offset = Vector2(w / 2.0, h)
 		n.scale = Vector2(char_scale, char_scale)
+	if t == "car":
+		n.pivot_offset = Vector2(w / 2.0, h)
+		n.scale = Vector2(CAR_SCALE, CAR_SCALE) * char_scale
+		if bool(o.get("flip", false)) and n is TextureRect:
+			(n as TextureRect).flip_h = true
+		_add_wheels(n, false)
 	if t == "npc" and not frames.is_empty():
 		npc_anims.append({"node": n, "frames": frames, "phase": randf() * 2.0})
 	if t == "clue" or t == "look":
@@ -1432,6 +1600,22 @@ func _spawn_object(o: Dictionary, has_bg: bool) -> void:
 		lb.add_theme_constant_override("shadow_offset_x", 0)
 		lb.add_theme_constant_override("shadow_offset_y", 0)
 		n.add_child(lb)
+		if t == "npc":
+			var mk := Label.new()
+			mk.text = "!"
+			mk.size = Vector2(w, 12)
+			mk.position = Vector2(0, -24)
+			mk.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			mk.add_theme_font_size_override("font_size", 12)
+			mk.add_theme_color_override("font_color", Color("#d9d4cc"))
+			mk.scale = lb.scale
+			mk.pivot_offset = Vector2(w / 2.0, 12)
+			mk.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			n.add_child(mk)
+			var bt := mk.create_tween().set_loops()
+			bt.tween_property(mk, "position:y", -27.0, 0.5).set_trans(Tween.TRANS_SINE)
+			bt.tween_property(mk, "position:y", -24.0, 0.5).set_trans(Tween.TRANS_SINE)
+			npc_marks.append({"data": o, "mark": mk, "label": lb})
 	room_objects.append({"data": o, "node": n})
 
 
@@ -1485,7 +1669,7 @@ func _hover_text(o: Dictionary) -> String:
 		"clue":
 			return "İncele"
 		"npc":
-			return "Konuş: " + str(data["dialogues"][o["dialogue"]]["name"])
+			return "Konuş: " + _npc_label(str(o["dialogue"]))
 		"door":
 			return "Git: " + str(data["rooms"][o["to"]]["name"])
 		"look":
@@ -1500,6 +1684,8 @@ func _hover_text(o: Dictionary) -> String:
 func _process(delta: float) -> void:
 	_update_maya(delta)
 	_update_drive(delta)
+	_update_eye_timer(delta)
+	_spin_wheels(delta)
 	_animate(delta)
 	_type_step(delta)
 	_update_hover()
@@ -1540,7 +1726,7 @@ func _update_hover() -> void:
 	var txt := ""
 	if not o.is_empty():
 		txt = _hover_text(o)
-	elif maya and maya.visible and _maya_rect().has_point(mpos):
+	elif maya and maya.visible and not _player_moving() and _maya_rect().has_point(mpos):
 		txt = "Konuş: Maya (ipucu)"
 	if txt == "":
 		hover_label.visible = false
@@ -1566,6 +1752,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				_close_settings()
 			elif inspect_panel.visible:
 				_close_inspect()
+			elif notebook_panel.visible:
+				_close_notebook()
 			elif paused:
 				close_pause()
 			elif not in_menu:
@@ -1609,7 +1797,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
 		var pos := get_global_mouse_position()
-		if maya and maya.visible and _maya_rect().has_point(pos):
+		if maya and maya.visible and not _player_moving() and _maya_rect().has_point(pos):
+			if eye_on:
+				_eye_warning()
+				return
 			walk_to(maya_x + (24.0 if player.position.x > maya_x else -24.0), _talk_to_maya)
 			return
 		var o := _object_at(pos)
@@ -1713,10 +1904,20 @@ func _interact(o: Dictionary) -> void:
 			else:
 				go_room(str(o["to"]), float(o["spawn_x"]))
 		"npc":
+			if eye_on:
+				_eye_warning()
+				return
 			_face_each_other(o)
 			start_dialogue(str(o["dialogue"]))
 		"look":
-			play_lines(o.get("lines", []), Callable())
+			if o.has("set_flag") and not flags.has(o["set_flag"]):
+				flags[o["set_flag"]] = true
+				if o.has("sfx"):
+					_sfx(str(o["sfx"]))
+				_refresh_visibility()
+				play_lines(o.get("lines", []), Callable())
+			else:
+				play_lines(o.get("lines_after", o.get("lines", [])), Callable())
 		"car":
 			if room_id == "sokak":
 				_start_drive()
@@ -1736,7 +1937,7 @@ func give_clue(id: String, done: Callable) -> void:
 	var c: Dictionary = data["clues"][id]
 	if c.has("sets_flag"):
 		flags[c["sets_flag"]] = true
-	var lines: Array = [["", "Yeni ipucu: " + str(c["name"]) + "\n" + str(c["desc"])]]
+	var lines: Array = [["", "Yeni kanıt: " + str(c["name"]) + ("" if c.has("inspect") else "\n" + str(c["desc"]))]]
 	if c.has("comment"):
 		lines.append(["Oscar", str(c["comment"])])
 	if c.has("analysis"):
@@ -1799,7 +2000,7 @@ func _hint_text() -> String:
 		var p: Array = pick["pair"]
 		return "Maya: '" + str(data["clues"][p[0]]["name"]) + "' ve '" + str(data["clues"][p[1]]["name"]) + "'. Bu ikisini kanıt tahtasında bağla."
 	if _final_ready():
-		return "Maya: Yeterince kanıtın var. Üstteki SUÇLA butonuna bas."
+		return "Maya: Yeterince kanıtın var. Kim olduğunu düşünüyorsan onunla konuş ve FCD'ye çağır."
 	if not pending_lab.is_empty():
 		return "Maya: Laboratuvar sonucu bekleniyor. Başka bir mekana geç, sonuç gelir."
 	for d in data["deductions"]:
@@ -1809,7 +2010,7 @@ func _hint_text() -> String:
 
 
 func _update_hud() -> void:
-	accuse_hud.visible = _final_ready() and not in_menu
+	accuse_hud.visible = false
 
 
 func _clue_text(id: String) -> String:
@@ -1873,10 +2074,9 @@ func _set_portrait(who: String) -> void:
 	var key: String = str(speakers.get(who, ""))
 	var right_key := ""
 	if current_npc != "":
-		var npc_name := str(data["dialogues"][current_npc]["name"])
-		right_key = str(speakers.get(npc_name, ""))
-	elif who != "Oscar" and key != "":
-		right_key = key
+		right_key = _npc_art(current_npc)
+	if key != "" and key != "oscar" and key != right_key:
+		right_key = key   # konuşan sağda değilse (ör. Maya araya girdi) sağa o gelir
 	var left_on := key == "oscar" or right_key != ""
 	_show_big_portrait("left", "oscar" if left_on else "", key == "oscar")
 	_show_big_portrait("right", right_key, key != "" and key == right_key)
@@ -1920,7 +2120,7 @@ func _clear_choices() -> void:
 		c.queue_free()
 
 
-func _add_choice(text: String, cb: Callable) -> void:
+func _add_choice(text: String, cb: Callable) -> Button:
 	var b := Button.new()
 	b.text = text
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -1928,6 +2128,12 @@ func _add_choice(text: String, cb: Callable) -> void:
 		_sfx("click")
 		cb.call())
 	dialog_choices.add_child(b)
+	return b
+
+
+func _ask_topic(t: Dictionary, akey: String) -> void:
+	flags[akey] = true
+	_run_result(t)
 
 
 func _layout_dialog() -> void:
@@ -1945,6 +2151,7 @@ func _close_dialog() -> void:
 	_clear_choices()
 	busy = false
 	current_npc = ""
+	_refresh_npc_marks()
 
 
 func start_dialogue(did: String) -> void:
@@ -1971,8 +2178,16 @@ func _npc_menu() -> void:
 			continue
 		if t.has("requires_flag") and not flags.has(t["requires_flag"]):
 			continue
-		_add_choice("Sor: " + str(t["q"]), _run_result.bind(t))
+		var akey := "asked:" + current_npc + ":" + str(t["q"])
+		var b := _add_choice("Sor: " + str(t["q"]), _ask_topic.bind(t, akey))
+		if flags.has(akey):
+			b.disabled = true
+			b.modulate = Color(0.55, 0.55, 0.55)
 	_add_choice("Kanıt göster", func(): open_notebook("show"))
+	var base := current_npc.rstrip("0123456789")
+	if _final_ready() and _is_suspect(base):
+		var sb := _add_choice("Bizimle FCD'ye geliyorsun. (Suçla)", _summon.bind(base))
+		sb.add_theme_color_override("font_color", C_YELLOW)
 	_add_choice("Ayrıl", _close_dialog)
 	_layout_dialog()
 
@@ -1999,8 +2214,8 @@ func _show_clue(id: String) -> void:
 	else:
 		wrong_shows += 1
 		_sfx("wrong")
-		var q: Array = data["wrong_quips"]
-		play_lines([["Maya", str(q[randi() % q.size()])]], _npc_menu)
+		var q: Array = _pick_quip("wrong_quips")
+		play_lines([[str(q[0]), str(q[1])]], _npc_menu)
 
 
 # ================================================================ defter ve dedüksiyon
@@ -2063,7 +2278,10 @@ func _fill_notebook(info: String) -> void:
 	progress_label.text = "Gerekli sonuçlar: " + str(done) + "/" + str(req.size()) + "\nNASIL, FIRSAT, MOTİF, FİZİKSEL KANIT"
 	_update_hud()
 	link_button.visible = select_mode == ""
-	accuse_button.visible = select_mode == "" and _final_ready()
+	accuse_button.visible = false
+	if select_mode == "" and _final_ready():
+		progress_label.text += "\nHAZIR: Suçluyla konuş ve onu FCD'ye çağır."
+
 
 
 ## Bir kanıt polaroidi: çizim, ad, raptiye; üstüne gelince büyür ve sağda detayı gösterir.
@@ -2104,7 +2322,7 @@ func _add_board_card(id: String, relevant: bool) -> void:
 		ph.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		b.add_child(ph)
 	var lb := Label.new()
-	lb.text = str(data["clues"][id]["name"])
+	lb.text = str(data["clues"][id].get("short", data["clues"][id]["name"]))
 	lb.position = Vector2(2, 52)
 	lb.size = Vector2(54, 16)
 	lb.clip_text = true
@@ -2288,31 +2506,71 @@ func _open_accuse() -> void:
 	accuse_panel.visible = true
 
 
+func _is_suspect(id: String) -> bool:
+	for sp in data["final"]["suspects"]:
+		if str(sp[0]) == id:
+			return true
+	return false
+
+
+## Kişiye FCD'ye gelmesini söyle; sorgu odasına geçilir.
+func _summon(id: String) -> void:
+	var fin: Dictionary = data["final"]
+	var nm := str(data["dialogues"][id]["name"])
+	var lines: Array = [["Oscar", nm + ", bizimle FCD'ye gelmen gerekiyor. Birkaç sorumuz var."]]
+	lines.append_array(fin.get("summon", {}).get(id, [[nm, "Ne? Şimdi mi? ...Peki. Ama avukatımı arayacağım."]]))
+	play_lines(lines, func():
+		_close_dialog()
+		summoned = id
+		return_room = room_id
+		return_x = player.position.x
+		go_room("sorgu", 70.0))
+
+
 func _accuse(id: String) -> void:
 	accuse_panel.visible = false
 	var fin: Dictionary = data["final"]
 	if id == str(fin["culprit"]):
-		play_lines(fin["lines"], _win)
+		play_lines(fin["lines"], func():
+			_close_dialog()
+			if fin.has("reveal_item"):
+				open_inspect(str(fin["reveal_item"]), func(): play_lines(fin.get("reveal_lines", []), _win))
+			else:
+				_win())
 	else:
-		wrong_shows += 2
+		wrong_accuse += 1
 		_sfx("wrong")
-		play_lines(fin["wrong"][id], Callable())
+		var lines: Array = (fin["wrong"].get(id, []) as Array).duplicate()
+		lines.append(_pick_quip("accuse_quips"))
+		play_lines(lines, func():
+			_close_dialog()
+			summoned = ""
+			go_room(return_room, return_x))
 
 
 func _win() -> void:
 	_sfx("solve")
-	var stars := 3
-	if wrong_shows > 2:
-		stars = 2
-	if wrong_shows > 6:
-		stars = 1
-	var reward: int = int(data["final"]["reward"]) * stars
-	debt -= reward
+	var fin: Dictionary = data["final"]
+	var base: int = int(fin.get("reward", 900))
+	var cut_show := wrong_shows * 25
+	var cut_acc := wrong_accuse * 150
+	var total_clues: int = data["clues"].size() - (1 if fin.has("reveal_item") else 0)
+	var bonus := 0
+	if clues.size() >= total_clues:
+		bonus = 100
+	var pay := maxi(150, base - cut_show - cut_acc + bonus)
+	debt -= pay
 	_update_debt()
 	_clear_choices()
 	busy = true
 	dialog_panel.visible = true
-	_show_line("VAKA ÇÖZÜLDÜ", "Puan: " + str(stars) + "/3 yıldız   (yanlış kanıt / suçlama: " + str(wrong_shows) + ")\nÖdül: $" + str(reward) + ". Ev sahibi Bayan Kowalski bir hafta daha sabredecek.\n\nVesper & Co. ... Bu isim Oscar'ın peşini bırakmayacak.", false)
+	var t := "Şef Calloway'in raporu\n"
+	t += "Vaka ücreti: $" + str(base) + "\n"
+	t += "Yersiz kanıt gösterme (" + str(wrong_shows) + "): -$" + str(cut_show) + "\n"
+	t += "Yanlış suçlama (" + str(wrong_accuse) + "): -$" + str(cut_acc) + "\n"
+	t += "Tüm kanıtlar bulundu: " + ("+$100" if bonus > 0 else "hayır (" + str(clues.size()) + "/" + str(total_clues) + ")") + "\n"
+	t += "Ödenen: $" + str(pay) + "    Kalan borç: $" + str(debt) + "\n\nVesper & Co. ... Bu isim Oscar'ın peşini bırakmayacak."
+	_show_line("VAKA KAPANDI", t, false)
 	_add_choice("Baştan oyna", func(): get_tree().reload_current_scene())
 	_add_choice("Çıkış", func(): get_tree().quit())
 	_layout_dialog()
@@ -2328,12 +2586,35 @@ func toggle_eye() -> void:
 	elif eye_uses > 0:
 		eye_on = true
 		eye_uses -= 1
+		eye_time = EYE_TIME
 		_sfx("eye")
 	else:
 		show_msg("Oscar'ın Gözü bu mekanda yoruldu.")
 		return
 	_refresh_visibility()
 	_update_eye_button()
+
+
+func _update_eye_timer(delta: float) -> void:
+	if eye_bar == null:
+		return
+	eye_bar.visible = eye_on
+	if not eye_on:
+		return
+	if not (busy or paused):
+		eye_time -= delta
+	var w := 300.0 * clampf(eye_time / EYE_TIME, 0.0, 1.0)
+	eye_bar.size.x = w
+	eye_bar.position.x = VIEW_W / 2.0 - w / 2.0
+	if eye_time <= 0.0:
+		eye_on = false
+		_refresh_visibility()
+		_update_eye_button()
+
+
+func _eye_warning() -> void:
+	_sfx("wrong")
+	show_msg("Oscar'ın Gözü açıkken konuşamazsın. Kapatmak için Q.")
 
 
 func _update_eye_button() -> void:
@@ -2603,11 +2884,16 @@ func _show_inspect_side() -> void:
 		inspect_spots.remove_child(ch)
 		ch.queue_free()
 	var spots: Array = ins.get(inspect_side, [])
+	var next_key := _next_spot_key(inspect_id)
+	var other_has_next := next_key != "" and not next_key.begins_with(inspect_id + ":" + inspect_side + ":")
+	inspect_side_label.text = ("ÖN YÜZ" if inspect_side == "front" else "ARKA YÜZ") + ("   (çevirip arkasına bak)" if other_has_next else ("   (parlayan noktaya tıkla)" if next_key != "" else "   (her şey incelendi)"))
 	for i in range(spots.size()):
 		var sp: Dictionary = spots[i]
 		var key := inspect_id + ":" + inspect_side + ":" + str(i)
+		if key != next_key:
+			continue   # sadece sıradaki nokta görünür; bulunanlar kaybolur
 		var b := Button.new()
-		b.text = "!" if found_details.has(key) else "?"
+		b.text = "?"
 		b.custom_minimum_size = Vector2(18, 18)
 		b.size = Vector2(18, 18)
 		b.position = Vector2(float(sp["x"]), float(sp["y"])) * INSPECT_SIZE - Vector2(9, 9)
@@ -2619,7 +2905,8 @@ func _show_inspect_side() -> void:
 			var tw := b.create_tween().set_loops()
 			tw.tween_property(b, "scale", Vector2(1.2, 1.2), 0.5)
 			tw.tween_property(b, "scale", Vector2.ONE, 0.5)
-	inspect_notes.text = str(c["desc"]) + "\n\n" + _found_notes(inspect_id)
+	var notes := _found_notes(inspect_id)
+	inspect_notes.text = notes if notes != "" else str(c["desc"])
 
 
 func _on_inspect_spot(key: String) -> void:
@@ -2628,6 +2915,18 @@ func _on_inspect_spot(key: String) -> void:
 	found_details[key] = true
 	_sfx("pickup")
 	_show_inspect_side()
+
+
+## Detaylar sırayla açılır: önce ön yüz, sonra arka yüz.
+func _next_spot_key(id: String) -> String:
+	var ins: Dictionary = data["clues"][id].get("inspect", {})
+	for side in ["front", "back"]:
+		var spots: Array = ins.get(side, [])
+		for i in range(spots.size()):
+			var key := id + ":" + side + ":" + str(i)
+			if not found_details.has(key):
+				return key
+	return ""
 
 
 ## Bu ipucunda bulunan detaylar ve sayaç.
@@ -2643,6 +2942,8 @@ func _found_notes(id: String) -> String:
 				found.append("- " + str(spots[i]["text"]))
 	if total == 0:
 		return ""
+	if found.is_empty():
+		return "Henüz bir şey fark etmedin. Parlayan soru işaretine tıkla."
 	var t := "Detaylar " + str(found.size()) + "/" + str(total)
 	for f in found:
 		t += "\n" + str(f)
@@ -2799,8 +3100,14 @@ func _update_maya(delta: float) -> void:
 
 
 func _maya_rect() -> Rect2:
+	# Çizimin tamamı değil, gövdenin ortası: yürürken yanlışlıkla tıklanmasın.
 	var sz := maya.size * maya.scale
-	return Rect2(Vector2(maya_x - sz.x / 2.0, floor_y - sz.y), sz).grow(6.0)
+	var w := sz.x * 0.45
+	return Rect2(Vector2(maya_x - w / 2.0, floor_y - sz.y * 0.9), Vector2(w, sz.y * 0.9))
+
+
+func _player_moving() -> bool:
+	return target_x >= 0.0 or Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_D) or Input.is_action_pressed("ui_left") or Input.is_action_pressed("ui_right")
 
 
 func _talk_to_maya() -> void:
