@@ -62,6 +62,12 @@ var room_objects: Array = []
 var bg_nodes: Array = []
 var npc_anims: Array = []
 var anim_clock: float = 0.0
+# Ajan Maya Cole: Oscar'ı arkasından takip eder; tıklayınca ipucu verir.
+var maya: TextureRect
+var maya_x: float = 0.0
+var maya_walk: Array = []
+var maya_idle: Array = []
+var maya_moving: bool = false
 
 # Arayüz
 var ui_root: Control
@@ -159,6 +165,14 @@ func _ready() -> void:
 # ================================================================ kurulum
 
 func _build_player() -> void:
+	var mtex := _art("maya")
+	if mtex:
+		maya = _child_tex(self, Vector2.ZERO, mtex)
+		maya.pivot_offset = Vector2(mtex.get_width() / 2.0, mtex.get_height())
+		maya_walk = _strip_frames(_art("maya_walk"), mtex.get_width())
+		maya_idle = _strip_frames(_art("maya_idle"), mtex.get_width())
+		if maya_idle.is_empty():
+			maya_idle = [mtex]
 	player = Node2D.new()
 	add_child(player)
 	var tex := _art("oscar")
@@ -741,6 +755,7 @@ func load_room(id: String, spawn_x: float) -> void:
 	if bool(r.get("rain", false)):
 		_add_rain()
 	player.position = Vector2(clampf(spawn_x, 8.0, room_w - 8.0), floor_y)
+	maya_x = clampf(spawn_x + (-22.0 if spawn_x > room_w / 2.0 else 22.0) * char_scale, 8.0, room_w - 8.0)
 	# Sahne 180'den uzunsa (PixelLab 192) dikeyde ortala.
 	camera.position = Vector2(0, room_h / 2.0 - floor_y)
 	camera.limit_right = int(room_w)
@@ -938,6 +953,7 @@ func _hover_text(o: Dictionary) -> String:
 # ================================================================ hareket ve girdi
 
 func _process(delta: float) -> void:
+	_update_maya(delta)
 	_animate(delta)
 	_type_step(delta)
 	_update_hover()
@@ -973,11 +989,17 @@ func _update_hover() -> void:
 	if busy:
 		hover_label.visible = false
 		return
-	var o := _object_at(get_global_mouse_position())
-	if o.is_empty():
+	var mpos := get_global_mouse_position()
+	var o := _object_at(mpos)
+	var txt := ""
+	if not o.is_empty():
+		txt = _hover_text(o)
+	elif maya and maya.visible and _maya_rect().has_point(mpos):
+		txt = "Konuş: Maya (ipucu)"
+	if txt == "":
 		hover_label.visible = false
 		return
-	hover_label.text = _hover_text(o)
+	hover_label.text = txt
 	hover_label.position = get_viewport().get_mouse_position() + Vector2(12, -18)
 	hover_label.visible = true
 
@@ -1029,6 +1051,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	var mb := event as InputEventMouseButton
 	if mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
 		var pos := get_global_mouse_position()
+		if maya and maya.visible and _maya_rect().has_point(pos):
+			walk_to(maya_x + (24.0 if player.position.x > maya_x else -24.0), _talk_to_maya)
+			return
 		var o := _object_at(pos)
 		if not o.is_empty():
 			walk_to(_approach_x(o), _interact.bind(o))
@@ -2159,3 +2184,38 @@ func _hide_big_portraits() -> void:
 		if sway != null:
 			(sway as Tween).kill()
 			p["sway"] = null
+
+
+# ================================================================ Maya
+
+func _update_maya(delta: float) -> void:
+	if maya == null:
+		return
+	var facing_right := not player_sprite.flip_h if PLAYER_ART_FACES_RIGHT else player_sprite.flip_h
+	var target := player.position.x + (-22.0 if facing_right else 22.0) * char_scale
+	target = clampf(target, 8.0, room_w - 8.0)
+	var dx := target - maya_x
+	maya_moving = absf(dx) > 4.0
+	if maya_moving:
+		maya_x += signf(dx) * minf(absf(dx), SPEED * 1.05 * delta)
+		maya.flip_h = dx < 0.0
+	else:
+		maya.flip_h = player.position.x < maya_x
+	maya.scale = Vector2(char_scale, char_scale)
+	maya.position = Vector2(maya_x - maya.size.x / 2.0, floor_y - maya.size.y)
+	var frames: Array = maya_walk if maya_moving and not maya_walk.is_empty() else maya_idle
+	var ft := WALK_FRAME_TIME if maya_moving else IDLE_FRAME_TIME
+	maya.texture = frames[int(anim_clock / ft) % frames.size()]
+
+
+func _maya_rect() -> Rect2:
+	var sz := maya.size * maya.scale
+	return Rect2(Vector2(maya_x - sz.x / 2.0, floor_y - sz.y), sz).grow(6.0)
+
+
+func _talk_to_maya() -> void:
+	_face(maya_x - player.position.x)
+	var t := _hint_text()
+	if t.begins_with("Maya: "):
+		t = t.substr(6)
+	play_lines([["Oscar", "Cole, ne düşünüyorsun?"], ["Maya", t]], Callable())
