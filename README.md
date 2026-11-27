@@ -16,10 +16,10 @@ Vaka 1 "Boş Vitrin" baştan sona oynanabilir: ana menü, 6 mekan, 5 karakter, i
 | --- | --- | --- |
 | Menüde başla | "Vakayı aç" | Enter / Boşluk |
 | Yürü | Yere tıkla | A / D veya ok tuşları |
-| İncele, konuş, kapıdan geç | Nesneye tıkla (üstüne gelince ne olduğu yazar) | E |
+| İncele, konuş, kapıdan geç | Nesneye tıkla (üstüne gelince ne olduğu yazar) | F (veya E) |
 | Oscar'ın Gözü (mekan başına 3, gizli ipuçlarını gösterir) | Üstteki buton | Q |
 | Defter ve dedüksiyon tahtası | Üstteki buton | Tab |
-| Diyaloğu ilerlet / yazıyı hızlandır | Kutuya tıkla | Boşluk / Enter / E |
+| Diyaloğu ilerlet / yazıyı hızlandır | Kutuya tıkla | Boşluk / Enter / F |
 | Duraklat (devam, ayarlar, ana menü, çıkış) | Sağ üstteki "Menü" | Esc |
 
 Ayarlar (ana menüden veya duraklatma menüsünden): müzik sesi, efekt sesi, tam ekran. Tercihler `user://settings.cfg` dosyasına kaydedilir.
@@ -72,7 +72,7 @@ Palet: `#0f0b08`, `#2b1d14`, `#5a3d2b`, `#8a6a4f`, `#e8c547`, `#f2e3b3`.
 
 ## Henüz olmayanlar
 
-- Depo ve otopark çizimleri, eşya çizimleri.
+- Vaka 1 çizimleri tamam.
 - Sihir numaralarının mini oyunları (soğuk okuma şimdilik diyalog seçeneği, cep aşırma finalde ara sahne).
 - Yırtık belge birleştirme yapbozu.
 - Kayıt sistemi, Vaka 2+.

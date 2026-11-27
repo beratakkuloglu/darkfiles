@@ -129,6 +129,11 @@ var found_details: Dictionary = {}
 var notebook_selected: String = ""
 var notebook_inspect_btn: Button
 
+# Konuşma portreleri (büyük, parlayan; Oscar solda, karşısındaki sağda)
+const BIG_PORTRAIT_SCALE := 4.0
+const BIG_PORTRAIT_ROWS := 34
+var big_portraits: Dictionary = {}   # "left" / "right" -> {"root", "img", "glow", "key", "tween"}
+
 
 func _ready() -> void:
 	var f := FileAccess.open("res://data/case1.json", FileAccess.READ)
@@ -355,6 +360,8 @@ func _build_ui() -> void:
 	hover_label.visible = false
 	ui_root.add_child(hover_label)
 
+	_build_big_portraits()
+
 	# Diyalog kutusu: portre + isim + metin + seçenekler
 	dialog_panel = PanelContainer.new()
 	dialog_panel.position = Vector2(12, 250)
@@ -528,7 +535,7 @@ func _build_menu() -> void:
 	quit.pressed.connect(func(): get_tree().quit())
 	box.add_child(quit)
 	var help := Label.new()
-	help.text = "Fare: tıkla, yürü, incele, konuş     Klavye: A/D yürü, E etkileşim, Q Oscar'ın Gözü, Tab defter"
+	help.text = "Fare: tıkla, yürü, incele, konuş     Klavye: A/D yürü, F etkileşim, Q Oscar'ın Gözü, Tab defter"
 	help.position = Vector2(0, 318)
 	help.size = Vector2(VIEW_W, 20)
 	help.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -909,10 +916,10 @@ func _unhandled_input(event: InputEvent) -> void:
 				open_notebook("")
 			return
 		if busy:
-			if dialog_panel.visible and dialog_choices.get_child_count() == 0 and (key.keycode == KEY_SPACE or key.keycode == KEY_ENTER or key.keycode == KEY_E):
+			if dialog_panel.visible and dialog_choices.get_child_count() == 0 and (key.keycode == KEY_SPACE or key.keycode == KEY_ENTER or key.keycode == KEY_E or key.keycode == KEY_F):
 				_advance()
 			return
-		if key.keycode == KEY_E:
+		if key.keycode == KEY_F or key.keycode == KEY_E:
 			_interact_nearest()
 		elif key.keycode == KEY_Q:
 			toggle_eye()
@@ -1130,17 +1137,19 @@ func _show_line(who: String, text: String, animate: bool) -> void:
 
 
 func _set_portrait(who: String) -> void:
+	# Küçük kutu portresi yerine büyük, parlayan portreler kullanılıyor.
+	portrait_box.visible = false
 	var speakers: Dictionary = data.get("speakers", {})
 	var key: String = str(speakers.get(who, ""))
-	var tex: Texture2D = _art(key) if key != "" else null
-	if tex == null:
-		portrait_box.visible = false
-		return
-	var at := AtlasTexture.new()
-	at.atlas = tex
-	at.region = Rect2(0, 0, tex.get_width(), mini(30, tex.get_height()))
-	portrait.texture = at
-	portrait_box.visible = true
+	var right_key := ""
+	if current_npc != "":
+		var npc_name := str(data["dialogues"][current_npc]["name"])
+		right_key = str(speakers.get(npc_name, ""))
+	elif who != "Oscar" and key != "":
+		right_key = key
+	var left_on := key == "oscar" or right_key != ""
+	_show_big_portrait("left", "oscar" if left_on else "", key == "oscar")
+	_show_big_portrait("right", right_key, key != "" and key == right_key)
 
 
 func _type_step(delta: float) -> void:
@@ -1194,10 +1203,14 @@ func _add_choice(text: String, cb: Callable) -> void:
 func _layout_dialog() -> void:
 	dialog_panel.reset_size()
 	dialog_panel.position.y = VIEW_H - 10.0 - dialog_panel.get_combined_minimum_size().y
+	for side in big_portraits:
+		var root: Control = big_portraits[side]["root"]
+		root.position.y = dialog_panel.position.y - BIG_PORTRAIT_ROWS * BIG_PORTRAIT_SCALE + 18.0
 
 
 func _close_dialog() -> void:
 	dialog_panel.visible = false
+	_hide_big_portraits()
 	typing = false
 	_clear_choices()
 	busy = false
@@ -1270,6 +1283,7 @@ func open_notebook(mode: String) -> void:
 	select_mode = mode
 	link_first = ""
 	dialog_panel.visible = false
+	_hide_big_portraits()
 	notebook_panel.visible = true
 	_fill_notebook("Bir ipucuna tıkla, ayrıntısını gör." if mode == "" else "Hangi kanıtı göstereceksin?")
 
@@ -1803,3 +1817,102 @@ func _close_inspect() -> void:
 	inspect_done = Callable()
 	if cb.is_valid():
 		cb.call()
+
+
+# ================================================================ konuşma portreleri
+
+## Hotline Miami tarzı: konuşanın portresi büyür, parlar ve hafifçe sallanır; dinleyen kararır.
+func _build_big_portraits() -> void:
+	var w := 32.0 * BIG_PORTRAIT_SCALE
+	for side in ["left", "right"]:
+		var root := Control.new()
+		root.size = Vector2(w, BIG_PORTRAIT_ROWS * BIG_PORTRAIT_SCALE)
+		root.pivot_offset = Vector2(w / 2.0, root.size.y)
+		root.position = Vector2(20.0 if side == "left" else VIEW_W - 20.0 - w, 120)
+		root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		root.visible = false
+		ui_root.add_child(root)
+		# Parıltı: aynı çizim sarıya boyanıp dört yöne kaydırılır, arkada kalır.
+		var glow := Control.new()
+		glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		root.add_child(glow)
+		for off in [Vector2(-4, 0), Vector2(4, 0), Vector2(0, -4), Vector2(0, 4), Vector2(-3, -3), Vector2(3, -3), Vector2(-3, 3), Vector2(3, 3)]:
+			var g := TextureRect.new()
+			g.position = off
+			g.size = root.size
+			g.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			g.stretch_mode = TextureRect.STRETCH_SCALE
+			g.modulate = Color(C_YELLOW.r, C_YELLOW.g, C_YELLOW.b, 0.55)
+			g.material = _flat_color_material()
+			g.flip_h = side == "right"
+			g.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			glow.add_child(g)
+		var img := TextureRect.new()
+		img.size = root.size
+		img.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		img.stretch_mode = TextureRect.STRETCH_SCALE
+		img.flip_h = side == "right"
+		img.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		root.add_child(img)
+		var tw := glow.create_tween().set_loops()
+		tw.tween_property(glow, "modulate:a", 0.35, 0.45)
+		tw.tween_property(glow, "modulate:a", 1.0, 0.45)
+		big_portraits[side] = {"root": root, "img": img, "glow": glow, "key": "", "sway": null}
+
+
+## Çizimi tek renge (beyaza) çeviren shader; modulate ile sarı parıltı olur.
+func _flat_color_material() -> ShaderMaterial:
+	var sh := Shader.new()
+	sh.code = "shader_type canvas_item;\nvarying vec4 tint;\nvoid vertex() { tint = COLOR; }\nvoid fragment() { COLOR = vec4(tint.rgb, tint.a * texture(TEXTURE, UV).a); }"
+	var m := ShaderMaterial.new()
+	m.shader = sh
+	return m
+
+
+func _show_big_portrait(side: String, key: String, speaking: bool) -> void:
+	var p: Dictionary = big_portraits[side]
+	var root: Control = p["root"]
+	var tex: Texture2D = _art(key) if key != "" else null
+	if tex == null:
+		root.visible = false
+		p["key"] = ""
+		return
+	if str(p["key"]) != key or not root.visible:
+		var at := AtlasTexture.new()
+		at.atlas = tex
+		at.region = Rect2(0, 0, tex.get_width(), mini(BIG_PORTRAIT_ROWS, tex.get_height()))
+		(p["img"] as TextureRect).texture = at
+		for g in (p["glow"] as Control).get_children():
+			(g as TextureRect).texture = at
+		p["key"] = key
+		# İçeri kayarak gir
+		var home_x: float = 20.0 if side == "left" else VIEW_W - 20.0 - root.size.x
+		root.position.x = home_x + (-160.0 if side == "left" else 160.0)
+		root.visible = true
+		root.create_tween().tween_property(root, "position:x", home_x, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	(p["glow"] as Control).visible = speaking
+	root.modulate = Color(1, 1, 1) if speaking else Color(0.45, 0.42, 0.4)
+	var sway = p["sway"]
+	if sway != null:
+		(sway as Tween).kill()
+		p["sway"] = null
+	root.rotation = 0.0
+	root.scale = Vector2.ONE
+	if speaking:
+		root.scale = Vector2(1.06, 1.06)
+		var st := root.create_tween().set_loops()
+		st.tween_property(root, "rotation", deg_to_rad(2.0), 0.35).set_trans(Tween.TRANS_SINE)
+		st.tween_property(root, "rotation", deg_to_rad(-2.0), 0.7).set_trans(Tween.TRANS_SINE)
+		st.tween_property(root, "rotation", 0.0, 0.35).set_trans(Tween.TRANS_SINE)
+		p["sway"] = st
+
+
+func _hide_big_portraits() -> void:
+	for side in big_portraits:
+		var p: Dictionary = big_portraits[side]
+		(p["root"] as Control).visible = false
+		p["key"] = ""
+		var sway = p["sway"]
+		if sway != null:
+			(sway as Tween).kill()
+			p["sway"] = null

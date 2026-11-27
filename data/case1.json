@@ -386,7 +386,7 @@
      "type": "door",
      "to": "depo",
      "x": 256,
-     "spawn_x": 40,
+     "spawn_x": 62,
      "requires_flag": "depo_acik",
      "locked_text": "Bodrum kapısı. Neden ineyim ki? Henüz bir sebebim yok."
     },
@@ -394,7 +394,7 @@
      "type": "door",
      "to": "otopark",
      "x": 320,
-     "spawn_x": 40,
+     "spawn_x": 86,
      "requires_flag": "otopark_acik",
      "locked_text": "Otopark. Harold'ın arabası orada ama anahtarı bende değil."
     }
@@ -432,50 +432,51 @@
     {
      "type": "door",
      "to": "ofis",
-     "x": 20,
+     "x": 45,
      "spawn_x": 250
     },
     {
      "type": "clue",
      "id": "bileklik",
-     "x": 90,
+     "x": 100,
      "y": 0,
-     "w": 4,
+     "w": 8,
      "h": 3
     },
     {
      "type": "npc",
      "dialogue": "toby2",
-     "x": 129,
+     "x": 118,
      "requires_flag": "depo_acik",
      "art": "toby"
     },
     {
      "type": "clue",
      "id": "oluk",
-     "x": 215,
-     "y": 0,
-     "w": 20,
-     "h": 15
+     "x": 178,
+     "y": 6,
+     "w": 58,
+     "h": 37
     },
     {
      "type": "clue",
      "id": "kol2",
-     "x": 232,
+     "x": 212,
      "y": 0,
-     "w": 3,
+     "w": 4,
      "h": 3
     },
     {
      "type": "clue",
      "id": "afis",
      "x": 301,
-     "y": 35,
-     "w": 12,
-     "h": 17,
+     "y": 40,
+     "w": 40,
+     "h": 66,
      "hidden": true
     }
-   ]
+   ],
+   "floor_y": 156
   },
   "otopark": {
    "name": "Müze Otoparkı",
@@ -508,34 +509,35 @@
     {
      "type": "door",
      "to": "ofis",
-     "x": 20,
+     "x": 66,
      "spawn_x": 300
     },
     {
      "type": "npc",
      "dialogue": "vivian2",
-     "x": 113,
+     "x": 120,
      "requires_flag": "otopark_acik",
      "art": "vivian"
     },
     {
      "type": "clue",
      "id": "fatura",
-     "x": 187,
-     "y": 11,
-     "w": 5,
-     "h": 3
+     "x": 200,
+     "y": 17,
+     "w": 10,
+     "h": 5
     },
     {
      "type": "clue",
      "id": "kartvizit",
-     "x": 236,
-     "y": 5,
-     "w": 4,
-     "h": 3
+     "x": 248,
+     "y": 12,
+     "w": 8,
+     "h": 5
     }
    ],
-   "rain": true
+   "rain": true,
+   "floor_y": 140
   }
  },
  "clues": {
