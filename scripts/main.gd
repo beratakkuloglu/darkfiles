@@ -46,6 +46,16 @@ var final_hint_shown: bool = false
 var hinted: Dictionary = {}
 var in_menu: bool = true
 
+# Açılış sahnesi (data "cutscene": [{text, art?}])
+var cut_panel: ColorRect
+var cut_img: TextureRect
+var cut_text: Label
+var cut_cards: Array = []
+var cut_i: int = 0
+var cut_tween: Tween
+var cut_done: Callable = Callable()
+var in_cutscene: bool = false
+
 # Dünya
 var room_layer: Node2D
 var fx_layer: Node2D
@@ -656,8 +666,110 @@ func _start_game() -> void:
 	tw.tween_property(menu_panel, "modulate:a", 0.0, 0.5)
 	tw.tween_callback(func():
 		menu_panel.visible = false
-		_set_hud_visible(true)
-		play_lines(data["intro"], Callable()))
+		_play_cutscene(data.get("cutscene", []), func():
+			_set_hud_visible(true)
+			play_lines(data["intro"], Callable())))
+
+
+# ================================================================ açılış sahnesi
+
+## Siyah ekranda resimli, daktiloyla yazılan kartlar. Tıkla/Boşluk devam, Esc atla.
+func _play_cutscene(cards: Array, done: Callable) -> void:
+	if cards.is_empty():
+		done.call()
+		return
+	cut_cards = cards
+	cut_i = 0
+	cut_done = done
+	in_cutscene = true
+	busy = true
+	if cut_panel == null:
+		cut_panel = ColorRect.new()
+		cut_panel.color = Color(0, 0, 0, 1)
+		cut_panel.size = Vector2(VIEW_W, VIEW_H)
+		cut_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+		cut_panel.gui_input.connect(func(ev: InputEvent):
+			var mb := ev as InputEventMouseButton
+			if mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
+				_cut_advance())
+		ui_root.add_child(cut_panel)
+		cut_img = TextureRect.new()
+		cut_img.position = Vector2(VIEW_W / 2.0 - 200, 24)
+		cut_img.size = Vector2(400, 225)
+		cut_img.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		cut_img.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		cut_img.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cut_panel.add_child(cut_img)
+		cut_text = Label.new()
+		cut_text.position = Vector2(60, 262)
+		cut_text.size = Vector2(VIEW_W - 120, 60)
+		cut_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		cut_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		cut_text.add_theme_font_size_override("font_size", 15)
+		cut_text.add_theme_color_override("font_color", C_PALE)
+		cut_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cut_panel.add_child(cut_text)
+		var hint := Label.new()
+		hint.text = "Tıkla / Boşluk: devam     Esc: atla"
+		hint.position = Vector2(0, VIEW_H - 22)
+		hint.size = Vector2(VIEW_W - 16, 14)
+		hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		hint.add_theme_font_size_override("font_size", 9)
+		hint.add_theme_color_override("font_color", C_BROWN)
+		hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cut_panel.add_child(hint)
+	ui_root.move_child(cut_panel, -1)
+	cut_panel.visible = true
+	cut_panel.modulate.a = 1.0
+	_show_cut_card()
+
+
+func _show_cut_card() -> void:
+	var c: Dictionary = cut_cards[cut_i]
+	var tex: Texture2D = _art(str(c["art"])) if c.has("art") else null
+	cut_img.texture = tex
+	# Resim yoksa yazı ekranın ortasına iner.
+	cut_text.position.y = 262.0 if tex else VIEW_H / 2.0 - 30.0
+	cut_text.text = str(c["text"])
+	cut_text.visible_ratio = 0.0
+	cut_img.modulate.a = 0.0
+	if cut_tween:
+		cut_tween.kill()
+	cut_tween = create_tween()
+	cut_tween.tween_property(cut_img, "modulate:a", 1.0, 0.6)
+	cut_tween.parallel().tween_property(cut_text, "visible_ratio", 1.0, 0.035 * cut_text.text.length())
+
+
+func _cut_advance() -> void:
+	if not in_cutscene:
+		return
+	if cut_tween and cut_tween.is_running():
+		cut_tween.kill()
+		cut_img.modulate.a = 1.0
+		cut_text.visible_ratio = 1.0
+		return
+	_sfx("blip")
+	cut_i += 1
+	if cut_i >= cut_cards.size():
+		_end_cutscene()
+	else:
+		_show_cut_card()
+
+
+func _end_cutscene() -> void:
+	if not in_cutscene:
+		return
+	in_cutscene = false
+	if cut_tween:
+		cut_tween.kill()
+	var tw := create_tween()
+	tw.tween_property(cut_panel, "modulate:a", 0.0, 0.6)
+	tw.tween_callback(func():
+		cut_panel.visible = false
+		var cb := cut_done
+		cut_done = Callable()
+		if cb.is_valid():
+			cb.call())
 
 
 func _set_hud_visible(v: bool) -> void:
@@ -721,7 +833,17 @@ func go_room(id: String, spawn_x: float) -> void:
 			if paused:
 				busy_before_pause = false
 			else:
-				busy = false)
+				busy = false
+				_play_enter_lines())
+
+
+## Mekanın "enter_lines" satırları ilk girişte bir kez oynar.
+func _play_enter_lines() -> void:
+	var r: Dictionary = data["rooms"][room_id]
+	var key := "entered_" + room_id
+	if r.has("enter_lines") and not flags.has(key):
+		flags[key] = true
+		play_lines(r["enter_lines"], Callable())
 
 
 func load_room(id: String, spawn_x: float) -> void:
@@ -826,7 +948,7 @@ func _spawn_object(o: Dictionary, has_bg: bool) -> void:
 			w = float(o.get("w", 24))
 			h = float(o.get("h", 54))
 			col = C_DARK
-			label_text = str(data["rooms"][o["to"]]["name"])
+			label_text = str(o.get("label", data["rooms"][o["to"]]["name"]))
 	var tex := _art(art_key)
 	var frames: Array = []
 	if t == "npc" and tex:
@@ -1009,6 +1131,12 @@ func _unhandled_input(event: InputEvent) -> void:
 	if key != null:
 		if not key.pressed or key.echo:
 			return
+		if in_cutscene:
+			if key.keycode == KEY_ESCAPE:
+				_end_cutscene()
+			elif key.keycode in [KEY_SPACE, KEY_ENTER, KEY_F, KEY_E]:
+				_cut_advance()
+			return
 		if key.keycode == KEY_ESCAPE:
 			if settings_panel.visible:
 				_close_settings()
@@ -1137,7 +1265,8 @@ func _interact(o: Dictionary) -> void:
 		"clue":
 			give_clue(str(o["id"]), Callable())
 		"door":
-			if o.has("requires_flag") and not flags.has(o["requires_flag"]):
+			var lock := str(o.get("lock_flag", o.get("requires_flag", "")))
+			if lock != "" and not flags.has(lock):
 				play_lines([["Oscar", str(o.get("locked_text", "Kilitli."))]], Callable())
 			else:
 				go_room(str(o["to"]), float(o["spawn_x"]))
@@ -1206,6 +1335,8 @@ func _add_link_hint(lines: Array) -> void:
 
 
 func _hint_text() -> String:
+	if room_id == "fcd" and not flags.has("briefed"):
+		return "Maya: Önce Şef. Masası sağda, bekletmeyi sevmez."
 	var req: Array = data["final"]["required"]
 	var ready_list := _ready_pairs()
 	var pick: Dictionary = {}
@@ -1375,6 +1506,8 @@ func start_dialogue(did: String) -> void:
 	if not flags.has(key):
 		flags[key] = true
 		lines = d.get("intro", [])
+		if d.has("intro_flag"):
+			flags[d["intro_flag"]] = true
 	play_lines(lines, _npc_menu)
 
 
