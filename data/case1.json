@@ -999,20 +999,20 @@
   },
   "kartvizit": {
    "name": "Notlu kartvizit",
-   "desc": "Bagajda. Arkasında el yazısı: 'Alıcı Cuma, şehir dışı. Nakit.'",
+   "desc": "Bagajda. Arkasında el yazısı: 'İskele 14, 23:30. Takip edilme.'",
    "inspect": {
     "front": [
      {
       "x": 0.5,
-      "y": 0.45,
-      "text": "Vesper & Co. Adres yok, sadece telefon."
+      "y": 0.6,
+      "text": "Vesper & Co. 'Soruşturma ve danışmanlık'. Adres yok, sadece telefon."
      }
     ],
     "back": [
      {
       "x": 0.5,
-      "y": 0.5,
-      "text": "El yazısı: 'Alıcı Cuma, şehir dışı. Nakit.'"
+      "y": 0.48,
+      "text": "El yazısı: 'İskele 14, 23:30. Takip edilme.' Sandıktaki 'Teslim: Cuma' etiketiyle birleşince: alıcı Cuma gecesi iskelede."
      }
     ]
    }
