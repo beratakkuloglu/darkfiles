@@ -1214,6 +1214,15 @@ func _animate(delta: float) -> void:
 		(a["node"] as TextureRect).texture = frames[i]
 	if not player_sprite:
 		return
+	# Kişiler her zaman Oscar'a doğru bakar (çizimler sağa bakıyor varsayılır, "faces":"left" ile ters).
+	for e in room_objects:
+		var o: Dictionary = e["data"]
+		if str(o["type"]) != "npc" or not (e["node"] is TextureRect):
+			continue
+		var dx := player.position.x - float(o["x"])
+		if absf(dx) > 3.0:
+			var faces_right := str(o.get("faces", "right")) == "right"
+			(e["node"] as TextureRect).flip_h = (dx < 0.0) == faces_right
 	var moving := not busy and (target_x >= 0.0 or Input.is_action_pressed("ui_left") or Input.is_action_pressed("ui_right") or Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_D))
 	if moving and not walk_frames.is_empty():
 		walk_time += delta

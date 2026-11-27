@@ -50,7 +50,7 @@ Ekran 640x360, kamera 2x yakınlaştırır; yani dünya 320x180 "çizim pikseli"
 | Oscar | `art/oscar.png` (sağa bakan) | 32x48 |
 | Oscar yürüme | `art/oscar_walk.png` | 32x48 kareler yan yana |
 | Şüpheliler | `art/toby.png`, `art/vivian.png`, `art/gus.png`, `art/harold.png` | 32x48 |
-| FCD karakterleri | `art/sef.png` (Şef), `art/ajan.png` (Ajan Diaz), `art/maya.png` | 32x48 |
+| FCD karakterleri | `art/memur1.png` (Şef Calloway), `art/memur2.png` (Memur Park), `art/maya.png` | 32x48 |
 | Durma (nefes) animasyonu | `art/<ad>_idle.png` (ör. `art/gus_idle.png`) | 32x48 kareler yan yana |
 | İpucu (sahnede) | `art/<ipucu id>.png` (ör. `art/kupe.png`); yoksa yanıp sönen yıldız | 4-30 px |
 | İpucu (inceleme ekranı) | `art/items/<ipucu id>.png` ön, `art/items/<ipucu id>_back.png` arka | 96x96 |

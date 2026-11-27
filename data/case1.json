@@ -1,67 +1,55 @@
 {
  "case_name": "Vaka 1: Boş Vitrin",
  "start_room": "fcd",
- "start_x": 40,
+ "start_x": 44,
  "cutscene": [
   {
    "art": "cutscene/sehir",
-   "text": "Ravenport, 2003. Doğu kıyısının en yağmurlu liman şehri. Burada yağmur hiç dinmez. Suç da."
+   "text": "Ravenport, 2003. Yağmur yağıyor. Burada hep yağar."
   },
   {
    "art": "cutscene/sahne",
-   "text": "Oscar Penn, namıdiğer Büyük Valentino. Gloriana Tiyatrosu'nun yıldızı, şehrin en ünlü sihirbazı."
+   "text": "Beş yıl önce bu şehir adımı bağırıyordu. Büyük Valentino. Yani ben."
   },
   {
    "art": "cutscene/sahne",
-   "text": "Ta ki 1998'deki o geceye kadar. 'Kaybolan Adam' numarası ters gitti, perde indi... ve bir daha hiç kalkmadı."
+   "text": "Sonra son numaramda bir şey ters gitti. O geceden sonra kimse bilet almadı."
   },
   {
-   "text": "Beş yıl sonra elinde 12.480 dolar borç, eski bir trençkot ve tek bir yetenek var: insanları okumak."
+   "text": "Şimdi 12.480 dolar borcum ve bir ev sahibim var. İkisi de sabırsız."
   },
   {
-   "text": "Federal Suçlar Birimi'nin Ravenport Bürosu, kısaca FCD, bu yetenek için onu danışman olarak işe aldı. Bu gece ilk günü."
+   "text": "Ama hâlâ bir şeyde iyiyim. Biri bana yalan söylediğinde anlarım. FCD de tam bunun için beni işe aldı."
   },
   {
    "art": "cutscene/muze",
-   "text": "Aynı gece, Finch-Moore Sanat ve Tarih Müzesi'nin yıllık Kış Yıldızı Galası'nda biri imkansızı başardı."
+   "text": "Bu gece ilk günümdü. Daha ceketimi asmadan telefon çaldı. Şehrin en iyi korunan müzesinden bir yakut kaybolmuştu."
   }
  ],
  "intro": [
   [
-   "",
-   "FCD Ravenport Bürosu, Mercer Caddesi. Gece 23:40."
-  ],
-  [
    "Maya",
-   "Sen Oscar Penn olmalısın. Sihirbaz."
+   "Penn? Oscar Penn?"
   ],
   [
    "Oscar",
-   "Eski sihirbaz. Artık danışmanım. Daha az alkış, daha çok kahve."
+   "Duruma göre. Borç için geldiysen, değilim."
   ],
   [
    "Maya",
-   "Ajan Maya Cole. Ortağın. Şef Calloway seni bekliyor, ilk gününden bir vaka var."
+   "Maya Cole. Ortağınım. İlk gününe hoş geldin. Bir vakamız var."
   ],
   [
    "Oscar",
-   "Peki, Ajan Cole."
+   "Daha kahvemi bile almadım."
   ],
   [
    "Maya",
-   "Sadece Cole. Ve hiçbir şeye dokunma."
+   "Arabada içersin. Önce Şef'e uğra, cam odanın önünde bekliyor."
   ],
   [
    "",
-   "Tıkla: yürü. Parlayan noktalar: incele. Kişiler: konuş. Defter: ipuçları ve kanıt tahtası. Oscar'ın Gözü: gizli ayrıntılar (mekan başına 3 kez)."
-  ],
-  [
-   "",
-   "İpuçlarını topladıkça Defter > Kanıt tahtası ile ikişer ikişer bağla. Dört ana sonuç bulunca SUÇLA butonu açılır. Takılırsan defterde 'Maya'ya sor' var."
-  ],
-  [
-   "",
-   "Klavye: A/D yürü, F etkileşim, Q Oscar'ın Gözü, Tab defter."
+   "Tıkla ya da A/D ile yürü. F ile konuş, incele. Tab defteri açar."
   ]
  ],
  "wrong_quips": [
@@ -141,27 +129,29 @@
      "spawn_x": 52,
      "w": 40,
      "h": 85
-    },
-    {
-     "type": "npc",
-     "dialogue": "dooley",
-     "art": "memur1",
-     "x": 84
     }
    ],
    "floor_y": 172,
    "enter_lines": [
     [
-     "",
-     "Finch-Moore Sanat ve Tarih Müzesi. Ravenport'un en eski müzesi, 1890'dan beri. Gece yarısı."
-    ],
-    [
      "Maya",
-     "Galadan herkes hâlâ binada. Şef Calloway'in emri, kimse çıkmayacak."
+     "Kimse çıkmadı. Misafirler, personel, hepsi hâlâ içeride."
     ],
     [
      "Oscar",
-     "Mükemmel. Sihirbazın en sevdiği şey: kaçamayan bir seyirci."
+     "Güzel. Kaçamayan seyirciyi severim."
+    ],
+    [
+     "Maya",
+     "Bu bir gösteri değil, Penn."
+    ],
+    [
+     "Oscar",
+     "Her şey bir gösteridir, Cole. Biz sadece sahnede kimin olduğunu bulacağız."
+    ],
+    [
+     "",
+     "Parlayan yerleri incele, insanlarla konuş. Kanıtları defterdeki Kanıt tahtasında ikişer bağla. Q: Oscar'ın Gözü, gizli ayrıntıları gösterir. Takılırsan Maya'ya tıkla."
     ]
    ],
    "place": "Finch-Moore Müzesi"
@@ -262,12 +252,6 @@
      "spawn_x": 60,
      "w": 24,
      "h": 90
-    },
-    {
-     "type": "npc",
-     "dialogue": "park",
-     "art": "memur2",
-     "x": 62
     }
    ],
    "floor_y": 172,
@@ -620,74 +604,31 @@
   "fcd": {
    "name": "Ofis Katı",
    "width": 344,
-   "floor_y": 168,
+   "floor_y": 172,
    "bg": "#1f1a14",
-   "decor": [
-    {
-     "x": 70,
-     "y": 0,
-     "w": 46,
-     "h": 20,
-     "color": "#3a2a1e"
-    },
-    {
-     "x": 70,
-     "y": 20,
-     "w": 10,
-     "h": 8,
-     "color": "#14100c"
-    },
-    {
-     "x": 170,
-     "y": 60,
-     "w": 60,
-     "h": 40,
-     "color": "#121a22"
-    },
-    {
-     "x": 170,
-     "y": 58,
-     "w": 64,
-     "h": 2,
-     "color": "#5a4630"
-    },
-    {
-     "x": 255,
-     "y": 0,
-     "w": 56,
-     "h": 22,
-     "color": "#4a3624"
-    },
-    {
-     "x": 30,
-     "y": 0,
-     "w": 20,
-     "h": 48,
-     "color": "#2e241a"
-    }
-   ],
    "objects": [
     {
+     "type": "door",
+     "to": "hol",
+     "x": 18,
+     "spawn_x": 31,
+     "w": 30,
+     "h": 100,
+     "label": "Asansör: Finch-Moore Müzesi",
+     "lock_flag": "briefed",
+     "locked_text": "Önce Şef. İlk günden kızdırmayayım."
+    },
+    {
      "type": "npc",
-     "dialogue": "ajan",
-     "x": 88
+     "dialogue": "park",
+     "art": "memur2",
+     "x": 176
     },
     {
      "type": "npc",
      "dialogue": "sef",
-     "x": 250,
-     "faces": "left"
-    },
-    {
-     "type": "door",
-     "to": "hol",
-     "x": 322,
-     "spawn_x": 31,
-     "w": 24,
-     "h": 54,
-     "label": "Çıkış: Finch-Moore Müzesi",
-     "lock_flag": "briefed",
-     "locked_text": "Önce Şef Calloway'le konuşmalıyım. Maaşımı o imzalıyor."
+     "art": "memur1",
+     "x": 292
     }
    ],
    "place": "FCD Ravenport Bürosu"
@@ -1610,54 +1551,61 @@
    "intro": [
     [
      "Şef Calloway",
-     "Penn. Kahveni sonra içersin. Bu gece Finch-Moore Müzesi'nde Kış Yıldızı Galası vardı. Şehrin bütün zenginleri oradaydı."
-    ],
-    [
-     "Şef Calloway",
-     "Gala sırasında müzenin gözbebeği, 41 karatlık Burma yakutu 'Kızıl Göz' kilitli vitrinden kaybolmuş. Cam sağlam, alarm yok."
-    ],
-    [
-     "Şef Calloway",
-     "Ravenport Polisi 'imkansız' diyor. Sigortacılar şimdiden telefonumu kilitledi."
+     "Penn. Calloway. Elini sıkardım ama saatimi kaybetmek istemiyorum."
     ],
     [
      "Oscar",
-     "İmkansız benim eski mesleğimdi, Şef."
+     "Akıllıca. Gerçi çoktan sağ cebinizde, Şef."
     ],
     [
      "Şef Calloway",
-     "O yüzden buradasın. Cole ile git, müdürle ve personelle konuş. Sabaha kadar bir isim istiyorum."
+     "...Değil."
+    ],
+    [
+     "Oscar",
+     "Değil. Ama bir an baktınız."
+    ],
+    [
+     "Şef Calloway",
+     "Dinle. Bu gece Finch-Moore Müzesi'nde gala vardı. Işıklar dört saniye söndü."
+    ],
+    [
+     "Şef Calloway",
+     "Geri geldiğinde Kızıl Göz yoktu. Vitrin kilitli, cam sağlam, alarm sessiz."
+    ],
+    [
+     "Oscar",
+     "Dört saniye. Fena numara değil."
+    ],
+    [
+     "Şef Calloway",
+     "Numara değil, Penn. Belediye başkanının en sevdiği taş. Herkes hâlâ binada."
+    ],
+    [
+     "Şef Calloway",
+     "Cole'la git. Sabaha kadar bana bir isim getir."
     ],
     [
      "Maya",
-     "Arabam aşağıda. Ben sürüyorum. Çıkış sağda."
+     "Asansör solda. Ben sürüyorum."
     ]
    ],
-   "claim": "Hâlâ burada mısın? Müze seni bekliyor.",
+   "claim": "Hâlâ buradasın, Penn.",
    "topics": [
     {
      "q": "Neden ben?",
      "lines": [
       [
        "Şef Calloway",
-       "Sahnede yüzlerce kişiyi okudun. Bu gece o müzede yalan söyleyen biri var."
-      ]
-     ]
-    },
-    {
-     "q": "Ödeme?",
-     "lines": [
-      [
-       "Şef Calloway",
-       "Vaka başına. Borçlarını biliyorum, Penn. Herkes biliyor."
+       "Polis 'imkansız' dedi. Sen hayatını imkansız şeyler yaparak kazandın."
       ],
       [
        "Oscar",
-       "Bayan Kowalski bile mi?"
+       "Ve kaybettim."
       ],
       [
        "Şef Calloway",
-       "Özellikle o. Beni iki kez aradı."
+       "O yüzden ucuzsun."
       ]
      ]
     },
@@ -1666,121 +1614,15 @@
      "lines": [
       [
        "Şef Calloway",
-       "1920'lerde Harold'ın dedesi Burma'dan getirmiş. Müze o taş için yaptırılmış bile denir."
+       "Finch-Moore'ların dedesi 1920'lerde Burma'dan getirmiş. Müzeyi o taş için kurmuşlar."
       ],
       [
        "Oscar",
-       "Yani hırsız sadece bir taşı değil, bir aile efsanesini çaldı."
+       "Yani biri sadece bir taşı değil, bir aile hikayesini çaldı."
       ],
       [
        "Şef Calloway",
-       "Ve sigortacılar her saat başı arıyor. Efsaneyi değil, onları düşün."
-      ]
-     ]
-    }
-   ],
-   "show": {}
-  },
-  "ajan": {
-   "name": "Ajan Rico Diaz",
-   "intro": [
-    [
-     "Ajan Rico Diaz",
-     "Yeni danışman sen misin? Sihirbaz, ha? Hadi bir numara yap."
-    ],
-    [
-     "Oscar",
-     "Zaten yaptım. Kalemin sol cebinde değil, benim elimde."
-    ],
-    [
-     "Ajan Rico Diaz",
-     "...Ne zaman? Ver onu!"
-    ],
-    [
-     "Oscar",
-     "Bir dahaki sefere 'hadi bir numara yap' demeden önce düşün."
-    ]
-   ],
-   "claim": "Fotokopi makinesi bu hafta üçüncü kez bozuldu. Kimse benim kadar acı çekmiyor.",
-   "topics": [
-    {
-     "q": "Şef nasıl biri?",
-     "lines": [
-      [
-       "Ajan Rico Diaz",
-       "Sert ama adil. Bağırıyorsa sorun yok. Susuyorsa kaç."
-      ]
-     ]
-    },
-    {
-     "q": "Cole nasıl biri?",
-     "lines": [
-      [
-       "Ajan Rico Diaz",
-       "Kitabına göre oynar. Bir kez park cezasını kendine yazdı."
-      ],
-      [
-       "Oscar",
-       "Kendine mi?"
-      ],
-      [
-       "Ajan Rico Diaz",
-       "Kendine."
-      ]
-     ]
-    }
-   ],
-   "show": {}
-  },
-  "dooley": {
-   "name": "Çavuş Dooley",
-   "intro": [
-    [
-     "Çavuş Dooley",
-     "Federaller, nihayet. Saat on birden beri buradayım. Kahvem bile soğudu."
-    ],
-    [
-     "Oscar",
-     "Fincanı sol elinizde tutuyorsunuz ama sağ elinizle yazıyorsunuz. Demek ki not tutmaktan vazgeçeli epey olmuş."
-    ],
-    [
-     "Çavuş Dooley",
-     "...Sen o sihirbaz olmalısın. Şef Calloway uyarmıştı."
-    ]
-   ],
-   "claim": "Ravenport Polisi, otuz bir yıl. Bu gece kimse çıkmadı, kimse girmedi.",
-   "topics": [
-    {
-     "q": "Gece ne oldu?",
-     "lines": [
-      [
-       "Çavuş Dooley",
-       "21:40'ta ışıklar gitti. Geldiğinde vitrin boştu. Herkesi holde topladık, ceplerini aradık."
-      ],
-      [
-       "Çavuş Dooley",
-       "Taş kimsenin üstünde çıkmadı."
-      ],
-      [
-       "Oscar",
-       "Yani yakut hâlâ bu binada."
-      ],
-      [
-       "Çavuş Dooley",
-       "Ya da biri benden iyi saklıyor."
-      ]
-     ]
-    },
-    {
-     "q": "Bu bina nasıl bir yer?",
-     "lines": [
-      [
-       "Çavuş Dooley",
-       "1890'dan kalma. Bodrumu labirent gibidir. Çocukken okul gezisinde gelmiştim, kaybolmuştum."
-      ],
-      [
-       "Maya",
-       "Not aldım. Bodrum."
+       "Hikayeyi boş ver. Taşı bul."
       ]
      ]
     }
@@ -1792,42 +1634,46 @@
    "intro": [
     [
      "Memur Park",
-     "Memur Eddie Park, Ravenport Polisi! Tutanak tutuyorum efendim. Her şeyi yazdım. Yani, çoğu şeyi."
+     "Yeni danışman siz misiniz? Sihirbaz olan? Bir şey sorabilir miyim?"
     ],
     [
      "Oscar",
-     "Dosyayı ters tutuyorsun, Park."
+     "Aklından geçen kartı söyleyemem, evlat."
     ],
     [
      "Memur Park",
-     "...Ah. Teşekkürler."
+     "Yok, şey... Kahve makinesini tamir edebilir misiniz? Sihirle?"
+    ],
+    [
+     "Oscar",
+     "Onun için gerçek bir mucize lazım."
     ]
    ],
-   "claim": "Vitrini ben bekledim. Sadece bir kere tuvalete gittim. İki kere.",
+   "claim": "Memur Eddie Park. İlk haftam. Henüz kimseyi tutuklamadım ama dosya taşımada iyiyim.",
    "topics": [
     {
-     "q": "Tutanakta ne var?",
+     "q": "Şef nasıl biri?",
      "lines": [
       [
        "Memur Park",
-       "Galada 112 misafir vardı. Işıklar tam 4 saniye gitti. Kimse çığlık atmadı, herkes alkış sandı."
-      ],
-      [
-       "Oscar",
-       "Karanlıkta alkış... Bunu bir yerden hatırlıyorum."
+       "Bağırıyorsa her şey yolunda. Susuyorsa saklanın."
       ]
      ]
     },
     {
-     "q": "Polislik nasıl gidiyor?",
+     "q": "Cole nasıl biri?",
      "lines": [
       [
        "Memur Park",
-       "İlk haftam. Çavuş Dooley bana sadece kahve aldırıyor."
+       "Bir keresinde kendine park cezası yazdı."
       ],
       [
        "Oscar",
-       "Ben de ilk günümdeyim. Kahvemi kendim alıyorum. Bu yüzden borçluyum."
+       "Kendine mi?"
+      ],
+      [
+       "Memur Park",
+       "Kendine. Ödedi de."
       ]
      ]
     }
@@ -1968,9 +1814,7 @@
   "Vivian": "vivian",
   "Toby": "toby",
   "Maya": "maya",
-  "Şef Calloway": "sef",
-  "Ajan Rico Diaz": "ajan",
-  "Çavuş Dooley": "memur1",
+  "Şef Calloway": "memur1",
   "Memur Park": "memur2"
  }
 }
