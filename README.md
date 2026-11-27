@@ -2,7 +2,7 @@
 
 2D pixel art dedektiflik oyunu. Oyuncu, FCD (Federal Crimes Division) danışmanı ve eski sahne sihirbazı Oscar Penn'i yönetir.
 
-Bu depo şu an **gri kutu sürümü**: tüm görseller renkli kutulardır. Amaç, Vaka 1'in baştan sona oynanabilir olması ve oynanışın test edilmesi.
+Vaka 1 "Boş Vitrin" baştan sona oynanabilir: ana menü, 6 mekan, 5 karakter, ipucu toplama, sorgu, kanıt gösterme, dedüksiyon tahtası, suçlama ve puanlı final. Karakterler PixelLab çizimi; mekanlardan salon çizildi, diğerleri çizim gelene kadar sade duvar/zemin ile gösterilir.
 
 ## Nasıl açılır
 
@@ -14,39 +14,58 @@ Bu depo şu an **gri kutu sürümü**: tüm görseller renkli kutulardır. Amaç
 
 | Eylem | Fare / dokunma | Klavye |
 | --- | --- | --- |
+| Menüde başla | "Vakayı aç" | Enter / Boşluk |
 | Yürü | Yere tıkla | A / D veya ok tuşları |
-| İncele, konuş, kapıdan geç | Nesneye tıkla | E |
-| Oscar'ın Gözü (mekan başına 3) | Üstteki buton | Q |
+| İncele, konuş, kapıdan geç | Nesneye tıkla (üstüne gelince ne olduğu yazar) | E |
+| Oscar'ın Gözü (mekan başına 3, gizli ipuçlarını gösterir) | Üstteki buton | Q |
 | Defter ve dedüksiyon tahtası | Üstteki buton | Tab |
-| Diyaloğu ilerlet | Kutuya tıkla | Boşluk / Enter |
+| Diyaloğu ilerlet / yazıyı hızlandır | Kutuya tıkla | Boşluk / Enter / E |
 
-Renkler: sarı kutular ipucu, açık kahve kutular kişi, koyu kahve kutular kapı.
+Sahne çizimi olan mekanlarda ipuçları yanıp sönen sarı yıldızlarla belli olur.
 
 ## Klasörler
 
-- `scripts/main.gd`: tüm oyun kodu.
+- `scripts/main.gd`: tüm oyun kodu (sahneyi, arayüzü ve sesleri koddan kurar).
 - `data/case1.json`: Vaka 1'in mekanları, ipuçları, diyalogları, dedüksiyonları ve finali. Yeni vaka eklemek = yeni bir JSON dosyası.
 - `scenes/main.tscn`: tek sahne.
+- `art/`: çizimler. `art/rooms/`: mekan arka planları.
+- `sfx/`: ses efektleri ve müzik (WAV).
+- `tools/`: çizim ve ses üreten yardımcı Python betikleri.
 
-## Henüz olmayanlar
+## Ölçek
 
-- Pixel art, animasyon, ses, müzik.
-- Sihir numaralarının mini oyunları (soğuk okuma şimdilik diyalog seçeneği, cep aşırma finalde ara sahne).
-- Yırtık belge birleştirme yapbozu.
-- Kayıt sistemi, ana menü, Vaka 2+.
+Ekran 640x360, kamera 2x yakınlaştırır; yani dünya 320x180 "çizim pikseli" görünür. Karakterler 32x48, mekanlar 344x192 (PixelLab sahne boyutu). JSON'daki tüm konumlar bu çizim pikseli biriminde: `x` nesnenin ortası, `y` zeminden yükseklik, `floor_y` mekanın zemin çizgisi (yoksa 168).
 
 ## Çizimleri oyuna takmak
 
 `art/` klasörüne doğru isimle bir PNG koyduğunda oyun o nesne için kutu yerine çizimi kullanır. Kod değişikliği gerekmez.
 
-| Ne | Dosya adı | Önerilen boyut |
+| Ne | Dosya adı | Boyut |
 | --- | --- | --- |
-| Oscar | `art/oscar.png` | 20x48 |
-| Şüpheliler | `art/toby.png`, `art/vivian.png`, `art/gus.png`, `art/harold.png` | 20x48 |
-| İpucu | `art/<ipucu id>.png` (ör. `art/kupe.png`, `art/fincan.png`) | 4-30 px |
-| Kapı | `art/door.png` | 34x64 |
-| Mekan arka planı | `art/rooms/<mekan id>.png` (ör. `art/rooms/hol.png`) | mekan genişliği x 360 (hol: 900x360) |
+| Oscar | `art/oscar.png` (sağa bakan) | 32x48 |
+| Oscar yürüme | `art/oscar_walk.png` | 32x48 kareler yan yana |
+| Şüpheliler | `art/toby.png`, `art/vivian.png`, `art/gus.png`, `art/harold.png` | 32x48 |
+| Durma (nefes) animasyonu | `art/<ad>_idle.png` (ör. `art/gus_idle.png`) | 32x48 kareler yan yana |
+| İpucu | `art/<ipucu id>.png` (ör. `art/kupe.png`) | 4-30 px |
+| Mekan arka planı | `art/rooms/<mekan id>.png` | 344x192 |
 
-İpucu ve mekan id'leri `data/case1.json` içinde. Zemin çizgisi y=290'da. Palet: `#0f0b08`, `#2b1d14`, `#5a3d2b`, `#8a6a4f`, `#e8c547`, `#f2e3b3`.
+Mekan id'leri: `hol`, `salon`, `guvenlik`, `ofis`, `depo`, `otopark`. Yeni bir mekan çizimi gelince JSON'da o mekanın `floor_y` değeri ve nesnelerin `x`/`y` değerleri resme göre ayarlanır.
 
-Tüm karakter çizimleri PixelLab ile yapıldı (32x48). Oscar'ın yürüme şeridi `tools/make_walk.py` ile üretilir (`art/oscar_walk.png`, 4 kare).
+Kendi çizdiğin bir animasyon şeridi aynı isimle konursa otomatik üretilenin yerine geçer.
+
+Palet: `#0f0b08`, `#2b1d14`, `#5a3d2b`, `#8a6a4f`, `#e8c547`, `#f2e3b3`.
+
+## Araçlar
+
+- `tools/fix_room.py`: PixelLab'ın arka planı şeffaf bıraktığı sahnelerde boşlukları doldurur ve resmi oyunun paletine çeker. Salon böyle hazırlandı:
+  `python3 tools/fix_room.py girdi.png art/rooms/salon.png --floor 145 --cone 127,10,68,183,160 --dark-left 19 --dark-top 6`
+- `tools/make_walk.py`: tek karakter çiziminden 4 karelik yürüme şeridi.
+- `tools/make_idle.py`: tek karakter çiziminden 2 karelik nefes alma şeridi.
+- `tools/make_sfx.py`: tüm ses efektlerini ve noir müzik döngüsünü sentezler (lisans sorunu yok).
+
+## Henüz olmayanlar
+
+- Hol, güvenlik, ofis, depo ve otopark çizimleri.
+- Sihir numaralarının mini oyunları (soğuk okuma şimdilik diyalog seçeneği, cep aşırma finalde ara sahne).
+- Yırtık belge birleştirme yapbozu.
+- Kayıt sistemi, ayarlar menüsü, Vaka 2+.

@@ -498,6 +498,8 @@ func _build_menu() -> void:
 
 
 func _start_game() -> void:
+	if not in_menu:
+		return
 	_sfx("click")
 	in_menu = false
 	var tw := create_tween()
@@ -526,6 +528,14 @@ func _build_sfx() -> void:
 			a.volume_db = -8.0 if n == "blip" else -4.0
 			add_child(a)
 			sfx[n] = a
+	# Arka plan müziği: sfx/music.wav varsa döngüde çalar.
+	if ResourceLoader.exists("res://sfx/music.wav"):
+		var m := AudioStreamPlayer.new()
+		m.stream = load("res://sfx/music.wav")
+		m.volume_db = -6.0
+		add_child(m)
+		m.finished.connect(m.play)
+		m.play()
 
 
 func _sfx(n: String) -> void:
