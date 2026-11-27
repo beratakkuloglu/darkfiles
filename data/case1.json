@@ -4,6 +4,10 @@
  "start_x": 117,
  "cutscene": [
   {
+   "style": "note",
+   "text": "Sorduğun her soru, gösterdiğin her kanıt ve suçladığın her kişi hikayenin gidişini değiştirecek.\n\nSeçimlerin bütün hikayeyi etkileyecek."
+  },
+  {
    "art": "drive/sky",
    "text": "Ravenport, 2003. Yağmur yağıyor. Burada hep yağar."
   },
@@ -130,7 +134,10 @@
      "type": "npc",
      "dialogue": "toby",
      "x": 222,
-     "hide_if_flag": "depo_acik"
+     "hide_if_flag": [
+      "depo_acik",
+      "seen_toby"
+     ]
     },
     {
      "type": "door",
@@ -164,7 +171,12 @@
      "Parlayan yerleri incele, insanlarla konuş. Kanıtları defterdeki Kanıt tahtasında ikişer bağla. Q: Oscar'ın Gözü, gizli ayrıntıları gösterir. Takılırsan Maya'ya tıkla."
     ]
    ],
-   "place": "Finch-Moore Museum"
+   "place": "Finch-Moore Museum",
+   "char_scale": 1.6,
+   "walk": [
+    80,
+    336
+   ]
   },
   "salon": {
    "name": "Jewel Gallery",
@@ -253,7 +265,10 @@
      "type": "npc",
      "dialogue": "vivian",
      "x": 228,
-     "hide_if_flag": "otopark_acik"
+     "hide_if_flag": [
+      "otopark_acik",
+      "seen_vivian"
+     ]
     },
     {
      "type": "door",
@@ -265,7 +280,8 @@
     }
    ],
    "floor_y": 172,
-   "place": "Finch-Moore Museum"
+   "place": "Finch-Moore Museum",
+   "char_scale": 1.6
   },
   "guvenlik": {
    "name": "Security Room",
@@ -344,7 +360,7 @@
     }
    ],
    "floor_y": 180,
-   "char_scale": 2.0,
+   "char_scale": 1.4,
    "place": "Finch-Moore Museum"
   },
   "ofis": {
@@ -400,8 +416,8 @@
     {
      "type": "clue",
      "id": "krem",
-     "x": 72,
-     "y": 102,
+     "x": 58,
+     "y": 30,
      "w": 6,
      "h": 8
     },
@@ -464,7 +480,8 @@
     }
    ],
    "floor_y": 172,
-   "place": "Finch-Moore Museum"
+   "place": "Finch-Moore Museum",
+   "char_scale": 1.7
   },
   "depo": {
    "name": "Basement Storage",
@@ -514,7 +531,10 @@
      "type": "npc",
      "dialogue": "toby2",
      "x": 118,
-     "requires_flag": "depo_acik",
+     "requires_flag": [
+      "depo_acik",
+      "seen_toby"
+     ],
      "art": "toby"
     },
     {
@@ -544,7 +564,8 @@
     }
    ],
    "floor_y": 156,
-   "place": "Finch-Moore Museum"
+   "place": "Finch-Moore Museum",
+   "char_scale": 1.5
   },
   "otopark": {
    "name": "Back Parking Lot",
@@ -613,7 +634,10 @@
      "type": "npc",
      "dialogue": "vivian2",
      "x": 120,
-     "requires_flag": "otopark_acik",
+     "requires_flag": [
+      "otopark_acik",
+      "seen_vivian"
+     ],
      "art": "vivian"
     },
     {
@@ -865,7 +889,7 @@
    "name": "Mercer St.",
    "place": "Ravenport",
    "width": 344,
-   "floor_y": 160,
+   "floor_y": 157,
    "bg": "#121018",
    "rain": true,
    "objects": [
@@ -882,7 +906,7 @@
     {
      "type": "car",
      "x": 262,
-     "y": -12
+     "y": -16
     }
    ]
   },
@@ -890,7 +914,7 @@
    "name": "Museum Entrance",
    "place": "Finch-Moore Museum",
    "width": 344,
-   "floor_y": 168,
+   "floor_y": 166,
    "bg": "#14100c",
    "rain": true,
    "enter_lines": [
@@ -907,7 +931,7 @@
     {
      "type": "car",
      "x": 70,
-     "y": -8
+     "y": -12
     },
     {
      "type": "door",
@@ -1197,7 +1221,7 @@
   },
   "krem": {
    "name": "Lavanta saç kremi",
-   "desc": "Müdürün rafında pahalı bir saç kremi şişesi. Lavanta kokuyor.",
+   "desc": "Müdürün kitaplığının alt rafında pahalı bir saç kremi şişesi. Lavanta kokuyor.",
    "inspect": {
     "front": [
      {
@@ -2163,7 +2187,117 @@
      "Vardiyam bitmedi ki! ...Kim nöbet tutacak peki? Tamam, geliyorum."
     ]
    ]
-  }
+  },
+  "wrong_after": {
+   "toby": [
+    {
+     "art": "rooms/sokak",
+     "actors": [
+      [
+       "toby",
+       185,
+       157,
+       true
+      ]
+     ],
+     "text": "Toby FCD'nin önünde kaldırıma çöktü. 'Annem bunu duyarsa beni evden atar' diye söylendi."
+    },
+    {
+     "art": "rooms/sokak",
+     "actors": [
+      [
+       "toby",
+       185,
+       157,
+       true
+      ],
+      [
+       "maya",
+       140,
+       157,
+       false
+      ]
+     ],
+     "text": "Maya ona sıcak bir kahve uzattı. Bana tek kelime etmedi. Bu, bağırmasından daha kötüydü."
+    }
+   ],
+   "vivian": [
+    {
+     "art": "rooms/sokak",
+     "sfx": "lighter",
+     "actors": [
+      [
+       "vivian",
+       215,
+       157,
+       true
+      ]
+     ],
+     "text": "Vivian kapıdan çıkar çıkmaz bir sigara yaktı. Dumanı yağmura üfledi."
+    },
+    {
+     "art": "rooms/sokak",
+     "actors": [
+      [
+       "vivian",
+       215,
+       157,
+       true
+      ],
+      [
+       "oscar",
+       165,
+       157,
+       false
+      ]
+     ],
+     "text": "'Bir dahaki sefere avukatımla gelirim, sihirbaz. Senin numaraların ona işlemez.'"
+    }
+   ],
+   "gus": [
+    {
+     "art": "rooms/sokak",
+     "actors": [
+      [
+       "gus",
+       190,
+       157,
+       true
+      ]
+     ],
+     "text": "Gus durmadan saatine baktı. 'Nöbetim yarım kaldı. Harold bunu duyarsa işimden olurum.'"
+    },
+    {
+     "art": "rooms/sokak",
+     "actors": [
+      [
+       "gus",
+       190,
+       157,
+       true
+      ],
+      [
+       "maya",
+       145,
+       157,
+       false
+      ]
+     ],
+     "text": "Yol boyunca arka koltukta terledi. Maya onu müzenin kapısına kadar bıraktı ve özür diledi. Benim yerime."
+    }
+   ]
+  },
+  "wrong_return": [
+   {
+    "art": "drive/sky",
+    "sfx": "engine",
+    "text": "Müzeye dönüş yolu uzun sürdü. Yağmur, silecekler ve Maya'nın sessizliği."
+   },
+   {
+    "art": "rooms/muze_onu",
+    "text": "Yakut hâlâ kayıp ve gerçek hırsız bir yerlerde gülüyor. Baştan bakmam lazım."
+   }
+  ]
  },
  "speakers": {
   "Oscar": "oscar",

@@ -13,6 +13,7 @@ const DEFAULT_FLOOR_Y := 168.0   # mekanda "floor_y" yoksa zemin çizgisi
 const SPEED := 70.0
 const INTERACT_RANGE := 22.0
 const TYPE_SPEED := 55.0         # daktilo efekti, saniyede karakter
+const TEXT_SPEEDS := [0.55, 1.0, 1.8, 400.0]   # ayarlardaki yazı hızı çarpanı
 ## art/oscar.png sağa bakıyorsa true, sola bakıyorsa false yap.
 const PLAYER_ART_FACES_RIGHT := true
 ## Yürüme şeridi (art/oscar_walk.png): yan yana eşit kareler, kare başına süre.
@@ -29,6 +30,8 @@ const C_PALE := Color("#f2e3b3")
 
 var data: Dictionary = {}
 var room_id: String = ""
+var walk_min := 8.0
+var walk_max := 336.0
 var room_w: float = 320.0
 var floor_y: float = DEFAULT_FLOOR_Y
 var room_h: float = WORLD_H
@@ -48,6 +51,7 @@ var in_menu: bool = true
 
 # Açılış sahnesi (data "cutscene": [{text, art?}])
 var cut_panel: ColorRect
+var cut_actors: Control
 var cut_img: TextureRect
 var cut_text: Label
 var cut_cards: Array = []
@@ -59,6 +63,7 @@ var in_cutscene: bool = false
 # Dünya
 var room_layer: Node2D
 var fx_layer: Node2D
+var front_layer: Node2D        # oyuncunun önünde çizilenler (yoldaki araba)
 var player: Node2D
 var player_sprite: TextureRect
 var walk_time: float = 0.0
@@ -89,11 +94,12 @@ var drive_layers: Array = []      # [{node, speed, wrap}]
 var drive_offset: float = 0.0
 var driving: bool = false
 var car_tween: Tween
+var player_walking_script := false   # arabaya yürürken yürüme animasyonu
 const EYE_TIME := 8.0
 var eye_time: float = 0.0
 var eye_bar: ColorRect
 var quip_bag: Dictionary = {}     # tekrarsız rastgele replik torbaları
-var npc_marks: Array = []         # [{data, mark, label}]
+var npc_marks: Array = []         # [{data, mark}]
 const CAR_SCALE := 1.6            # arabanın mekandaki büyüklüğü
 const CAR_WHEELS := [Vector2(17, 21), Vector2(62, 21)]  # araba.png'de teker merkezleri
 var wheels: Array = []            # [{node, car, last_x, road}]
@@ -152,9 +158,10 @@ var msg_tween: Tween
 
 # Ayarlar ve duraklatma
 const SETTINGS_PATH := "user://settings.cfg"
-var settings := {"music": 0.7, "sfx": 0.8, "fullscreen": false}
+var settings := {"music": 0.7, "sfx": 0.8, "fullscreen": false, "text_speed": 1, "atmosphere": true}
 var pause_panel: Control
 var settings_panel: Control
+var atmo_dust: CPUParticles2D
 var menu_button: Button
 var paused: bool = false
 var busy_before_pause: bool = false
@@ -191,6 +198,8 @@ func _ready() -> void:
 	fx_layer = Node2D.new()
 	add_child(fx_layer)
 	_build_player()
+	front_layer = Node2D.new()
+	add_child(front_layer)
 	_build_atmosphere()
 	_build_ui()
 	_build_sfx()
@@ -300,6 +309,7 @@ func _build_atmosphere() -> void:
 
 	# Havada süzülen toz
 	var dust := CPUParticles2D.new()
+	atmo_dust = dust
 	dust.amount = 40
 	dust.lifetime = 9.0
 	dust.preprocess = 9.0
@@ -328,6 +338,21 @@ func _ui_font() -> Font:
 	f.hinting = TextServer.HINTING_LIGHT
 	f.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
 	return f
+
+
+## Dünyadaki yazılar (kapı tabelaları) için MSDF Rubik: kamera yakınlaştırınca bulanıklaşmaz.
+var _wfont: Font = null
+func _world_font() -> Font:
+	if _wfont == null:
+		var p := "res://fonts/Rubik-Medium.ttf"
+		if not ResourceLoader.exists(p):
+			return null
+		var f := (load(p) as FontFile).duplicate() as FontFile
+		f.multichannel_signed_distance_field = true
+		f.msdf_pixel_range = 16
+		f.msdf_size = 48
+		_wfont = f
+	return _wfont
 
 
 ## Pixel yazı tipi (Pixelify Sans, OFL): sadece büyük başlıklar.
@@ -662,60 +687,183 @@ func _build_ui() -> void:
 
 
 func _build_menu() -> void:
-	menu_panel = ColorRect.new()
-	(menu_panel as ColorRect).color = Color(0.03, 0.02, 0.01, 0.82)
+	menu_panel = Control.new()
 	menu_panel.size = Vector2(VIEW_W, VIEW_H)
+	menu_panel.clip_contents = true
 	ui_root.add_child(menu_panel)
+	var under := ColorRect.new()
+	under.color = C_BLACK
+	under.size = Vector2(VIEW_W, VIEW_H)
+	menu_panel.add_child(under)
+	# Arka plan: yağmurlu müze önü, yavaşça yaklaşan kamera (Ken Burns).
+	var bgt := _art("rooms/muze_onu")
+	if bgt:
+		var bg := TextureRect.new()
+		bg.texture = bgt
+		bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		bg.size = Vector2(VIEW_W, VIEW_H)
+		bg.pivot_offset = Vector2(VIEW_W * 0.7, VIEW_H * 0.5)
+		bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		menu_panel.add_child(bg)
+		var kb := bg.create_tween().set_loops()
+		kb.tween_property(bg, "scale", Vector2(1.12, 1.12), 18.0).set_trans(Tween.TRANS_SINE)
+		kb.tween_property(bg, "scale", Vector2.ONE, 18.0).set_trans(Tween.TRANS_SINE)
+	# Soldan sağa koyulaşan perde: yazılar okunur, sağda müze görünür.
+	var g := Gradient.new()
+	g.set_color(0, Color(0.03, 0.02, 0.01, 0.94))
+	g.set_color(1, Color(0.03, 0.02, 0.01, 0.15))
+	g.add_point(0.45, Color(0.03, 0.02, 0.01, 0.78))
+	var gt := GradientTexture2D.new()
+	gt.gradient = g
+	gt.width = 64
+	gt.height = 4
+	var shade := TextureRect.new()
+	shade.texture = gt
+	shade.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	shade.stretch_mode = TextureRect.STRETCH_SCALE
+	shade.size = Vector2(VIEW_W, VIEW_H)
+	shade.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	menu_panel.add_child(shade)
+	# Yağmur
+	var rain := CPUParticles2D.new()
+	rain.amount = 220
+	rain.lifetime = 0.7
+	rain.preprocess = 1.0
+	rain.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	rain.emission_rect_extents = Vector2(VIEW_W * 0.6, 2)
+	rain.position = Vector2(VIEW_W / 2.0 + 40, -8)
+	rain.direction = Vector2(-0.18, 1)
+	rain.spread = 1.5
+	rain.gravity = Vector2.ZERO
+	rain.initial_velocity_min = 520.0
+	rain.initial_velocity_max = 600.0
+	rain.scale_amount_min = 1.0
+	rain.scale_amount_max = 1.0
+	rain.color = Color(0.8, 0.75, 0.62, 0.28)
+	menu_panel.add_child(rain)
+	# Arada bir şimşek
+	var flash := ColorRect.new()
+	flash.color = Color(0.95, 0.92, 0.8, 0.0)
+	flash.size = Vector2(VIEW_W, VIEW_H)
+	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	menu_panel.add_child(flash)
+	var ft := flash.create_tween().set_loops()
+	ft.tween_interval(7.0)
+	ft.tween_property(flash, "color:a", 0.22, 0.05)
+	ft.tween_property(flash, "color:a", 0.0, 0.1)
+	ft.tween_property(flash, "color:a", 0.14, 0.05)
+	ft.tween_property(flash, "color:a", 0.0, 0.5)
+	ft.tween_interval(4.0)
+
+	var tf := _title_font()
 	var title := Label.new()
 	title.text = "DARK FILES"
-	title.position = Vector2(0, 70)
-	title.size = Vector2(VIEW_W, 50)
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 44)
-	var tf := _title_font()
+	title.position = Vector2(44, 62)
+	title.size = Vector2(360, 56)
+	title.add_theme_font_size_override("font_size", 52)
 	if tf:
 		title.add_theme_font_override("font", tf)
 	title.add_theme_color_override("font_color", C_YELLOW)
+	title.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
 	title.add_theme_constant_override("shadow_offset_x", 3)
 	title.add_theme_constant_override("shadow_offset_y", 3)
 	menu_panel.add_child(title)
+	# Eski neon tabela gibi ara ara titreyen başlık
+	var fl := title.create_tween().set_loops()
+	fl.tween_interval(3.2)
+	fl.tween_property(title, "modulate:a", 0.35, 0.04)
+	fl.tween_property(title, "modulate:a", 1.0, 0.04)
+	fl.tween_property(title, "modulate:a", 0.6, 0.05)
+	fl.tween_property(title, "modulate:a", 1.0, 0.08)
+	var line := ColorRect.new()
+	line.color = C_YELLOW
+	line.position = Vector2(46, 122)
+	line.size = Vector2(0, 2)
+	menu_panel.add_child(line)
+	line.create_tween().tween_property(line, "size:x", 210.0, 1.2).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	var sub := Label.new()
-	sub.text = str(data.get("case_name", "Vaka 1"))
-	sub.position = Vector2(0, 126)
-	sub.size = Vector2(VIEW_W, 20)
-	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	sub.add_theme_font_size_override("font_size", 15)
+	sub.text = str(data.get("case_name", "Vaka 1")).to_upper()
+	sub.position = Vector2(46, 128)
+	sub.size = Vector2(320, 18)
+	sub.add_theme_font_size_override("font_size", 13)
+	sub.add_theme_color_override("font_color", C_PALE)
 	menu_panel.add_child(sub)
+	var tag := Label.new()
+	tag.text = "Ravenport, 2003. Herkes bir şey saklıyor."
+	tag.position = Vector2(46, 146)
+	tag.size = Vector2(320, 16)
+	tag.add_theme_font_size_override("font_size", 11)
+	tag.add_theme_color_override("font_color", C_LIGHT)
+	menu_panel.add_child(tag)
+
 	var box := VBoxContainer.new()
-	box.position = Vector2(VIEW_W / 2.0 - 80, 172)
-	box.custom_minimum_size = Vector2(160, 0)
+	box.position = Vector2(40, 186)
+	box.add_theme_constant_override("separation", 6)
 	menu_panel.add_child(box)
-	var start := Button.new()
-	start.text = "Vakayı aç"
-	start.pressed.connect(_start_game)
-	box.add_child(start)
-	var quit := Button.new()
-	quit.text = "Çıkış"
-	quit.pressed.connect(func(): get_tree().quit())
-	box.add_child(quit)
+	var play := _menu_item(box, "VAKAYI AÇ", true, _start_game)
+	play.grab_focus.call_deferred()
+	_menu_item(box, "Ayarlar", false, open_settings)
+	_menu_item(box, "Çıkış", false, func(): get_tree().quit())
 	var help := Label.new()
-	help.text = "Fare: tıkla, yürü, incele, konuş     Klavye: A/D yürü, F etkileşim, Q Oscar'ın Gözü, Tab defter"
-	help.position = Vector2(0, 318)
-	help.size = Vector2(VIEW_W, 20)
+	help.text = "Fare: yürü, incele, konuş   ·   A/D yürü   ·   F etkileşim   ·   Q Oscar'ın Gözü   ·   Tab defter"
+	help.position = Vector2(0, VIEW_H - 22)
+	help.size = Vector2(VIEW_W, 14)
 	help.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	help.add_theme_font_size_override("font_size", 10)
+	help.add_theme_font_size_override("font_size", 9)
 	help.add_theme_color_override("font_color", C_LIGHT)
 	menu_panel.add_child(help)
-	var settings_btn := Button.new()
-	settings_btn.text = "Ayarlar"
-	settings_btn.pressed.connect(open_settings)
-	box.add_child(settings_btn)
-	box.move_child(settings_btn, 1)
+	menu_panel.modulate.a = 0.0
+	menu_panel.create_tween().tween_property(menu_panel, "modulate:a", 1.0, 1.0)
 	_set_hud_visible(false)
 	busy = true
 	in_menu = true
 	_build_pause()
 	_build_settings()
+
+
+## Ana menü satırı: düz yazı; üzerine gelince sarıya döner ve sağa kayar. big: büyük, çerçeveli, nabız gibi atan "oyna" düğmesi.
+func _menu_item(box: Control, text: String, big: bool, cb: Callable) -> Button:
+	var b := Button.new()
+	b.text = text
+	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	b.custom_minimum_size = Vector2(190 if big else 150, 34 if big else 22)
+	b.add_theme_font_size_override("font_size", 20 if big else 14)
+	var tf := _title_font()
+	if big and tf:
+		b.add_theme_font_override("font", tf)
+	var normal := StyleBoxFlat.new()
+	normal.bg_color = Color(0.06, 0.04, 0.02, 0.75) if big else Color(0, 0, 0, 0)
+	normal.border_color = C_YELLOW if big else Color(0, 0, 0, 0)
+	normal.set_border_width_all(2 if big else 0)
+	normal.content_margin_left = 14
+	normal.content_margin_right = 14
+	var hover := normal.duplicate() as StyleBoxFlat
+	hover.bg_color = Color(0.91, 0.77, 0.28, 0.95) if big else Color(0.91, 0.77, 0.28, 0.12)
+	hover.border_color = C_YELLOW
+	hover.border_width_left = 3
+	for st in ["normal", "focus"]:
+		b.add_theme_stylebox_override(st, normal)
+	b.add_theme_stylebox_override("hover", hover)
+	b.add_theme_stylebox_override("pressed", hover)
+	b.add_theme_color_override("font_color", C_YELLOW if big else C_PALE)
+	b.add_theme_color_override("font_hover_color", C_BLACK if big else C_YELLOW)
+	b.add_theme_color_override("font_focus_color", C_YELLOW if big else C_PALE)
+	b.add_theme_color_override("font_pressed_color", C_BLACK if big else C_YELLOW)
+	b.mouse_entered.connect(func():
+		_sfx("blip")
+		b.create_tween().tween_property(b, "position:x", 8.0, 0.12))
+	b.mouse_exited.connect(func(): b.create_tween().tween_property(b, "position:x", 0.0, 0.12))
+	b.pressed.connect(func():
+		_sfx("click")
+		cb.call())
+	box.add_child(b)
+	if big:
+		var pulse := b.create_tween().set_loops()
+		pulse.tween_property(b, "self_modulate", Color(1.25, 1.2, 1.0), 0.8).set_trans(Tween.TRANS_SINE)
+		pulse.tween_property(b, "self_modulate", Color(1, 1, 1), 0.8).set_trans(Tween.TRANS_SINE)
+	return b
 
 
 func _start_game() -> void:
@@ -759,6 +907,12 @@ func _play_cutscene(cards: Array, done: Callable) -> void:
 		cut_img.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		cut_img.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		cut_panel.add_child(cut_img)
+		cut_actors = Control.new()
+		cut_actors.position = cut_img.position
+		cut_actors.size = cut_img.size
+		cut_actors.clip_contents = true
+		cut_actors.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cut_panel.add_child(cut_actors)
 		cut_text = Label.new()
 		cut_text.position = Vector2(60, 262)
 		cut_text.size = Vector2(VIEW_W - 120, 60)
@@ -790,12 +944,38 @@ func _show_cut_card() -> void:
 	# Resim yoksa yazı ekranın ortasına iner.
 	cut_text.position.y = 262.0 if tex else VIEW_H / 2.0 - 30.0
 	cut_text.text = str(c["text"])
+	var note := str(c.get("style", "")) == "note"
+	cut_text.add_theme_font_size_override("font_size", 19 if note else 15)
+	cut_text.add_theme_color_override("font_color", C_YELLOW if note else C_PALE)
+	# Sahnedeki kişiler: "actors": [[çizim, x, zemin_y, sola_bak], ...] (mekan pikseli, 344x192 sahneye göre)
+	for ch in cut_actors.get_children():
+		cut_actors.remove_child(ch)
+		ch.queue_free()
+	if tex:
+		var k: float = minf(cut_img.size.x / tex.get_width(), cut_img.size.y / tex.get_height())
+		var off := (cut_img.size - Vector2(tex.get_size()) * k) / 2.0
+		for a in c.get("actors", []):
+			var at := _art(str(a[0]))
+			if at == null:
+				continue
+			var tr := TextureRect.new()
+			tr.texture = at
+			tr.size = at.get_size()
+			tr.scale = Vector2(k, k) * float(a[4] if a.size() > 4 else 1.0)
+			tr.position = off + Vector2(float(a[1]) * k - at.get_width() * tr.scale.x / 2.0, float(a[2]) * k - at.get_height() * tr.scale.y)
+			tr.flip_h = a.size() > 3 and bool(a[3])
+			tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			cut_actors.add_child(tr)
+	cut_actors.modulate.a = 0.0
+	if c.has("sfx"):
+		_sfx(str(c["sfx"]))
 	cut_text.visible_ratio = 0.0
 	cut_img.modulate.a = 0.0
 	if cut_tween:
 		cut_tween.kill()
 	cut_tween = create_tween()
 	cut_tween.tween_property(cut_img, "modulate:a", 1.0, 0.6)
+	cut_tween.parallel().tween_property(cut_actors, "modulate:a", 1.0, 0.6)
 	cut_tween.parallel().tween_property(cut_text, "visible_ratio", 1.0, 0.035 * cut_text.text.length())
 
 
@@ -805,6 +985,7 @@ func _cut_advance() -> void:
 	if cut_tween and cut_tween.is_running():
 		cut_tween.kill()
 		cut_img.modulate.a = 1.0
+		cut_actors.modulate.a = 1.0
 		cut_text.visible_ratio = 1.0
 		return
 	_sfx("blip")
@@ -847,7 +1028,7 @@ func _build_sfx() -> void:
 			AudioServer.add_bus()
 			AudioServer.set_bus_name(AudioServer.bus_count - 1, bus_name)
 	_load_settings()
-	for n in ["blip", "pickup", "door", "click", "deduce", "wrong", "solve", "eye", "car_door"]:
+	for n in ["blip", "pickup", "door", "click", "deduce", "wrong", "solve", "eye", "car_door", "engine", "lighter"]:
 		var p: String = "res://sfx/" + n + ".wav"
 		if ResourceLoader.exists(p):
 			var a := AudioStreamPlayer.new()
@@ -1051,9 +1232,57 @@ func _office_talk() -> void:
 
 # ---------------------------------------------------------------- araba
 
+## Sokakta arabaya biniş: Maya ve Oscar arabaya yürür, kapılar çarpar, araba hafifçe çöker, motor çalışır.
+func _board_car() -> void:
+	var car := _room_obj("car")
+	if car.is_empty():
+		_start_drive()
+		return
+	busy = true
+	var n: Control = car["node"]
+	var cx := float(car["data"]["x"])
+	var px := clampf(cx + 14.0, walk_min, walk_max)
+	var mx := clampf(cx - 18.0, walk_min, walk_max)
+	if maya:
+		maya_go(mx, 1.3, Callable())
+	var walk_t := absf(player.position.x - px) / SPEED
+	player_walking_script = true
+	_face(px - player.position.x)
+	var tw := create_tween()
+	tw.tween_property(player, "position:x", px, walk_t)
+	tw.tween_callback(func():
+		player_walking_script = false
+		_face(-1.0))
+	tw.tween_interval(maxf(0.0, absf(maya_x - mx) / (SPEED * 1.3) - walk_t) + 0.15)
+	# Önce Maya biner
+	tw.tween_callback(func(): _sfx("car_door"))
+	if maya:
+		tw.tween_property(maya, "modulate:a", 0.0, 0.25)
+	tw.tween_property(n, "position:y", n.position.y + 1.0, 0.08)
+	tw.tween_property(n, "position:y", n.position.y, 0.12)
+	tw.tween_interval(0.35)
+	# Sonra Oscar
+	tw.tween_property(player, "modulate:a", 0.0, 0.25)
+	tw.tween_callback(func(): _sfx("car_door"))
+	tw.tween_property(n, "position:y", n.position.y + 1.5, 0.08)
+	tw.tween_property(n, "position:y", n.position.y, 0.14)
+	tw.tween_interval(0.3)
+	tw.tween_callback(func(): _sfx("engine"))
+	# Motor titremesi
+	for i in range(6):
+		tw.tween_property(n, "position:y", n.position.y + (0.5 if i % 2 == 0 else 0.0), 0.06)
+	tw.tween_interval(0.5)
+	tw.tween_callback(func():
+		player.visible = false
+		player.modulate.a = 1.0
+		if maya:
+			maya.visible = false
+			maya.modulate.a = 1.0
+		_start_drive())
+
+
 func _start_drive() -> void:
 	busy = true
-	_sfx("car_door")
 	_build_drive()   # tween'ler düğümlere şimdiden bağlanabilsin diye önce kur
 	drive_panel.visible = false
 	var tw := create_tween()
@@ -1316,15 +1545,26 @@ func _exit_car() -> void:
 	flags["arrived"] = true
 	var car := _room_obj("car")
 	var cx := float(car["data"]["x"]) if not car.is_empty() else player.position.x
-	player.position.x = clampf(cx + 26.0, 8.0, room_w - 8.0)
+	player.position.x = clampf(cx + 26.0, walk_min, walk_max)
 	player.visible = true
+	player.modulate.a = 0.0
 	_face(1.0)
-	if maya:
-		maya_x = clampf(cx - 6.0, 8.0, room_w - 8.0)
-		maya_follow()
+	busy = true
 	_sfx("car_door")
-	busy = false
-	_play_enter_lines()
+	var tw := create_tween()
+	tw.tween_property(player, "modulate:a", 1.0, 0.3)
+	tw.tween_interval(0.3)
+	tw.tween_callback(func():
+		_sfx("car_door")
+		if maya:
+			maya_x = clampf(cx + 4.0, walk_min, walk_max)
+			maya.modulate.a = 0.0
+			maya_follow()
+			maya.create_tween().tween_property(maya, "modulate:a", 1.0, 0.3))
+	tw.tween_interval(0.4)
+	tw.tween_callback(func():
+		busy = false
+		_play_enter_lines())
 
 
 ## Torbadan tekrarsız bir replik çeker; torba bitince karıştırılıp yeniden dolar.
@@ -1352,7 +1592,6 @@ func _npc_label(did: String) -> String:
 func _refresh_npc_marks() -> void:
 	for m in npc_marks:
 		var did := str(m["data"]["dialogue"])
-		(m["label"] as Label).text = _npc_label(did)
 		var open := _npc_label(did) == "???"
 		for t in data["dialogues"][did].get("topics", []):
 			if t.has("requires_clue") and not clues.has(t["requires_clue"]):
@@ -1361,7 +1600,7 @@ func _refresh_npc_marks() -> void:
 				continue
 			if not flags.has("asked:" + did + ":" + str(t["q"])):
 				open = true
-		(m["mark"] as Label).visible = open
+		(m["mark"] as Control).visible = open
 
 
 ## Bir diyaloğun portre çizimi: speakers tablosu, yoksa id'nin rakamsız hali (vivian2 -> vivian).
@@ -1427,6 +1666,9 @@ func load_room(id: String, spawn_x: float) -> void:
 	for c in fx_layer.get_children():
 		fx_layer.remove_child(c)
 		c.queue_free()
+	for c in front_layer.get_children():
+		front_layer.remove_child(c)
+		c.queue_free()
 	room_objects.clear()
 	npc_marks.clear()
 	bg_nodes.clear()
@@ -1446,12 +1688,16 @@ func load_room(id: String, spawn_x: float) -> void:
 		bg_nodes.append(_child_tex(room_layer, Vector2.ZERO, bg_tex))
 	else:
 		_draw_fallback_room(r)
+	# Yürünebilir aralık: "walk": [min, max] (ör. holde soldaki kapıların üstüne basılmasın).
+	var wl: Array = r.get("walk", [8.0, room_w - 8.0])
+	walk_min = float(wl[0])
+	walk_max = float(wl[1])
 	for o in r["objects"]:
 		_spawn_object(o, bg_tex != null)
 	if bool(r.get("rain", false)):
 		_add_rain()
-	player.position = Vector2(clampf(spawn_x, 8.0, room_w - 8.0), floor_y)
-	maya_x = clampf(spawn_x + (-22.0 if spawn_x > room_w / 2.0 else 22.0) * char_scale, 8.0, room_w - 8.0)
+	player.position = Vector2(clampf(spawn_x, walk_min, walk_max), floor_y)
+	maya_x = clampf(spawn_x + (-22.0 if spawn_x > room_w / 2.0 else 22.0) * char_scale, walk_min, walk_max)
 	# Sahne 180'den uzunsa (PixelLab 192) dikeyde ortala.
 	camera.position = Vector2(0, room_h / 2.0 - floor_y)
 	camera.limit_right = int(room_w)
@@ -1518,7 +1764,6 @@ func _spawn_object(o: Dictionary, has_bg: bool) -> void:
 			w = 18.0
 			h = 44.0
 			col = C_LIGHT
-			label_text = _npc_label(str(o["dialogue"]))
 		"look":
 			art_key = str(o.get("art", ""))
 			col = C_LIGHT
@@ -1542,10 +1787,11 @@ func _spawn_object(o: Dictionary, has_bg: bool) -> void:
 		h = tex.get_height()
 	var pos := Vector2(float(o["x"]) - w / 2.0, floor_y - float(o.get("y", 0)) - h)
 	var n: Control
+	var parent: Node = front_layer if t == "car" else room_layer
 	if tex:
-		n = _child_tex(room_layer, pos, tex)
+		n = _child_tex(parent, pos, tex)
 	else:
-		n = _child_rect(room_layer, pos, Vector2(w, h), col)
+		n = _child_rect(parent, pos, Vector2(w, h), col)
 		if t == "door":
 			# kapı çerçevesi ve tokmak; sahne çizimi varsa kapı görünmez, sadece tıklanır
 			if has_bg:
@@ -1589,43 +1835,65 @@ func _spawn_object(o: Dictionary, has_bg: bool) -> void:
 			var tw := n.create_tween().set_loops()
 			tw.tween_property(n, "self_modulate:a", 0.45, 0.7)
 			tw.tween_property(n, "self_modulate:a", 1.0, 0.7)
-	if label_text != "":
+	if t == "door" and label_text != "":
+		# Kapı yazısı: büyük punto yarım ölçekte + kalın siyah kontur, silik görünmesin.
 		var lb := Label.new()
 		lb.text = label_text
-		lb.position = Vector2(-40, -11)
-		lb.size = Vector2(w + 80, 10)
+		lb.size = Vector2(w * 2.0 + 160, 20)
+		lb.scale = Vector2(0.5, 0.5)
+		var lbw := lb.size.x * 0.5
+		var left_w := clampf(float(o["x"]) - lbw / 2.0, 2.0, room_w - lbw - 2.0)   # ekran kenarında kesilmesin
+		lb.position = Vector2(left_w - pos.x, -12)
 		lb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		lb.add_theme_font_size_override("font_size", 8)
-		if t == "npc":
-			lb.scale = Vector2(1.0 / char_scale, 1.0 / char_scale)
-			lb.pivot_offset = Vector2(lb.size.x / 2.0, lb.size.y)
-		lb.add_theme_color_override("font_color", C_YELLOW if t == "door" else C_PALE)
+		lb.add_theme_font_size_override("font_size", 16)
+		var wf := _world_font()
+		if wf:
+			lb.add_theme_font_override("font", wf)
+		lb.add_theme_color_override("font_color", C_YELLOW)
+		lb.add_theme_color_override("font_outline_color", Color(0.04, 0.03, 0.02))
+		lb.add_theme_constant_override("outline_size", 5)
 		lb.add_theme_constant_override("shadow_offset_x", 0)
 		lb.add_theme_constant_override("shadow_offset_y", 0)
+		lb.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		n.add_child(lb)
-		if t == "npc":
-			var mk := Label.new()
-			mk.text = "!"
-			mk.size = Vector2(w, 12)
-			mk.position = Vector2(0, -24)
-			mk.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			mk.add_theme_font_size_override("font_size", 12)
-			mk.add_theme_color_override("font_color", Color("#d9d4cc"))
-			mk.scale = lb.scale
-			mk.pivot_offset = Vector2(w / 2.0, 12)
-			mk.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			n.add_child(mk)
-			var bt := mk.create_tween().set_loops()
-			bt.tween_property(mk, "position:y", -27.0, 0.5).set_trans(Tween.TRANS_SINE)
-			bt.tween_property(mk, "position:y", -24.0, 0.5).set_trans(Tween.TRANS_SINE)
-			npc_marks.append({"data": o, "mark": mk, "label": lb})
+	if t == "npc":
+		# İsim yok; konuşulacak bir şey varsa başın üstünde parlayan ünlem (art/ui/unlem.png).
+		var mk := TextureRect.new()
+		var mtex := _art("ui/unlem")
+		mk.texture = mtex
+		var ms := Vector2(7, 18) if mtex == null else Vector2(mtex.get_size())
+		mk.size = ms
+		mk.scale = Vector2(1.0 / char_scale, 1.0 / char_scale)
+		var top := -ms.y / char_scale - 4.0 / char_scale
+		mk.position = Vector2(w / 2.0 - ms.x / 2.0 / char_scale, top)
+		mk.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		n.add_child(mk)
+		var bt := mk.create_tween().set_loops()
+		bt.tween_property(mk, "position:y", top - 3.0 / char_scale, 0.45).set_trans(Tween.TRANS_SINE)
+		bt.tween_property(mk, "position:y", top, 0.45).set_trans(Tween.TRANS_SINE)
+		var sh := mk.create_tween().set_loops()
+		sh.tween_interval(1.1)
+		sh.tween_property(mk, "self_modulate", Color(1.9, 1.9, 1.7), 0.12)
+		sh.tween_property(mk, "self_modulate", Color(1, 1, 1), 0.35)
+		sh.tween_interval(0.6)
+		npc_marks.append({"data": o, "mark": mk})
 	room_objects.append({"data": o, "node": n})
 
 
+## Bayrak ya da bayrak listesi (listede hepsi gerekir).
+func _has_flags(v: Variant) -> bool:
+	if v is Array:
+		for f in v:
+			if not flags.has(str(f)):
+				return false
+		return true
+	return flags.has(str(v))
+
+
 func _obj_visible(o: Dictionary) -> bool:
-	if o.has("requires_flag") and not flags.has(o["requires_flag"]):
+	if o.has("requires_flag") and not _has_flags(o["requires_flag"]):
 		return false
-	if o.has("hide_if_flag") and flags.has(o["hide_if_flag"]):
+	if o.has("hide_if_flag") and _has_flags(o["hide_if_flag"]):
 		return false
 	if str(o["type"]) == "clue":
 		if clues.has(o["id"]):
@@ -1649,13 +1917,17 @@ func _refresh_visibility() -> void:
 
 
 func _object_at(pos: Vector2) -> Dictionary:
-	for i in range(room_objects.size() - 1, -1, -1):
-		var e: Dictionary = room_objects[i]
-		var n: Control = e["node"]
-		if not n.visible:
-			continue
-		if _obj_rect(e).has_point(pos):
-			return e["data"]
+	# Önce ipucu/kapı/eşya, sonra kişi: kişinin geniş alanı ayağının dibindeki ipucunu yutmasın.
+	for pass_npc in [false, true]:
+		for i in range(room_objects.size() - 1, -1, -1):
+			var e: Dictionary = room_objects[i]
+			var n: Control = e["node"]
+			if not n.visible:
+				continue
+			if (str(e["data"]["type"]) == "npc") != pass_npc:
+				continue
+			if _obj_rect(e).has_point(pos):
+				return e["data"]
 	return {}
 
 
@@ -1702,7 +1974,7 @@ func _process(delta: float) -> void:
 	if dir != 0.0:
 		target_x = -1.0
 		pending_action = Callable()
-		player.position.x = clampf(player.position.x + dir * SPEED * delta, 8.0, room_w - 8.0)
+		player.position.x = clampf(player.position.x + dir * SPEED * delta, walk_min, walk_max)
 		_face(dir)
 		return
 	if target_x >= 0.0:
@@ -1863,7 +2135,7 @@ func _approach_x(o: Dictionary) -> float:
 
 
 func walk_to(x: float, cb: Callable) -> void:
-	target_x = clampf(x, 8.0, room_w - 8.0)
+	target_x = clampf(x, walk_min, walk_max)
 	pending_action = cb
 
 
@@ -1878,6 +2150,8 @@ func _interact_nearest() -> void:
 		var d := absf(float(o["x"]) - player.position.x)
 		if str(o["type"]) == "npc":
 			d -= 16.0 * char_scale   # kişilerle biraz uzaktan da konuşulabilir
+			if d > 2.0 and best_d < INTERACT_RANGE:
+				continue
 		if d < best_d:
 			best_d = d
 			best = o
@@ -1923,7 +2197,7 @@ func _interact(o: Dictionary) -> void:
 				play_lines(o.get("lines_after", o.get("lines", [])), Callable())
 		"car":
 			if room_id == "sokak":
-				_start_drive()
+				_board_car()
 			else:
 				play_lines([["Oscar", "Daha yeni geldik. Önce yakut."]], Callable())
 
@@ -2088,7 +2362,7 @@ func _set_portrait(who: String) -> void:
 func _type_step(delta: float) -> void:
 	if not typing:
 		return
-	type_acc += delta * TYPE_SPEED
+	type_acc += delta * TYPE_SPEED * float(TEXT_SPEEDS[clampi(int(settings["text_speed"]), 0, 3)])
 	var n := int(type_acc)
 	var total := dialog_text.get_total_character_count()
 	if n >= total:
@@ -2548,7 +2822,15 @@ func _accuse(id: String) -> void:
 		play_lines(lines, func():
 			_close_dialog()
 			summoned = ""
-			go_room(return_room, return_x))
+			# Yanlış suçlamanın ardından: şüphelinin kendi sahnesi, sonra arabayla müzeye dönüş.
+			var cards: Array = (fin.get("wrong_after", {}).get(id, []) as Array).duplicate()
+			cards.append_array(fin.get("wrong_return", []))
+			busy = true
+			var tw := create_tween()
+			tw.tween_property(fade_rect, "color:a", 1.0, 0.5)
+			tw.tween_callback(func():
+				fade_rect.color.a = 0.0
+				_play_cutscene(cards, func(): go_room(return_room, return_x))))
 
 
 func _win() -> void:
@@ -2686,8 +2968,23 @@ func _build_settings() -> void:
 	var o := _overlay("AYARLAR")
 	settings_panel = o[0]
 	var box: VBoxContainer = o[1]
+	var panel := box.get_parent() as Control
+	panel.custom_minimum_size = Vector2(320, 0)
+	panel.position = Vector2(VIEW_W / 2.0 - 160, 40)
+	_settings_header(box, "SES")
 	_add_slider(box, "Müzik", "music")
 	_add_slider(box, "Efekt sesleri", "sfx")
+	_settings_header(box, "OYUN")
+	var speed_btn := Button.new()
+	var names := ["Yavaş", "Normal", "Hızlı", "Anında"]
+	speed_btn.text = "Yazı hızı: " + str(names[int(settings["text_speed"])])
+	speed_btn.pressed.connect(func():
+		settings["text_speed"] = (int(settings["text_speed"]) + 1) % 4
+		speed_btn.text = "Yazı hızı: " + str(names[int(settings["text_speed"])])
+		_sfx("click")
+		_save_settings())
+	box.add_child(speed_btn)
+	_settings_header(box, "GÖRÜNTÜ")
 	var fs := CheckButton.new()
 	fs.text = "Tam ekran"
 	fs.button_pressed = bool(settings["fullscreen"])
@@ -2697,7 +2994,34 @@ func _build_settings() -> void:
 		_apply_settings()
 		_save_settings())
 	box.add_child(fs)
+	var at := CheckButton.new()
+	at.text = "Toz ve atmosfer efektleri"
+	at.button_pressed = bool(settings["atmosphere"])
+	at.add_theme_color_override("font_color", C_PALE)
+	at.toggled.connect(func(on: bool):
+		settings["atmosphere"] = on
+		_apply_settings()
+		_save_settings())
+	box.add_child(at)
+	_settings_header(box, "KONTROLLER")
+	var keys := Label.new()
+	keys.text = "Sol tık: yürü / incele / konuş\nA - D: yürü     F: etkileşim\nQ: Oscar'ın Gözü     Tab: defter     Esc: menü"
+	keys.add_theme_font_size_override("font_size", 10)
+	keys.add_theme_color_override("font_color", C_LIGHT)
+	box.add_child(keys)
 	_menu_btn(box, "Geri [Esc]", _close_settings)
+
+
+func _settings_header(box: Control, text: String) -> void:
+	var h := Label.new()
+	h.text = text
+	h.add_theme_font_size_override("font_size", 10)
+	h.add_theme_color_override("font_color", C_YELLOW)
+	box.add_child(h)
+	var ln := ColorRect.new()
+	ln.color = C_BROWN
+	ln.custom_minimum_size = Vector2(0, 1)
+	box.add_child(ln)
 
 
 func _add_slider(box: Control, label_text: String, key: String) -> void:
@@ -2771,6 +3095,8 @@ func _apply_settings() -> void:
 		var v: float = float(settings[pair[1]])
 		AudioServer.set_bus_mute(idx, v <= 0.001)
 		AudioServer.set_bus_volume_db(idx, linear_to_db(maxf(v, 0.001)))
+	if atmo_dust:
+		atmo_dust.visible = bool(settings["atmosphere"])
 	var want: DisplayServer.WindowMode = DisplayServer.WINDOW_MODE_FULLSCREEN if bool(settings["fullscreen"]) else DisplayServer.WINDOW_MODE_WINDOWED
 	if DisplayServer.window_get_mode() != want:
 		DisplayServer.window_set_mode(want)
@@ -3083,7 +3409,7 @@ func _update_maya(delta: float) -> void:
 	if maya_script:
 		target = maya_target
 		speed = SPEED * maya_speed
-	target = clampf(target, 8.0, room_w - 8.0)
+	target = clampf(target, walk_min, walk_max)
 	var dx := target - maya_x
 	maya_moving = absf(dx) > (0.5 if maya_script else 4.0)
 	if maya_moving:
@@ -3110,7 +3436,7 @@ func _maya_rect() -> Rect2:
 
 
 func _player_moving() -> bool:
-	return target_x >= 0.0 or Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_D) or Input.is_action_pressed("ui_left") or Input.is_action_pressed("ui_right")
+	return player_walking_script or target_x >= 0.0 or Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_D) or Input.is_action_pressed("ui_left") or Input.is_action_pressed("ui_right")
 
 
 func _talk_to_maya() -> void:
