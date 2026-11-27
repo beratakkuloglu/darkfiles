@@ -592,10 +592,13 @@ func _build_sfx() -> void:
 			a.bus = "SFX"
 			add_child(a)
 			sfx[n] = a
-	# Arka plan müziği: sfx/music.wav varsa döngüde çalar.
-	if ResourceLoader.exists("res://sfx/music.wav"):
+	# Arka plan müziği: sfx/music.mp3 (Berat'ın seçtiği parça) yoksa sfx/music.wav.
+	var music_path := "res://sfx/music.mp3"
+	if not ResourceLoader.exists(music_path):
+		music_path = "res://sfx/music.wav"
+	if ResourceLoader.exists(music_path):
 		var m := AudioStreamPlayer.new()
-		m.stream = load("res://sfx/music.wav")
+		m.stream = load(music_path)
 		m.volume_db = -6.0
 		m.bus = "Music"
 		add_child(m)
