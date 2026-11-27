@@ -618,15 +618,15 @@
    "inspect": {
     "front": [
      {
-      "x": 0.5,
-      "y": 0.55,
+      "x": 0.49,
+      "y": 0.6,
       "text": "Anahtar deliğinde tek çizik yok. Maymuncuk değmemiş."
      }
     ],
     "back": [
      {
-      "x": 0.5,
-      "y": 0.4,
+      "x": 0.27,
+      "y": 0.25,
       "text": "Vida başları boyalı ve boya çatlamamış. Kilit hiç sökülmemiş."
      }
     ]
