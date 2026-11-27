@@ -572,20 +572,20 @@
    "inspect": {
     "front": [
      {
-      "x": 0.35,
-      "y": 0.4,
+      "x": 0.27,
+      "y": 0.62,
       "text": "Vivian Lark, giriş 20:15. Çıkış sütunu boş."
      },
      {
-      "x": 0.65,
-      "y": 0.7,
+      "x": 0.72,
+      "y": 0.76,
       "text": "Harold'ın imzası titrek. Aceleyle atılmış."
      }
     ],
     "back": [
      {
-      "x": 0.5,
-      "y": 0.5,
+      "x": 0.48,
+      "y": 0.45,
       "text": "Arka kapakta kurşun kalemle: '21:40'. Altı çizili."
      }
     ]
