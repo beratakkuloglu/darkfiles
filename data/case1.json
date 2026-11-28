@@ -1599,13 +1599,13 @@
    "name": "İşten çıkarma mektubu",
    "short": "İşten çıkarma",
    "desc": "Harold'ın çekmecesinde, imzalı: 'Küratör Felix Moreau'nun görevine 1 Aralık itibarıyla son verilmiştir.'",
-   "comment": "Kırk bir yıllık bir adam, tek sayfalık bir mektup. Harold verimli biri."
+   "comment": "Kırk bir yıl çalışmış adama tek sayfa yazmış. Harold kağıttan tasarruf ediyor."
   },
   "replika_kutu": {
    "name": "Boş replika kutusu",
    "short": "Replika kutusu",
    "desc": "Bodrumda, rafın dibinde. Etiket: 'Kızıl Göz, cam kopya. F. Moreau atölyesi.' Kutu boş.",
-   "comment": "Bir yakut kayboluyor, kopyası da. Ya biri çok dikkatsiz ya da çok dikkatli."
+   "comment": "Yakut kayıp, kopyası da kayıp. Bu kadar tesadüfe inanmam."
   },
   "replika": {
    "name": "Cam kopya yakut",
@@ -2004,7 +2004,7 @@
       ],
       [
        "Oscar",
-       "Polisi ise yirmi beş dakika sonra aradınız. Varlıklar insanlardan önce, demek."
+       "Polisi ise yirmi beş dakika sonra aradınız. Arada ne yaptınız, Harold? Poliçe numarasını mı ezberlediniz?"
       ],
       [
        "Harold",
@@ -2320,7 +2320,7 @@
      "Üç saattir zenginlere şampanya taşıyorum, kimse teşekkür etmedi. Sen fark eden ilk kişisin. Sor bakalım."
     ]
    ],
-   "claim": "Garsonları kimse görmez. Ama garsonlar her şeyi görür.",
+   "claim": "Tepsi taşırken kimse yüzüme bakmıyor. Ben de rahat rahat onlara bakıyorum.",
    "topics": [
     {
      "q": "Işıklar sönmeden önce ne gördün?",
@@ -2357,7 +2357,7 @@
       ],
       [
        "Oscar",
-       "İki şişe. Biri cesaret için, biri unutmak için."
+       "İki şişe. Bu çocuk bir şeyden fena korkuyor."
       ]
      ]
     },
@@ -2370,7 +2370,7 @@
       ],
       [
        "Rosa",
-       "İkisinde de öğrendiğim şey aynı: insanlar ağrıyan yerlerini saklar."
+       "Hastalar da misafirler de aynı. Neresi ağrıyorsa onu saklıyorlar."
       ],
       [
        "Oscar",
@@ -2408,7 +2408,7 @@
       ],
       [
        "Oscar",
-       "Kimse bir yakut için lavanta sürünmez. Ama biri her gün sürünüyorsa..."
+       "Lavanta, ha. Bunu bir kenara yazıyorum."
       ]
      ]
     },
@@ -2483,7 +2483,7 @@
       ],
       [
        "Felix",
-       "Hikaye. Her taşın bir hikayesi vardır. Kızıl Göz'ünki bu gece bitmesin istiyorum."
+       "Ben her taşın nereden geldiğini, kimlerin elinden geçtiğini bilirim. Kızıl Göz'ü otuz yıldır müzeye gelen her çocuğa anlattım."
       ]
      ]
     }
@@ -2501,7 +2501,7 @@
       ],
       [
        "Oscar",
-       "Bilmiyordu, Cole. Yalan söyleyen biri önce kendine acımaz. Önce bana bakar, inandım mı diye."
+       "Bilmiyordu, Cole. Yalan söyleseydi şimdi bana bakardı, yuttum mu diye. Gözünü mektuptan ayıramıyor."
       ]
      ],
      "set_flag": "felix_sasirdi"
@@ -2620,11 +2620,11 @@
       ],
       [
        "Oscar",
-       "Tarih tekerrür ediyor."
+       "Bu gecenin de bir bodrumu var."
       ],
       [
        "Edith",
-       "Tarih değil, Bay Penn. Açgözlülük."
+       "Biliyorum. O yüzden bu kadar çabuk geldim, Bay Penn."
       ]
      ]
     }
@@ -2638,7 +2638,7 @@
       ],
       [
        "Edith",
-       "Normal insan önce polisi arar. Parayı düşünen önce bizi arar."
+       "On beş yıldır bu işi yapıyorum. Önce bizi, sonra polisi arayan üç kişi gördüm. Üçü de şimdi içeride."
       ]
      ]
     },
@@ -2831,11 +2831,11 @@
    ],
    [
     "Oscar",
-    "Sonra 22:05'te sigortayı aradınız. Polisi ise yirmi beş dakika sonra. Önce para, sonra kanun."
+    "Sonra 22:05'te sigortayı aradınız. Polisi ise yirmi beş dakika sonra, Gus'u uyandırınca."
    ],
    [
     "Oscar",
-    "Ve en güzel kısmı: Felix'in cam kopyası bagajınızda. İskele 14'teki alıcınıza sahtesini satacaktınız. Gerçeği ise bodrumda bekleyecekti."
+    "Felix'in cam kopyası da bagajınızda. İskele 14'teki alıcınıza sahtesini satacaktınız. Gerçeği ise bodrumda bekleyecekti."
    ],
    [
     "Harold",
@@ -3696,7 +3696,7 @@
    ],
    "choices": [
     {
-     "text": "Para her zaman polisten hızlıdır.",
+     "text": "Bu şehirde para polisten hızlı koşar.",
      "reply": [
       [
        "Maya",
