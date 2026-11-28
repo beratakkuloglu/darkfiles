@@ -146,6 +146,9 @@ var accuse_button: Button
 var accuse_panel: PanelContainer
 var accuse_list: VBoxContainer
 var menu_panel: Control
+var case_panel: Control          # Vaka seç ekranı (Telltale tarzı)
+var case_idx := 0
+var case_widgets: Dictionary = {}
 var fade_rect: ColorRect
 var sfx: Dictionary = {}
 
@@ -831,7 +834,7 @@ func _build_menu() -> void:
 	box.position = Vector2(40, 186)
 	box.add_theme_constant_override("separation", 6)
 	menu_panel.add_child(box)
-	var play := _menu_item(box, "VAKAYI AÇ", true, _start_game)
+	var play := _menu_item(box, "VAKA SEÇ", true, _open_case_select)
 	play.grab_focus.call_deferred()
 	_menu_item(box, "Ayarlar", false, open_settings)
 	_menu_item(box, "Çıkış", false, func(): get_tree().quit())
@@ -2157,6 +2160,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		if key.keycode == KEY_ESCAPE:
 			if settings_panel.visible:
 				_close_settings()
+			elif case_panel and case_panel.visible:
+				_close_case_select()
 			elif inspect_panel.visible:
 				_close_inspect()
 			elif notebook_panel.visible:
@@ -2182,8 +2187,15 @@ func _unhandled_input(event: InputEvent) -> void:
 				_close_inspect()
 			return
 		if in_menu:
-			if key.keycode == KEY_ENTER or key.keycode == KEY_SPACE:
-				_start_game()
+			if case_panel and case_panel.visible:
+				if key.keycode in [KEY_LEFT, KEY_A]:
+					_case_step(-1)
+				elif key.keycode in [KEY_RIGHT, KEY_D]:
+					_case_step(1)
+				elif key.keycode == KEY_ENTER or key.keycode == KEY_SPACE:
+					_case_start()
+			elif key.keycode == KEY_ENTER or key.keycode == KEY_SPACE:
+				_open_case_select()
 			return
 		if key.keycode == KEY_TAB:
 			if notebook_panel.visible:
@@ -3755,3 +3767,230 @@ func _talk_to_maya() -> void:
 	if t.begins_with("Maya: "):
 		t = t.substr(6)
 	play_lines([["Oscar", "Cole, ne düşünüyorsun?"], ["Maya", t]], Callable())
+
+# ================================================================ vaka seç
+
+## Vaka listesi. Yeni vaka eklenince buraya bir satır: kapak art/ui/<cover>.png (320x180).
+const CASES := [
+	{"no": 1, "title": "BOŞ VİTRİN", "tag": "Finch-Moore Müzesi. Kızıl Göz yakutu bir gecede kayboldu.", "cover": "ui/case1_cover", "fallback": "rooms/hol", "open": true},
+	{"no": 2, "title": "???", "tag": "Dosya henüz mühürlü.", "cover": "ui/case_locked", "fallback": "rooms/fcd", "open": false},
+	{"no": 3, "title": "???", "tag": "Dosya henüz mühürlü.", "cover": "ui/case_locked", "fallback": "rooms/oscar_ofis", "open": false},
+	{"no": 4, "title": "???", "tag": "Dosya henüz mühürlü.", "cover": "ui/case_locked", "fallback": "rooms/sokak", "open": false},
+]
+
+
+func _build_case_select() -> void:
+	case_panel = Control.new()
+	case_panel.size = Vector2(VIEW_W, VIEW_H)
+	case_panel.clip_contents = true
+	case_panel.visible = false
+	ui_root.add_child(case_panel)
+	var under := ColorRect.new()
+	under.color = C_BLACK
+	under.size = Vector2(VIEW_W, VIEW_H)
+	case_panel.add_child(under)
+	var cover := TextureRect.new()
+	cover.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	cover.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	cover.size = Vector2(VIEW_W, VIEW_H)
+	cover.pivot_offset = Vector2(VIEW_W / 2.0, VIEW_H / 2.0)
+	cover.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	case_panel.add_child(cover)
+	var kb := cover.create_tween().set_loops()
+	kb.tween_property(cover, "scale", Vector2(1.06, 1.06), 14.0).set_trans(Tween.TRANS_SINE)
+	kb.tween_property(cover, "scale", Vector2.ONE, 14.0).set_trans(Tween.TRANS_SINE)
+	# Üstte ve altta koyulaşan perde: yazılar okunsun.
+	var g := Gradient.new()
+	g.set_color(0, Color(0.03, 0.02, 0.01, 0.85))
+	g.set_color(1, Color(0.03, 0.02, 0.01, 0.95))
+	g.add_point(0.22, Color(0.03, 0.02, 0.01, 0.0))
+	g.add_point(0.6, Color(0.03, 0.02, 0.01, 0.15))
+	var gt := GradientTexture2D.new()
+	gt.gradient = g
+	gt.fill_from = Vector2(0, 0)
+	gt.fill_to = Vector2(0, 1)
+	gt.width = 4
+	gt.height = 64
+	var shade := TextureRect.new()
+	shade.texture = gt
+	shade.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	shade.stretch_mode = TextureRect.STRETCH_SCALE
+	shade.size = Vector2(VIEW_W, VIEW_H)
+	shade.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	case_panel.add_child(shade)
+	# Yağmur (ana menüdeki gibi, daha seyrek)
+	var rain := CPUParticles2D.new()
+	rain.amount = 120
+	rain.lifetime = 0.7
+	rain.preprocess = 1.0
+	rain.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	rain.emission_rect_extents = Vector2(VIEW_W * 0.6, 2)
+	rain.position = Vector2(VIEW_W / 2.0 + 40, -8)
+	rain.direction = Vector2(-0.18, 1)
+	rain.spread = 1.5
+	rain.gravity = Vector2.ZERO
+	rain.initial_velocity_min = 520.0
+	rain.initial_velocity_max = 600.0
+	rain.color = Color(0.8, 0.75, 0.62, 0.18)
+	case_panel.add_child(rain)
+
+	var tf := _title_font()
+	var head := Label.new()
+	head.text = "VAKA SEÇ"
+	head.position = Vector2(0, 14)
+	head.size = Vector2(VIEW_W, 26)
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	head.add_theme_font_size_override("font_size", 24)
+	if tf:
+		head.add_theme_font_override("font", tf)
+	head.add_theme_color_override("font_color", C_PALE)
+	head.add_theme_color_override("font_outline_color", C_BLACK)
+	head.add_theme_constant_override("outline_size", 6)
+	case_panel.add_child(head)
+	var sub := Label.new()
+	sub.position = Vector2(0, 42)
+	sub.size = Vector2(VIEW_W, 16)
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sub.add_theme_font_size_override("font_size", 11)
+	sub.add_theme_color_override("font_color", C_YELLOW)
+	sub.add_theme_color_override("font_outline_color", C_BLACK)
+	sub.add_theme_constant_override("outline_size", 4)
+	case_panel.add_child(sub)
+	for dir in [-1, 1]:
+		var ar := Button.new()
+		ar.text = "<" if dir < 0 else ">"
+		ar.flat = true
+		if tf:
+			ar.add_theme_font_override("font", tf)
+		ar.focus_mode = Control.FOCUS_NONE
+		ar.add_theme_font_size_override("font_size", 22)
+		ar.add_theme_color_override("font_color", C_PALE)
+		ar.add_theme_color_override("font_hover_color", C_YELLOW)
+		ar.add_theme_color_override("font_pressed_color", C_YELLOW)
+		ar.add_theme_color_override("font_outline_color", C_BLACK)
+		ar.add_theme_constant_override("outline_size", 5)
+		ar.size = Vector2(40, 34)
+		ar.position = Vector2(VIEW_W / 2.0 - 150 if dir < 0 else VIEW_W / 2.0 + 110, 12)
+		var d: int = dir
+		ar.pressed.connect(func(): _case_step(d))
+		case_panel.add_child(ar)
+		case_widgets["arrow%d" % dir] = ar
+	# Altta fırça darbesi gibi açık şerit + koyu yazılı "Vakaya başla".
+	var band := ColorRect.new()
+	band.color = Color(0.95, 0.89, 0.7, 0.92)
+	band.position = Vector2(VIEW_W / 2.0 - 130, VIEW_H - 88)
+	band.size = Vector2(260, 30)
+	band.rotation = deg_to_rad(-1.2)
+	band.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	case_panel.add_child(band)
+	var start := Button.new()
+	start.flat = true
+	start.focus_mode = Control.FOCUS_NONE
+	start.position = band.position
+	start.size = band.size
+	start.add_theme_font_size_override("font_size", 18)
+	if tf:
+		start.add_theme_font_override("font", tf)
+	start.add_theme_color_override("font_color", C_BLACK)
+	start.add_theme_color_override("font_hover_color", C_BROWN)
+	start.add_theme_color_override("font_pressed_color", C_BROWN)
+	start.add_theme_color_override("font_disabled_color", Color(0.25, 0.2, 0.15))
+	start.mouse_entered.connect(func(): _sfx("blip"))
+	start.pressed.connect(_case_start)
+	case_panel.add_child(start)
+	var tag := Label.new()
+	tag.position = Vector2(0, VIEW_H - 52)
+	tag.size = Vector2(VIEW_W, 14)
+	tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tag.add_theme_font_size_override("font_size", 10)
+	tag.add_theme_color_override("font_color", C_PALE)
+	case_panel.add_child(tag)
+	var back := Button.new()
+	back.text = "Esc   Önceki menü"
+	back.flat = true
+	back.focus_mode = Control.FOCUS_NONE
+	back.position = Vector2(14, VIEW_H - 30)
+	back.add_theme_font_size_override("font_size", 10)
+	back.add_theme_color_override("font_color", C_LIGHT)
+	back.add_theme_color_override("font_hover_color", C_YELLOW)
+	back.pressed.connect(_close_case_select)
+	case_panel.add_child(back)
+	var dots := HBoxContainer.new()
+	dots.add_theme_constant_override("separation", 6)
+	dots.position = Vector2(VIEW_W / 2.0 - CASES.size() * 5, VIEW_H - 24)
+	case_panel.add_child(dots)
+	for i in CASES.size():
+		var dt := ColorRect.new()
+		dt.custom_minimum_size = Vector2(4, 4)
+		dots.add_child(dt)
+	case_widgets["cover"] = cover
+	case_widgets["sub"] = sub
+	case_widgets["start"] = start
+	case_widgets["tag"] = tag
+	case_widgets["dots"] = dots
+
+
+func _open_case_select() -> void:
+	if case_panel == null:
+		_build_case_select()
+	_sfx("click")
+	case_idx = 0
+	_case_refresh()
+	case_panel.visible = true
+	case_panel.modulate.a = 0.0
+	ui_root.move_child(case_panel, ui_root.get_child_count() - 1)
+	case_panel.create_tween().tween_property(case_panel, "modulate:a", 1.0, 0.35)
+
+
+func _close_case_select() -> void:
+	_sfx("click")
+	case_panel.visible = false
+
+
+func _case_step(dir: int) -> void:
+	var n: int = clampi(case_idx + dir, 0, CASES.size() - 1)
+	if n == case_idx:
+		return
+	case_idx = n
+	_sfx("blip")
+	var cover: TextureRect = case_widgets["cover"]
+	var tw := cover.create_tween()
+	tw.tween_property(cover, "modulate:a", 0.0, 0.15)
+	tw.tween_callback(_case_refresh)
+	tw.tween_property(cover, "modulate:a", 1.0, 0.25)
+
+
+func _case_refresh() -> void:
+	var c: Dictionary = CASES[case_idx]
+	var is_open: bool = bool(c["open"])
+	var cover: TextureRect = case_widgets["cover"]
+	var tex := _art(str(c["cover"]))
+	var dim := false
+	if tex == null:
+		tex = _art(str(c["fallback"]))
+		dim = not is_open
+	cover.texture = tex
+	cover.self_modulate = Color(0.32, 0.27, 0.22) if dim else Color.WHITE
+	var sub: Label = case_widgets["sub"]
+	sub.text = "VAKA %d: %s" % [int(c["no"]), str(c["title"])]
+	var start: Button = case_widgets["start"]
+	start.text = "VAKAYA BAŞLA" if is_open else "?  YAKINDA"
+	start.disabled = not is_open
+	var tag: Label = case_widgets["tag"]
+	tag.text = str(c["tag"])
+	(case_widgets["arrow-1"] as Button).modulate.a = 0.25 if case_idx == 0 else 1.0
+	(case_widgets["arrow1"] as Button).modulate.a = 0.25 if case_idx == CASES.size() - 1 else 1.0
+	var dots: HBoxContainer = case_widgets["dots"]
+	for i in dots.get_child_count():
+		(dots.get_child(i) as ColorRect).color = C_YELLOW if i == case_idx else C_BROWN
+
+
+func _case_start() -> void:
+	var c: Dictionary = CASES[case_idx]
+	if not bool(c["open"]):
+		_sfx("wrong")
+		return
+	case_panel.create_tween().tween_property(case_panel, "modulate:a", 0.0, 0.4)
+	_start_game()
+	get_tree().create_timer(0.5).timeout.connect(func(): case_panel.visible = false)
