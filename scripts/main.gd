@@ -148,6 +148,13 @@ var accuse_button: Button
 var accuse_panel: PanelContainer
 var accuse_list: VBoxContainer
 var menu_panel: Control
+## Atanabilir tuşlar (Ayarlar > Kontroller). user://settings.cfg [keys] bölümüne kaydedilir.
+const DEFAULT_KEYS := {"left": KEY_A, "right": KEY_D, "interact": KEY_F, "interact2": KEY_E, "eye": KEY_Q, "notebook": KEY_TAB, "fullscreen": KEY_F11}
+const KEY_NAMES := [["left", "Sola yürü"], ["right", "Sağa yürü"], ["interact", "Etkileşim"], ["interact2", "Etkileşim (2)"], ["eye", "Oscar'ın Gözü"], ["notebook", "Defter / kanıt tahtası"], ["fullscreen", "Tam ekran"]]
+var keys: Dictionary = DEFAULT_KEYS.duplicate()
+var controls_panel: Control
+var rebinding := ""             # tuşu değiştirilen eylem; boşsa bekleme yok
+var rebind_buttons: Dictionary = {}
 var case_panel: Control          # Vaka seç ekranı (Telltale tarzı)
 var case_idx := 0
 var case_widgets: Dictionary = {}
@@ -486,8 +493,8 @@ func _build_ui() -> void:
 	ui_root.add_child(debt_label)
 	_update_debt()
 
-	notebook_button = _hud_button("ui/icon_notebook", "Defter", "Tab")
-	notebook_button.position = Vector2(VIEW_W - 128, VIEW_H - BAR_H + 2)
+	notebook_button = _hud_button("ui/icon_notebook", "Defter", _key_name("notebook"))
+	notebook_button.position = Vector2(VIEW_W - 100, VIEW_H - BAR_H + 2)
 	notebook_button.pressed.connect(func(): open_notebook(""))
 	ui_root.add_child(notebook_button)
 
@@ -498,7 +505,7 @@ func _build_ui() -> void:
 	eye_bar.visible = false
 	eye_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ui_root.add_child(eye_bar)
-	eye_button = _hud_button("ui/icon_eye", "Göz", "Q")
+	eye_button = _hud_button("ui/icon_eye", "Göz", _key_name("eye"))
 	eye_button.position = Vector2(VIEW_W - 64, VIEW_H - BAR_H + 2)
 	eye_button.pressed.connect(toggle_eye)
 	ui_root.add_child(eye_button)
@@ -714,8 +721,25 @@ func _build_ui() -> void:
 	accuse_list = VBoxContainer.new()
 	accuse_panel.add_child(accuse_list)
 
-	menu_button = _hud_button("", "Menü", "Esc")
-	menu_button.position = Vector2(6, VIEW_H - BAR_H + 2)
+	# Menü: üç çizgili (hamburger) simge, yazısız.
+	menu_button = _hud_button("", "", "")
+	menu_button.custom_minimum_size = Vector2(20, BAR_H - 4)
+	menu_button.size = Vector2(20, BAR_H - 4)
+	menu_button.position = Vector2(8, VIEW_H - BAR_H + 2)
+	menu_button.tooltip_text = "Menü (Esc)"
+	for i in 3:
+		var ln := ColorRect.new()
+		ln.color = C_LIGHT
+		ln.size = Vector2(14, 2)
+		ln.position = Vector2(3, (BAR_H - 4) / 2.0 - 5.0 + i * 4.0)
+		ln.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		menu_button.add_child(ln)
+	menu_button.mouse_entered.connect(func():
+		for c in menu_button.get_children():
+			(c as ColorRect).color = C_YELLOW)
+	menu_button.mouse_exited.connect(func():
+		for c in menu_button.get_children():
+			(c as ColorRect).color = C_LIGHT)
 	menu_button.pressed.connect(open_pause)
 	ui_root.add_child(menu_button)
 
@@ -850,10 +874,12 @@ func _build_menu() -> void:
 	menu_panel.add_child(box)
 	var play := _menu_item(box, "VAKA SEÇ", true, _open_case_select)
 	play.grab_focus.call_deferred()
+	_menu_item(box, "Kontroller", false, open_controls)
 	_menu_item(box, "Ayarlar", false, open_settings)
 	_menu_item(box, "Çıkış", false, func(): get_tree().quit())
 	var help := Label.new()
-	help.text = "Fare: yürü, incele, konuş   ·   A/D yürü   ·   F etkileşim   ·   Q Oscar'ın Gözü   ·   Tab defter"
+	help.text = ""
+	help.visible = false
 	help.position = Vector2(0, VIEW_H - 22)
 	help.size = Vector2(VIEW_W, 14)
 	help.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1357,13 +1383,10 @@ func _start_drive() -> void:
 		drive_street.scale = Vector2.ONE
 		drive_street_car.position.x = -drive_street_car.size.x * drive_street_car.scale.x - 20.0)
 	tw.tween_property(fade_rect, "color:a", 0.0, 0.8)
-	# 1) Sokak: araba soldan gelir, ortada durur, sonra hızlanıp sağdan çıkar (kamera hafif yakınlaşır).
-	var mid := VIEW_W / 2.0 - _car_w() / 2.0
-	tw.tween_property(drive_street_car, "position:x", mid, 2.2).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tw.tween_interval(1.4)
-	tw.tween_property(drive_street_car, "position:x", VIEW_W + 40.0, 1.6).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tw.parallel().tween_property(drive_street, "scale", Vector2(1.12, 1.12), 1.6).set_trans(Tween.TRANS_SINE)
-	tw.parallel().tween_property(fade_rect, "color:a", 1.0, 0.7).set_delay(1.0)
+	# 1) Sokak: araba durmadan soldan girip sağdan çıkar (kamera hafif yakınlaşır).
+	tw.tween_property(drive_street_car, "position:x", VIEW_W + 40.0, 3.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tw.parallel().tween_property(drive_street, "scale", Vector2(1.1, 1.1), 3.4).set_trans(Tween.TRANS_SINE)
+	tw.parallel().tween_property(fade_rect, "color:a", 1.0, 0.7).set_delay(2.7)
 	# 2) Yolculuk: araba ortada, yol ve direkler altından kayar.
 	tw.tween_callback(func():
 		drive_street.visible = false
@@ -1423,11 +1446,12 @@ func _spin_wheels(delta: float) -> void:
 
 func _car_w() -> float:
 	var t := _art("araba")
-	return t.get_width() * ZOOM if t else 160.0
+	return t.get_width() * DRIVE_CAR_SCALE if t else 160.0
 
 
 ## Arabanın tekerlek hizası (ekran pikseli). Çizim gelince yola göre ayarlanır.
-const DRIVE_CAR_BOTTOM := 304.0
+const DRIVE_CAR_BOTTOM := 306.0
+const DRIVE_CAR_SCALE := 3.0     # yol sahnelerinde araba (dünyada 1x, burada daha yakın çekim)
 
 
 func _make_drive_car(parent: Control, x: float) -> Control:
@@ -1437,8 +1461,8 @@ func _make_drive_car(parent: Control, x: float) -> Control:
 		car = TextureRect.new()
 		(car as TextureRect).texture = car_tex
 		car.size = car_tex.get_size()
-		car.scale = Vector2(ZOOM, ZOOM)
-		car.position = Vector2(x, DRIVE_CAR_BOTTOM - car_tex.get_height() * ZOOM)
+		car.scale = Vector2(DRIVE_CAR_SCALE, DRIVE_CAR_SCALE)
+		car.position = Vector2(x, DRIVE_CAR_BOTTOM - car_tex.get_height() * DRIVE_CAR_SCALE)
 	else:
 		car = ColorRect.new()
 		(car as ColorRect).color = C_BROWN
@@ -1990,7 +2014,8 @@ func _spawn_object(o: Dictionary, has_bg: bool) -> void:
 		mk.size = ms
 		mk.scale = Vector2(1.0 / char_scale, 1.0 / char_scale)
 		var top := -ms.y / char_scale - 4.0 / char_scale
-		mk.position = Vector2(w / 2.0 - ms.x / 2.0 / char_scale, top)
+		var head_x: float = _head_center_x(tex) if tex else w / 2.0
+		mk.position = Vector2(head_x - ms.x / 2.0 / char_scale, top)
 		mk.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		n.add_child(mk)
 		var bt := mk.create_tween().set_loops()
@@ -2123,9 +2148,9 @@ func _process(delta: float) -> void:
 	if busy or paused:
 		return
 	var dir := 0.0
-	if Input.is_action_pressed("ui_left") or Input.is_key_pressed(KEY_A):
+	if Input.is_action_pressed("ui_left") or Input.is_key_pressed(_key("left")):
 		dir -= 1.0
-	if Input.is_action_pressed("ui_right") or Input.is_key_pressed(KEY_D):
+	if Input.is_action_pressed("ui_right") or Input.is_key_pressed(_key("right")):
 		dir += 1.0
 	if dir != 0.0:
 		target_x = -1.0
@@ -2175,12 +2200,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		if in_cutscene:
 			if key.keycode == KEY_ESCAPE:
 				_end_cutscene()
-			elif key.keycode in [KEY_SPACE, KEY_ENTER, KEY_F, KEY_E]:
+			elif key.keycode in [KEY_SPACE, KEY_ENTER] or _is_interact(key):
 				_cut_advance()
 			return
 		if key.keycode == KEY_ESCAPE:
 			if settings_panel.visible:
 				_close_settings()
+			elif controls_panel and controls_panel.visible:
+				_close_controls()
 			elif case_panel and case_panel.visible:
 				_close_case_select()
 			elif inspect_panel.visible:
@@ -2194,49 +2221,49 @@ func _unhandled_input(event: InputEvent) -> void:
 			elif not in_menu:
 				open_pause()
 			return
-		if key.keycode == KEY_F11:
+		if key.keycode == _key("fullscreen"):
 			settings["fullscreen"] = not bool(settings["fullscreen"])
 			_apply_settings()
 			_save_settings()
 			return
-		if paused or settings_panel.visible:
+		if paused or settings_panel.visible or (controls_panel and controls_panel.visible):
 			return
 		if inspect_panel.visible:
-			if key.keycode == KEY_F:
+			if key.keycode == _key("interact"):
 				_flip_inspect()
-			elif key.keycode == KEY_SPACE or key.keycode == KEY_ENTER or key.keycode == KEY_E:
+			elif key.keycode == KEY_SPACE or key.keycode == KEY_ENTER or key.keycode == _key("interact2"):
 				_close_inspect()
 			return
 		if in_menu:
 			if case_panel and case_panel.visible:
-				if key.keycode in [KEY_LEFT, KEY_A]:
+				if key.keycode in [KEY_LEFT, _key("left")]:
 					_case_step(-1)
-				elif key.keycode in [KEY_RIGHT, KEY_D]:
+				elif key.keycode in [KEY_RIGHT, _key("right")]:
 					_case_step(1)
 				elif key.keycode == KEY_ENTER or key.keycode == KEY_SPACE:
 					_case_start()
 			elif key.keycode == KEY_ENTER or key.keycode == KEY_SPACE:
 				_open_case_select()
 			return
-		if key.keycode == KEY_TAB:
+		if key.keycode == _key("notebook"):
 			if notebook_panel.visible:
 				_close_notebook()
 			else:
 				open_notebook("")
 			return
-		if in_car and not dialog_panel.visible and (key.keycode == KEY_E or key.keycode == KEY_F):
+		if in_car and not dialog_panel.visible and _is_interact(key):
 			_exit_car()
 			return
-		if _no_player() and not busy and (key.keycode == KEY_E or key.keycode == KEY_F):
+		if _no_player() and not busy and _is_interact(key):
 			_leave_interior()
 			return
 		if busy:
-			if dialog_panel.visible and dialog_choices.get_child_count() == 0 and (key.keycode == KEY_SPACE or key.keycode == KEY_ENTER or key.keycode == KEY_E or key.keycode == KEY_F):
+			if dialog_panel.visible and dialog_choices.get_child_count() == 0 and (key.keycode == KEY_SPACE or key.keycode == KEY_ENTER or _is_interact(key)):
 				_advance()
 			return
-		if key.keycode == KEY_F or key.keycode == KEY_E:
+		if _is_interact(key):
 			_interact_nearest()
-		elif key.keycode == KEY_Q:
+		elif key.keycode == _key("eye"):
 			toggle_eye()
 		return
 	var mb := event as InputEventMouseButton
@@ -2316,7 +2343,7 @@ func _animate(delta: float) -> void:
 	if player_pose != null:
 		player_sprite.texture = player_pose
 		return
-	var moving := not busy and (target_x >= 0.0 or Input.is_action_pressed("ui_left") or Input.is_action_pressed("ui_right") or Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_D))
+	var moving := not busy and (target_x >= 0.0 or Input.is_action_pressed("ui_left") or Input.is_action_pressed("ui_right") or Input.is_key_pressed(_key("left")) or Input.is_key_pressed(_key("right")))
 	if moving and not walk_frames.is_empty():
 		walk_time += delta
 		var i := int(walk_time / WALK_FRAME_TIME) % walk_frames.size()
@@ -2688,7 +2715,10 @@ func _layout_dialog() -> void:
 	dialog_panel.position.y = VIEW_H - BAR_H - 4.0 - dialog_panel.get_combined_minimum_size().y
 	for side in big_portraits:
 		var root: Control = big_portraits[side]["root"]
-		root.position.y = dialog_panel.position.y - BIG_PORTRAIT_ROWS * BIG_PORTRAIT_SCALE + 18.0
+		root.position.y = dialog_panel.position.y - BIG_PORTRAIT_ROWS * BIG_PORTRAIT_SCALE + 1.0
+		if not root.visible or root.position.x == 0.0:
+			continue
+		root.position.x = _portrait_home_x(str(side), root.size.x)
 
 
 func _close_dialog() -> void:
@@ -3195,7 +3225,7 @@ func _eye_warning() -> void:
 func _update_eye_button() -> void:
 	if eye_button:
 		var has_icon := eye_button.icon != null
-		eye_button.text = ("" if has_icon else ("Gözü kapat " if eye_on else "Göz ")) + "Q  " + str(eye_uses)
+		eye_button.text = ("" if has_icon else ("Gözü kapat " if eye_on else "Göz ")) + _key_name("eye") + "  " + str(eye_uses)
 		eye_button.modulate = Color(1.4, 1.3, 0.9) if eye_on else Color(1, 1, 1)
 		eye_button.tooltip_text = "Oscar'ın Gözü (" + str(eye_uses) + " hak)"
 
@@ -3210,8 +3240,9 @@ func _hud_button(icon_key: String, fallback: String, key_hint: String) -> Button
 	b.add_theme_font_size_override("font_size", 9)
 	b.add_theme_color_override("font_color", C_LIGHT)
 	b.add_theme_color_override("font_hover_color", C_YELLOW)
-	b.add_theme_constant_override("h_separation", 4)
+	b.add_theme_constant_override("h_separation", 2)
 	b.add_theme_constant_override("icon_max_width", 16)
+	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	var flat := StyleBoxEmpty.new()
 	for st in ["normal", "hover", "pressed", "focus"]:
 		b.add_theme_stylebox_override(st, flat)
@@ -3274,6 +3305,7 @@ func _build_pause() -> void:
 	var box: VBoxContainer = o[1]
 	_menu_btn(box, "Devam et", close_pause)
 	_menu_btn(box, "Ayarlar", open_settings)
+	_menu_btn(box, "Kontroller", open_controls)
 	_menu_btn(box, "Ana menüye dön", func(): get_tree().reload_current_scene())
 	_menu_btn(box, "Oyundan çık", func(): get_tree().quit())
 
@@ -3332,11 +3364,11 @@ func _build_settings() -> void:
 		_save_settings())
 	box.add_child(at)
 	_settings_header(box, "KONTROLLER")
-	var keys := Label.new()
-	keys.text = "Sol tık: yürü / incele / konuş\nA - D: yürü    F: etkileşim\nQ: Oscar'ın Gözü    Tab: defter\nEsc: menü    F11: tam ekran"
-	keys.add_theme_font_size_override("font_size", 9)
-	keys.add_theme_color_override("font_color", C_LIGHT)
-	box.add_child(keys)
+	var kb := Button.new()
+	kb.text = "Tuşları değiştir"
+	kb.add_theme_font_size_override("font_size", 10)
+	kb.pressed.connect(open_controls)
+	box.add_child(kb)
 	_menu_btn(outer, "Geri [Esc]", _close_settings)
 
 
@@ -3405,13 +3437,18 @@ func _load_settings() -> void:
 	if cf.load(SETTINGS_PATH) == OK:
 		for k in settings.keys():
 			settings[k] = cf.get_value("settings", k, settings[k])
+		for k in DEFAULT_KEYS.keys():
+			keys[k] = int(cf.get_value("keys", k, DEFAULT_KEYS[k]))
 	_apply_settings()
+	_refresh_controls()
 
 
 func _save_settings() -> void:
 	var cf := ConfigFile.new()
 	for k in settings.keys():
 		cf.set_value("settings", k, settings[k])
+	for k in keys.keys():
+		cf.set_value("keys", k, keys[k])
 	cf.save(SETTINGS_PATH)
 
 
@@ -3701,7 +3738,7 @@ func _show_big_portrait(side: String, key: String, speaking: bool) -> void:
 			(g as TextureRect).texture = at
 		p["key"] = key
 		# İçeri kayarak gir
-		var home_x: float = 20.0 if side == "left" else VIEW_W - 20.0 - root.size.x
+		var home_x: float = _portrait_home_x(side, root.size.x)
 		root.position.x = home_x + (-160.0 if side == "left" else 160.0)
 		root.visible = true
 		root.create_tween().tween_property(root, "position:x", home_x, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
@@ -3771,7 +3808,7 @@ func _maya_rect() -> Rect2:
 
 
 func _player_moving() -> bool:
-	return player_walking_script or target_x >= 0.0 or Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_D) or Input.is_action_pressed("ui_left") or Input.is_action_pressed("ui_right")
+	return player_walking_script or target_x >= 0.0 or Input.is_key_pressed(_key("left")) or Input.is_key_pressed(_key("right")) or Input.is_action_pressed("ui_left") or Input.is_action_pressed("ui_right")
 
 
 ## Maya ara ara kendiliğinden sohbet açar (data maya_chats). Her sohbet bir kez, cevabı oyuncu seçer.
@@ -4056,3 +4093,146 @@ func _leave_interior() -> void:
 	var ex: Array = data["rooms"][room_id].get("exit", ["otopark", 200])
 	_sfx(str(data["rooms"][room_id].get("exit_sfx", "car_door")))
 	go_room(str(ex[0]), float(ex[1]))
+
+
+## Büyük konuşma portreleri diyalog kutusunun iki üst köşesine oturur.
+func _portrait_home_x(side: String, w: float) -> float:
+	var left := dialog_panel.position.x + 8.0
+	var right := dialog_panel.position.x + dialog_panel.size.x - 8.0 - w
+	return left if side == "left" else right
+
+
+var _head_cache: Dictionary = {}
+
+## Çizimde kafanın yatay ortası (üstteki dolu piksellere göre); ünlem tam başın üstüne gelsin.
+func _head_center_x(tex: Texture2D) -> float:
+	var key := tex.resource_path
+	if _head_cache.has(key):
+		return float(_head_cache[key])
+	var img := tex.get_image()
+	var cx := tex.get_width() / 2.0
+	if img:
+		var top := -1
+		for y in img.get_height():
+			for x in img.get_width():
+				if img.get_pixel(x, y).a > 0.5:
+					top = y
+					break
+			if top != -1:
+				break
+		if top != -1:
+			var xs: Array = []
+			for y in range(top, mini(top + 8, img.get_height())):
+				for x in img.get_width():
+					if img.get_pixel(x, y).a > 0.5:
+						xs.append(x)
+			if not xs.is_empty():
+				cx = (float(xs.min()) + float(xs.max()) + 1.0) / 2.0
+	_head_cache[key] = cx
+	return cx
+
+
+# ================================================================ kontroller (tuş atama)
+
+func _key(action: String) -> int:
+	return int(keys.get(action, DEFAULT_KEYS.get(action, 0)))
+
+
+func _key_name(action: String) -> String:
+	return OS.get_keycode_string(_key(action))
+
+
+func _is_interact(key: InputEventKey) -> bool:
+	return key.keycode == _key("interact") or key.keycode == _key("interact2")
+
+
+func _build_controls() -> void:
+	var o := _overlay("KONTROLLER")
+	controls_panel = o[0]
+	var outer: VBoxContainer = o[1]
+	var panel := outer.get_parent() as Control
+	panel.custom_minimum_size = Vector2(340, 0)
+	panel.position = Vector2(VIEW_W / 2.0 - 170, 40)
+	var mouse := Label.new()
+	mouse.text = "Sol tık: yürü, incele, konuş     Esc: menü / geri"
+	mouse.add_theme_font_size_override("font_size", 9)
+	mouse.add_theme_color_override("font_color", C_LIGHT)
+	outer.add_child(mouse)
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 16)
+	grid.add_theme_constant_override("v_separation", 3)
+	outer.add_child(grid)
+	for pair in KEY_NAMES:
+		var action: String = pair[0]
+		var lb := Label.new()
+		lb.text = str(pair[1])
+		lb.custom_minimum_size = Vector2(180, 0)
+		lb.add_theme_font_size_override("font_size", 10)
+		lb.add_theme_color_override("font_color", C_PALE)
+		grid.add_child(lb)
+		var b := Button.new()
+		b.custom_minimum_size = Vector2(110, 16)
+		b.add_theme_font_size_override("font_size", 10)
+		b.pressed.connect(func():
+			_sfx("click")
+			rebinding = action
+			_refresh_controls())
+		grid.add_child(b)
+		rebind_buttons[action] = b
+	var hint := Label.new()
+	hint.text = "Değiştirmek için tuşa tıkla, sonra yeni tuşa bas."
+	hint.add_theme_font_size_override("font_size", 8)
+	hint.add_theme_color_override("font_color", C_LIGHT)
+	outer.add_child(hint)
+	_menu_btn(outer, "Varsayılana dön", func():
+		keys = DEFAULT_KEYS.duplicate()
+		rebinding = ""
+		_save_settings()
+		_refresh_controls())
+	_menu_btn(outer, "Geri [Esc]", _close_controls)
+
+
+func _refresh_controls() -> void:
+	for action in rebind_buttons:
+		var b: Button = rebind_buttons[action]
+		b.text = "... bir tuşa bas" if rebinding == action else _key_name(str(action))
+	if notebook_button:
+		notebook_button.text = _key_name("notebook") if notebook_button.icon else "Defter " + _key_name("notebook")
+	_update_eye_button()
+
+
+func open_controls() -> void:
+	if controls_panel == null:
+		_build_controls()
+	_sfx("click")
+	rebinding = ""
+	_refresh_controls()
+	controls_panel.visible = true
+	ui_root.move_child(controls_panel, ui_root.get_child_count() - 1)
+
+
+func _close_controls() -> void:
+	rebinding = ""
+	controls_panel.visible = false
+	_save_settings()
+
+
+## Tuş atama beklerken basılan ilk tuşu yakalar (Esc iptal eder). Aynı tuş başka eylemdeyse yer değiştirir.
+func _input(event: InputEvent) -> void:
+	if rebinding == "":
+		return
+	var k := event as InputEventKey
+	if k == null or not k.pressed or k.echo:
+		return
+	get_viewport().set_input_as_handled()
+	if k.keycode != KEY_ESCAPE:
+		var old := _key(rebinding)
+		for a in keys.keys():
+			if a != rebinding and int(keys[a]) == k.keycode:
+				keys[a] = old
+		keys[rebinding] = k.keycode
+		_sfx("click")
+		_save_settings()
+	rebinding = ""
+	_refresh_controls()

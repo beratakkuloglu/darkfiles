@@ -912,7 +912,7 @@
    "name": "Museum Entrance",
    "place": "Finch-Moore Museum",
    "width": 344,
-   "floor_y": 172,
+   "floor_y": 167,
    "bg": "#14100c",
    "rain": true,
    "enter_lines": [
@@ -929,14 +929,14 @@
     {
      "type": "car",
      "x": 70,
-     "y": -14
+     "y": -19
     },
     {
      "type": "door",
      "to": "hol",
      "x": 275,
      "spawn_x": 85,
-     "y": 22,
+     "y": 17,
      "w": 46,
      "h": 72,
      "label": "Finch-Moore Museum"
@@ -2338,7 +2338,7 @@
       ],
       [
        "Rosa",
-       "Işıklar gelince geri döndü. Alnı terliydi. Salon buz gibiyken."
+       "Işıklar gidip geldikten birkaç dakika sonra geri döndü. Alnı terliydi. Salon buz gibiyken."
       ],
       [
        "Oscar",
@@ -2360,7 +2360,7 @@
      "lines": [
       [
        "Rosa",
-       "Patronun yeğeni mi? Benden iki şişe aldı, 'amcamın hesabına' dedi. Sonra bodrum tarafına kayboldu."
+       "Patronun yeğeni mi? Benden iki şişe aldı, 'amcamın hesabına' dedi. Sonra bodrum tarafına kayboldu. Işıklar gidip gelince bir baktım holde, gözleri kıpkırmızı, sakız çiğniyor."
       ],
       [
        "Oscar",
@@ -2411,7 +2411,7 @@
       ],
       [
        "Rosa",
-       "Karanlıkta biri yanımdan hızla geçti. Lavanta kokuyordu. Pahalı, ağır bir lavanta."
+       "Işıklar sönmeden hemen önce biri yanımdan hızla geçti, güvenlik koridoruna doğru. Lavanta kokuyordu. Pahalı, ağır bir lavanta."
       ],
       [
        "Oscar",
@@ -2431,7 +2431,7 @@
      "lines": [
       [
        "Rosa",
-       "İşte o koku! Karanlıkta yanımdan geçen buydu, yemin ederim."
+       "İşte o koku! Işıklar sönmeden yanımdan geçen buydu, yemin ederim."
       ]
      ]
     }
@@ -3698,7 +3698,7 @@
    "lines": [
     [
      "Maya",
-     "Sigortacı polisten önce gelmiş. Hiç böyle bir şey görmemiştim."
+     "Sigortacı bizden önce gelmiş. FCD'den hızlı sigortacı ilk kez görüyorum."
     ]
    ],
    "choices": [
