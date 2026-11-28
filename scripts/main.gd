@@ -1300,6 +1300,10 @@ func _office_talk() -> void:
 			tw.tween_interval(0.6)
 		# ayağa kalkma kareleri (art/oscar_stand.png)
 		var stand: Array = _strip_frames(_art("oscar_stand"), 32) if _art("oscar_stand") != null else []
+		# Kalkma karelerinde sandalye çizimden silinir; boş sandalye arkada belirir.
+		tw.tween_callback(func():
+			if office_chair:
+				office_chair.visible = true)
 		for f in stand:
 			tw.tween_callback(func(): player_pose = f)
 			tw.tween_interval(0.14)
