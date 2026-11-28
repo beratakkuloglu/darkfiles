@@ -766,7 +766,11 @@ func _build_menu() -> void:
 	under.size = Vector2(VIEW_W, VIEW_H)
 	menu_panel.add_child(under)
 	# Arka plan: yağmurlu müze önü, yavaşça yaklaşan kamera (Ken Burns).
-	var bgt := _art("rooms/muze_onu")
+	var bgt := _art("ui/menu_bg")
+	if bgt == null:
+		bgt = _art("rooms/oscar_ofis")
+	if bgt == null:
+		bgt = _art("rooms/muze_onu")
 	if bgt:
 		var bg := TextureRect.new()
 		bg.texture = bgt
@@ -853,23 +857,25 @@ func _build_menu() -> void:
 	line.size = Vector2(0, 2)
 	menu_panel.add_child(line)
 	line.create_tween().tween_property(line, "size:x", 210.0, 1.2).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	# Başlığın altında Oscar'ın kısa ön hikayesi (vaka adı Vaka seç ekranında).
 	var sub := Label.new()
-	sub.text = str(data.get("case_name", "Vaka 1")).to_upper()
+	sub.text = "Bir zamanlar adı Büyük Valentino'ydu."
 	sub.position = Vector2(46, 128)
-	sub.size = Vector2(320, 18)
-	sub.add_theme_font_size_override("font_size", 13)
+	sub.size = Vector2(330, 16)
+	sub.add_theme_font_size_override("font_size", 11)
 	sub.add_theme_color_override("font_color", C_PALE)
 	menu_panel.add_child(sub)
 	var tag := Label.new()
-	tag.text = "Ravenport, 2003. Herkes bir şey saklıyor."
-	tag.position = Vector2(46, 146)
-	tag.size = Vector2(320, 16)
-	tag.add_theme_font_size_override("font_size", 11)
+	tag.text = "1998'de son numarasında sahne çöktü. Herkes kaza dedi, o hâlâ inanmıyor. Şimdi FCD için yalancıları okuyor, kirasını da zar zor ödüyor."
+	tag.position = Vector2(46, 145)
+	tag.size = Vector2(300, 36)
+	tag.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	tag.add_theme_font_size_override("font_size", 9)
 	tag.add_theme_color_override("font_color", C_LIGHT)
 	menu_panel.add_child(tag)
 
 	var box := VBoxContainer.new()
-	box.position = Vector2(40, 186)
+	box.position = Vector2(40, 192)
 	box.add_theme_constant_override("separation", 6)
 	menu_panel.add_child(box)
 	var play := _menu_item(box, "VAKA SEÇ", true, _open_case_select)
