@@ -595,6 +595,26 @@
      "h": 5,
      "requires_flag": "araba_acik",
      "hide_if_flag": "has_car_art"
+    },
+    {
+     "type": "look",
+     "name": "Bagaj",
+     "x": 182,
+     "y": 6,
+     "w": 30,
+     "h": 20,
+     "requires_flag": "araba_acik",
+     "set_flag": "bagaj_acik",
+     "keep": true,
+     "sfx": "trunk_open",
+     "enter": "bagaj",
+     "enter_sfx": "trunk_open",
+     "lines": [
+      [
+       "",
+       "Anahtar kilitte döner, bagaj kapağı ağır ağır kalkar."
+      ]
+     ]
     }
    ],
    "rain": true,
@@ -975,28 +995,14 @@
        "Direksiyonda tırnak izleri. Harold bu gece çok sıkmış."
       ]
      ]
-    },
-    {
-     "type": "door",
-     "to": "bagaj",
-     "x": 330,
-     "y": 40,
-     "w": 24,
-     "h": 60,
-     "spawn_x": 172,
-     "label": "Bagaj"
-    },
-    {
-     "type": "door",
-     "to": "otopark",
-     "x": 14,
-     "y": 40,
-     "w": 24,
-     "h": 60,
-     "spawn_x": 200,
-     "label": "Arabadan in"
     }
-   ]
+   ],
+   "exit": [
+    "otopark",
+    230
+   ],
+   "exit_hint": "E: arabadan in",
+   "exit_sfx": "car_door"
   },
   "bagaj": {
    "name": "Trunk",
@@ -1028,16 +1034,6 @@
      ]
     },
     {
-     "type": "door",
-     "to": "otopark",
-     "x": 14,
-     "y": 40,
-     "w": 24,
-     "h": 60,
-     "spawn_x": 200,
-     "label": "Geri dön"
-    },
-    {
      "type": "clue",
      "id": "replika",
      "x": 190,
@@ -1045,6 +1041,18 @@
      "w": 50,
      "h": 18
     }
+   ],
+   "exit": [
+    "otopark",
+    160
+   ],
+   "exit_hint": "E: bagajı kapat",
+   "exit_sfx": "trunk_close",
+   "enter_lines": [
+    [
+     "Oscar",
+     "Yedek lastik, iki koli ve bir evrak çantası. Harold'ın bagajı ofisinden daha düzenli."
+    ]
    ]
   }
  },

@@ -12,7 +12,9 @@ const WORLD_H := 180.0           # VIEW_H / ZOOM
 const DEFAULT_FLOOR_Y := 168.0   # mekanda "floor_y" yoksa zemin çizgisi
 const SPEED := 70.0
 const INTERACT_RANGE := 22.0
-const BAR_H := 30.0              # alt/üst siyah bant yüksekliği (ekran birimi)
+const BAR_H := 30.0
+const CARD_W := 46.0              # kanıt tahtası kart ölçüsü
+const CARD_H := 56.0              # alt/üst siyah bant yüksekliği (ekran birimi)
 const TYPE_SPEED := 55.0         # daktilo efekti, saniyede karakter
 const TEXT_SPEEDS := [0.55, 1.0, 1.8, 400.0]   # ayarlardaki yazı hızı çarpanı
 ## art/oscar.png sağa bakıyorsa true, sola bakıyorsa false yap.
@@ -195,7 +197,7 @@ var notebook_selected: String = ""
 var notebook_inspect_btn: Button
 
 # Konuşma portreleri (büyük, parlayan; Oscar solda, karşısındaki sağda)
-const BIG_PORTRAIT_SCALE := 4.0
+const BIG_PORTRAIT_SCALE := 3.0
 const BIG_PORTRAIT_ROWS := 34
 var big_portraits: Dictionary = {}   # "left" / "right" -> {"root", "img", "glow", "key", "tween"}
 
@@ -523,8 +525,18 @@ func _build_ui() -> void:
 
 	# Diyalog kutusu: portre + isim + metin + seçenekler
 	dialog_panel = PanelContainer.new()
-	dialog_panel.position = Vector2(12, 250)
-	dialog_panel.custom_minimum_size = Vector2(VIEW_W - 24, 0)
+	# Daha dar ve alçak kutu: sahne görünsün.
+	dialog_panel.position = Vector2(70, 250)
+	dialog_panel.custom_minimum_size = Vector2(VIEW_W - 140, 0)
+	var dps := StyleBoxFlat.new()
+	dps.bg_color = Color(0.06, 0.045, 0.03, 0.9)
+	dps.border_color = C_YELLOW.darkened(0.25)
+	dps.set_border_width_all(1)
+	dps.content_margin_left = 8
+	dps.content_margin_right = 8
+	dps.content_margin_top = 5
+	dps.content_margin_bottom = 4
+	dialog_panel.add_theme_stylebox_override("panel", dps)
 	dialog_panel.visible = false
 	dialog_panel.gui_input.connect(_on_dialog_input)
 	ui_root.add_child(dialog_panel)
@@ -544,7 +556,7 @@ func _build_ui() -> void:
 	portrait = TextureRect.new()
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	portrait.custom_minimum_size = Vector2(72, 72)
+	portrait.custom_minimum_size = Vector2(44, 44)
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	portrait_box.add_child(portrait)
 	var vb := VBoxContainer.new()
@@ -564,19 +576,21 @@ func _build_ui() -> void:
 	name_label.add_theme_constant_override("shadow_offset_x", 0)
 	name_label.add_theme_constant_override("shadow_offset_y", 0)
 	name_label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	name_label.add_theme_font_size_override("font_size", 8)
 	vb.add_child(name_label)
 	dialog_text = Label.new()
 	dialog_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	dialog_text.custom_minimum_size = Vector2(500, 34)
-	dialog_text.add_theme_font_size_override("font_size", 12)
+	dialog_text.custom_minimum_size = Vector2(VIEW_W - 170, 22)
+	dialog_text.add_theme_font_size_override("font_size", 10)
 	vb.add_child(dialog_text)
 	dialog_choices = VBoxContainer.new()
+	dialog_choices.add_theme_constant_override("separation", 1)
 	vb.add_child(dialog_choices)
 	continue_label = Label.new()
 	continue_label.text = "tıkla / boşluk"
 	continue_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	continue_label.add_theme_color_override("font_color", C_LIGHT)
-	continue_label.add_theme_font_size_override("font_size", 9)
+	continue_label.add_theme_font_size_override("font_size", 7)
 	vb.add_child(continue_label)
 
 	# Defter: mantar pano. Kanıtlar raptiyeli polaroidler, bağlantılar kırmızı ip.
@@ -594,7 +608,7 @@ func _build_ui() -> void:
 	nhb.add_child(left)
 	var case_lb := Label.new()
 	case_lb.text = str(data.get("case_name", "")).to_upper()
-	case_lb.add_theme_font_size_override("font_size", 16)
+	case_lb.add_theme_font_size_override("font_size", 13)
 	case_lb.add_theme_color_override("font_color", C_PALE)   # mantar panoda sarı okunmuyordu
 	case_lb.add_theme_color_override("font_outline_color", Color("#1a120c"))
 	case_lb.add_theme_constant_override("outline_size", 5)
@@ -606,7 +620,7 @@ func _build_ui() -> void:
 	glow.tween_property(case_lb, "modulate", Color(1, 1, 1), 0.9).set_trans(Tween.TRANS_SINE)
 	notebook_title = Label.new()
 	notebook_title.add_theme_color_override("font_color", C_PALE)
-	notebook_title.add_theme_font_size_override("font_size", 16)
+	notebook_title.add_theme_font_size_override("font_size", 11)
 	notebook_title.add_theme_constant_override("shadow_offset_x", 2)
 	notebook_title.add_theme_constant_override("shadow_offset_y", 2)
 	left.add_child(notebook_title)
@@ -617,7 +631,7 @@ func _build_ui() -> void:
 	board_content = Control.new()
 	scroll.add_child(board_content)
 	notebook_list = GridContainer.new()
-	(notebook_list as GridContainer).columns = 6
+	(notebook_list as GridContainer).columns = 7
 	notebook_list.position = Vector2(6, 6)
 	notebook_list.add_theme_constant_override("h_separation", 6)
 	notebook_list.add_theme_constant_override("v_separation", 8)
@@ -1060,7 +1074,7 @@ func _build_sfx() -> void:
 			AudioServer.add_bus()
 			AudioServer.set_bus_name(AudioServer.bus_count - 1, bus_name)
 	_load_settings()
-	for n in ["blip", "pickup", "door", "click", "deduce", "wrong", "solve", "eye", "car_door", "engine", "lighter", "car_remote"]:
+	for n in ["blip", "pickup", "door", "click", "deduce", "wrong", "solve", "eye", "car_door", "engine", "lighter", "car_remote", "trunk_open", "trunk_close", "book"]:
 		var p: String = "res://sfx/" + n + ".wav"
 		if ResourceLoader.exists(p):
 			var a := AudioStreamPlayer.new()
@@ -1154,6 +1168,7 @@ func _room_setup(id: String, spawn_x: float) -> void:
 		player.visible = false
 		if maya:
 			maya.visible = false
+		show_msg(str(data["rooms"][id].get("exit_hint", "E: dışarı çık")))
 		return
 	match id:
 		"oscar_ofis":
@@ -1684,6 +1699,9 @@ func _try_interjection() -> void:
 			continue
 		if it.has("clue") and not clues.has(it["clue"]):
 			continue
+		# Oscar'la henüz tanışmamış biri kendiliğinden gelip konuşmaz.
+		if not flags.has("seen_" + str(it["npc"])):
+			continue
 		var npc := {}
 		for e in room_objects:
 			if str(e["data"]["type"]) == "npc" and str(e["data"]["dialogue"]).rstrip("0123456789") == str(it["npc"]) and (e["node"] as Control).visible:
@@ -2037,7 +2055,8 @@ func _obj_visible(o: Dictionary) -> bool:
 
 
 func _refresh_visibility() -> void:
-	var dim := Color(0.3, 0.3, 0.3)
+	# Oscar'ın Gözü: sahne ve herkes kararır, sadece Oscar ve ipuçları parlak kalır.
+	var dim := Color(0.22, 0.2, 0.2)
 	for e in room_objects:
 		var o: Dictionary = e["data"]
 		var n: Control = e["node"]
@@ -2045,8 +2064,10 @@ func _refresh_visibility() -> void:
 		n.modulate = dim if (eye_on and str(o["type"]) != "clue") else Color(1, 1, 1)
 	for b in bg_nodes:
 		b.modulate = dim if eye_on else Color(1, 1, 1)
+	if maya:
+		maya.self_modulate = dim if eye_on else Color(1, 1, 1)
 	if player_sprite:
-		player_sprite.modulate = Color(0.6, 0.6, 0.6) if eye_on else Color(1, 1, 1)
+		player_sprite.modulate = Color(1.3, 1.22, 1.0) if eye_on else Color(1, 1, 1)
 
 
 func _object_at(pos: Vector2) -> Dictionary:
@@ -2205,6 +2226,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 		if in_car and not dialog_panel.visible and (key.keycode == KEY_E or key.keycode == KEY_F):
 			_exit_car()
+			return
+		if _no_player() and not busy and (key.keycode == KEY_E or key.keycode == KEY_F):
+			_leave_interior()
 			return
 		if busy:
 			if dialog_panel.visible and dialog_choices.get_child_count() == 0 and (key.keycode == KEY_SPACE or key.keycode == KEY_ENTER or key.keycode == KEY_E or key.keycode == KEY_F):
@@ -2378,7 +2402,7 @@ func _interact(o: Dictionary) -> void:
 		"look":
 			looked[_look_key(o)] = true
 			if o.has("enter") and flags.has(str(o.get("set_flag", ""))) and _art("rooms/" + str(o["enter"])):
-				_enter_interior(str(o["enter"]))
+				_enter_interior(str(o["enter"]), str(o.get("enter_sfx", "car_door")))
 				return
 			if o.has("set_flag") and not flags.has(o["set_flag"]):
 				flags[o["set_flag"]] = true
@@ -2389,7 +2413,7 @@ func _interact(o: Dictionary) -> void:
 					_refresh_visibility()
 					if o.has("enter") and _art("rooms/" + str(o["enter"])):
 						_close_dialog()
-						_enter_interior(str(o["enter"])))
+						_enter_interior(str(o["enter"]), str(o.get("enter_sfx", "car_door"))))
 			else:
 				play_lines(_fill_lines(o.get("lines_after", o.get("lines", []))), _refresh_visibility)
 		"car":
@@ -2410,9 +2434,9 @@ func _fill_lines(lines: Array) -> Array:
 
 
 ## Arabanın içine/bagajına geçiş: Oscar kapıyı açıp eğilerek girer, ekran kararır, iç görünüm açılır.
-func _enter_interior(room: String) -> void:
+func _enter_interior(room: String, sound: String = "car_door") -> void:
 	busy = true
-	_sfx("car_door")
+	_sfx(sound)
 	var tw := create_tween()
 	tw.tween_property(player, "modulate:a", 0.0, 0.35)
 	if maya:
@@ -2632,6 +2656,21 @@ func _add_choice(text: String, cb: Callable) -> Button:
 	var b := Button.new()
 	b.text = text
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	b.add_theme_font_size_override("font_size", 9)
+	var cs := StyleBoxFlat.new()
+	cs.bg_color = Color(0.17, 0.12, 0.08, 0.85)
+	cs.content_margin_left = 6
+	cs.content_margin_top = 1
+	cs.content_margin_bottom = 1
+	var ch := cs.duplicate() as StyleBoxFlat
+	ch.bg_color = Color(0.35, 0.25, 0.12, 0.95)
+	ch.border_color = C_YELLOW
+	ch.border_width_left = 2
+	b.add_theme_stylebox_override("normal", cs)
+	b.add_theme_stylebox_override("focus", cs)
+	b.add_theme_stylebox_override("hover", ch)
+	b.add_theme_stylebox_override("pressed", ch)
+	b.add_theme_color_override("font_hover_color", C_YELLOW)
 	b.pressed.connect(func():
 		_sfx("click")
 		cb.call())
@@ -2734,7 +2773,7 @@ func open_notebook(mode: String) -> void:
 	if mode == "" and busy:
 		return
 	busy = true
-	_sfx("click")
+	_sfx("book")
 	select_mode = mode
 	link_first = ""
 	dialog_panel.visible = false
@@ -2783,7 +2822,18 @@ func _fill_notebook(info: String) -> void:
 	for rid in req:
 		if deductions.has(rid):
 			done += 1
-	progress_label.text = "Gerekli sonuçlar: " + str(done) + "/" + str(req.size()) + "\nNASIL, FIRSAT, MOTİF, FİZİKSEL KANIT"
+	# Gerekli sonuçların etiketleri çıkarım metnindeki parantezden: "(NASIL)" vb.
+	var tags := PackedStringArray()
+	for dd in data["deductions"]:
+		if req.has(dd["id"]) and not deductions.has(dd["id"]):
+			var tx := str(dd["text"])
+			var a := tx.rfind("(")
+			if a != -1 and tx.ends_with(")"):
+				var tg := tx.substr(a + 1, tx.length() - a - 2)
+				tags.append(tg)
+	progress_label.text = "Gerekli sonuçlar: " + str(done) + "/" + str(req.size())
+	if not tags.is_empty():
+		progress_label.text += "\nEksik: " + ", ".join(tags)
 	_update_hud()
 	link_button.visible = select_mode == ""
 	accuse_button.visible = false
@@ -2795,7 +2845,7 @@ func _fill_notebook(info: String) -> void:
 ## Bir kanıt polaroidi: çizim, ad, raptiye; üstüne gelince büyür ve sağda detayı gösterir.
 func _add_board_card(id: String, relevant: bool) -> void:
 	var b := Button.new()
-	b.custom_minimum_size = Vector2(58, 70)
+	b.custom_minimum_size = Vector2(CARD_W, CARD_H)
 	b.focus_mode = Control.FOCUS_NONE
 	var st := StyleBoxFlat.new()
 	st.bg_color = Color("#efe6cf")
@@ -2815,8 +2865,8 @@ func _add_board_card(id: String, relevant: bool) -> void:
 	b.add_theme_stylebox_override("pressed", hv)
 	notebook_list.add_child(b)
 	var icon := TextureRect.new()
-	icon.position = Vector2(5, 5)
-	icon.size = Vector2(48, 46)
+	icon.position = Vector2(4, 4)
+	icon.size = Vector2(CARD_W - 8, CARD_H - 18)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.texture = _art("items/" + id)
@@ -2829,28 +2879,33 @@ func _add_board_card(id: String, relevant: bool) -> void:
 		ph.color = Color("#3a2a1e")
 		ph.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		b.add_child(ph)
+	# Kart yazısı tek satır, kartın tam ortasında; sığmazsa punto küçülür (kesilmez, kaymaz).
 	var lb := Label.new()
-	lb.text = str(data["clues"][id].get("short", data["clues"][id]["name"]))
-	lb.position = Vector2(2, 51)
-	lb.size = Vector2(54, 18)
-	lb.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	lb.max_lines_visible = 2
-	lb.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	lb.clip_text = true
+	var txt := str(data["clues"][id].get("short", data["clues"][id]["name"]))
+	lb.text = txt
+	var fsz := 7
+	var fnt := _ui_font()
+	if fnt:
+		while fsz > 5 and fnt.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fsz).x > CARD_W - 4:
+			fsz -= 1
+	_paper_label(lb, fsz, Color("#2b1d14"))
 	lb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lb.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_paper_label(lb, 7, Color("#2b1d14"))
+	lb.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	lb.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	b.add_child(lb)
+	lb.custom_minimum_size = Vector2(CARD_W - 4, 12)
+	lb.position = Vector2(2, CARD_H - 14)
+	lb.size = Vector2(CARD_W - 4, 12)
 	var pin := ColorRect.new()
 	pin.size = Vector2(5, 5)
-	pin.position = Vector2(26, -2)
+	pin.position = Vector2(CARD_W / 2.0 - 2.0, -2)
 	pin.color = Color("#b3261e")
 	pin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	b.add_child(pin)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = hash(id)
-	b.pivot_offset = Vector2(29, 35)
+	b.pivot_offset = Vector2(CARD_W / 2.0, CARD_H / 2.0)
 	b.rotation = deg_to_rad(rng.randf_range(-2.0, 2.0))
 	b.pressed.connect(_on_clue_pressed.bind(id))
 	b.mouse_entered.connect(func():
@@ -2890,8 +2945,8 @@ func _draw_board_strings() -> void:
 		var line := Line2D.new()
 		line.width = 1.5
 		line.default_color = Color("#b3261e")
-		var pa := notebook_list.position + a.position + Vector2(28, 0)
-		var pb := notebook_list.position + b.position + Vector2(28, 0)
+		var pa := notebook_list.position + a.position + Vector2(CARD_W / 2.0, 0)
+		var pb := notebook_list.position + b.position + Vector2(CARD_W / 2.0, 0)
 		var mid := (pa + pb) / 2.0 + Vector2(0, 10)   # ip biraz sarkar
 		line.points = PackedVector2Array([pa, mid, pb])
 		board_strings.add_child(line)
@@ -3994,3 +4049,10 @@ func _case_start() -> void:
 	case_panel.create_tween().tween_property(case_panel, "modulate:a", 0.0, 0.4)
 	_start_game()
 	get_tree().create_timer(0.5).timeout.connect(func(): case_panel.visible = false)
+
+
+## Araba içi / bagaj: E ile dışarı çık (odanın "exit": [oda, x] alanı).
+func _leave_interior() -> void:
+	var ex: Array = data["rooms"][room_id].get("exit", ["otopark", 200])
+	_sfx(str(data["rooms"][room_id].get("exit_sfx", "car_door")))
+	go_room(str(ex[0]), float(ex[1]))
