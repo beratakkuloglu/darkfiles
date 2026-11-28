@@ -163,10 +163,12 @@ var msg_tween: Tween
 
 # Ayarlar ve duraklatma
 const SETTINGS_PATH := "user://settings.cfg"
-var settings := {"music": 0.7, "sfx": 0.8, "fullscreen": true, "text_speed": 1, "atmosphere": true}
+var settings := {"music": 0.7, "sfx": 0.8, "fullscreen": true, "text_speed": 1, "atmosphere": true, "brightness": 0.5}
 var pause_panel: Control
 var settings_panel: Control
 var atmo_dust: CPUParticles2D
+var bright_add: ColorRect    # parlaklık ayarı: aydınlatma katmanı
+var bright_dark: ColorRect   # parlaklık ayarı: karartma katmanı
 var menu_button: Button
 var paused: bool = false
 var busy_before_pause: bool = false
@@ -314,6 +316,19 @@ func _build_atmosphere() -> void:
 	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	layer.add_child(v)
+
+	# Parlaklık ayarı (göz yormasın): sahnenin üstüne ekleyen ya da karartan iki katman.
+	bright_add = ColorRect.new()
+	bright_add.size = Vector2(VIEW_W, VIEW_H)
+	bright_add.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var addm := CanvasItemMaterial.new()
+	addm.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	bright_add.material = addm
+	layer.add_child(bright_add)
+	bright_dark = ColorRect.new()
+	bright_dark.size = Vector2(VIEW_W, VIEW_H)
+	bright_dark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(bright_dark)
 
 	# Havada süzülen toz
 	var dust := CPUParticles2D.new()
@@ -1768,9 +1783,16 @@ func load_room(id: String, spawn_x: float) -> void:
 	player.position = Vector2(clampf(spawn_x, walk_min, walk_max), floor_y)
 	maya_x = clampf(spawn_x + (-22.0 if spawn_x > room_w / 2.0 else 22.0) * char_scale, walk_min, walk_max)
 	# Sahne 180'den uzunsa (PixelLab 192) dikeyde ortala.
-	camera.position = Vector2(0, room_h / 2.0 - floor_y)
+	# Alt/üst siyah bantlar dünyadan BAR_H/ZOOM kadar örter: zemini bandın üstünde tut,
+	# gerekirse kamera odanın altına taşabilsin (bandın arkası zaten siyah).
+	var bar_w := BAR_H / ZOOM
+	camera.limit_top = int(-bar_w)
+	if bool(r.get("no_player", false)):
+		camera.position = Vector2(0, room_h / 2.0 - floor_y)
+	else:
+		camera.position = Vector2(0, -(VIEW_H / ZOOM / 2.0 - bar_w - 8.0))
 	camera.limit_right = int(room_w)
-	camera.limit_bottom = int(room_h)
+	camera.limit_bottom = int(maxf(room_h, floor_y + bar_w + 8.0))
 	camera.reset_smoothing()
 	eye_on = false
 	eye_uses = 3
@@ -3226,6 +3248,7 @@ func _build_settings() -> void:
 		_apply_settings()
 		_save_settings())
 	box.add_child(fs)
+	_add_slider(box, "Parlaklık", "brightness")
 	var at := CheckButton.new()
 	at.text = "Toz efekti"
 	at.add_theme_font_size_override("font_size", 10)
@@ -3330,6 +3353,13 @@ func _apply_settings() -> void:
 		AudioServer.set_bus_volume_db(idx, linear_to_db(maxf(v, 0.001)))
 	if atmo_dust:
 		atmo_dust.visible = bool(settings["atmosphere"])
+	if bright_add:
+		var b: float = float(settings["brightness"])
+		var up: float = maxf(0.0, b - 0.5) * 0.36
+		bright_add.color = Color(up, up * 0.94, up * 0.82, 1.0)
+		bright_add.visible = up > 0.001
+		bright_dark.color = Color(0, 0, 0, maxf(0.0, 0.5 - b) * 1.1)
+		bright_dark.visible = b < 0.499
 	var want: DisplayServer.WindowMode = DisplayServer.WINDOW_MODE_FULLSCREEN if bool(settings["fullscreen"]) else DisplayServer.WINDOW_MODE_WINDOWED
 	if DisplayServer.window_get_mode() != want:
 		DisplayServer.window_set_mode(want)
