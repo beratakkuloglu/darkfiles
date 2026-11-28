@@ -327,17 +327,16 @@
     {
      "type": "door",
      "to": "guvenlik",
-     "x": 35,
+     "x": 34,
      "spawn_x": 290,
-     "w": 36,
-     "h": 58,
+     "w": 42,
+     "h": 67,
      "y": 0
     },
     {
      "type": "look",
      "name": "Çöp kovası",
-     "art": "ofis_cop",
-     "x": 186,
+     "x": 215,
      "y": 0,
      "w": 12,
      "h": 14,
@@ -358,20 +357,20 @@
     {
      "type": "clue",
      "id": "krem",
-     "x": 140,
-     "y": 10,
+     "x": 112,
+     "y": 12,
      "w": 6,
      "h": 7
     },
     {
      "type": "npc",
      "dialogue": "harold",
-     "x": 245
+     "x": 282
     },
     {
      "type": "clue",
      "id": "kol1",
-     "x": 170,
+     "x": 172,
      "y": 0,
      "w": 4,
      "h": 3
@@ -379,59 +378,59 @@
     {
      "type": "clue",
      "id": "anahtar",
-     "x": 210,
-     "y": 22,
+     "x": 195,
+     "y": 28,
      "w": 6,
      "h": 3
     },
     {
      "type": "clue",
      "id": "sigorta",
-     "x": 186,
-     "y": 12,
+     "x": 215,
+     "y": 10,
      "w": 8,
      "h": 5
     },
     {
      "type": "clue",
      "id": "plan",
-     "x": 125,
-     "y": 45,
-     "w": 58,
-     "h": 40
+     "x": 103,
+     "y": 53,
+     "w": 43,
+     "h": 27
     },
     {
      "type": "door",
      "to": "depo",
-     "x": 284,
+     "x": 250,
      "spawn_x": 60,
      "requires_flag": "depo_acik",
      "locked_text": "Bodrum kapısı. Şimdilik aşağı inmem için bir sebep yok.",
-     "w": 42,
-     "h": 58,
+     "w": 38,
+     "h": 67,
      "y": 0
     },
     {
      "type": "door",
      "to": "otopark",
-     "x": 323,
+     "x": 312,
      "spawn_x": 80,
      "requires_flag": "otopark_acik",
      "locked_text": "Otoparka çıkıyor. Harold'ın arabası orada ama anahtarı bende değil.",
-     "w": 20,
-     "h": 58,
+     "w": 40,
+     "h": 68,
      "y": 0
     },
     {
      "type": "clue",
      "id": "felix_mektup",
-     "x": 200,
-     "y": 22,
+     "x": 160,
+     "y": 28,
      "w": 6,
      "h": 3
     }
    ],
-   "floor_y": 180,
+   "floor_y": 173,
    "place": "Finch-Moore Museum",
    "walk": [
     12,
@@ -447,7 +446,7 @@
      "type": "door",
      "to": "ofis",
      "x": 35,
-     "spawn_x": 270,
+     "spawn_x": 255,
      "w": 44,
      "h": 60,
      "y": 0
