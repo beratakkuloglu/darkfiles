@@ -12,7 +12,7 @@ const WORLD_H := 180.0           # VIEW_H / ZOOM
 const DEFAULT_FLOOR_Y := 168.0   # mekanda "floor_y" yoksa zemin çizgisi
 const SPEED := 70.0
 const INTERACT_RANGE := 22.0
-const BAR_H := 22.0              # alt/üst siyah bant yüksekliği (ekran birimi)
+const BAR_H := 30.0              # alt/üst siyah bant yüksekliği (ekran birimi)
 const TYPE_SPEED := 55.0         # daktilo efekti, saniyede karakter
 const TEXT_SPEEDS := [0.55, 1.0, 1.8, 400.0]   # ayarlardaki yazı hızı çarpanı
 ## art/oscar.png sağa bakıyorsa true, sola bakıyorsa false yap.
@@ -467,7 +467,7 @@ func _build_ui() -> void:
 		ui_root.add_child(bar)
 
 	msg_label = Label.new()
-	msg_label.position = Vector2(0, 30)
+	msg_label.position = Vector2(0, BAR_H + 6)
 	msg_label.size = Vector2(VIEW_W, 24)
 	msg_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	msg_label.add_theme_color_override("font_color", C_YELLOW)
@@ -2629,7 +2629,7 @@ func _ask_topic(t: Dictionary, akey: String) -> void:
 
 func _layout_dialog() -> void:
 	dialog_panel.reset_size()
-	dialog_panel.position.y = VIEW_H - 10.0 - dialog_panel.get_combined_minimum_size().y
+	dialog_panel.position.y = VIEW_H - BAR_H - 4.0 - dialog_panel.get_combined_minimum_size().y
 	for side in big_portraits:
 		var root: Control = big_portraits[side]["root"]
 		root.position.y = dialog_panel.position.y - BIG_PORTRAIT_ROWS * BIG_PORTRAIT_SCALE + 18.0
