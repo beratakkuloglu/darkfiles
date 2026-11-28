@@ -20,7 +20,7 @@ const TEXT_SPEEDS := [0.55, 1.0, 1.8, 400.0]   # ayarlardaki yazı hızı çarpa
 ## art/oscar.png sağa bakıyorsa true, sola bakıyorsa false yap.
 const PLAYER_ART_FACES_RIGHT := true
 ## Yürüme şeridi (art/oscar_walk.png): yan yana eşit kareler, kare başına süre.
-const WALK_FRAME_TIME := 0.13
+const WALK_FRAME_TIME := 0.10
 const IDLE_FRAME_TIME := 0.7
 
 # Palet: siyah, kahverengi, sarı
@@ -57,6 +57,9 @@ var in_menu: bool = true
 var cut_panel: ColorRect
 var cut_actors: Control
 var cut_img: TextureRect
+var cut_img_prev: TextureRect   # geçişte eski resim, yenisinin altında söner
+var full_img: TextureRect       # oyun içi tam ekran resim (pencere, final)
+var car_parked: bool = false    # müze önünde araba durmadan inilemez
 var cut_text: Label
 var cut_cards: Array = []
 var cut_i: int = 0
@@ -978,6 +981,13 @@ func _play_cutscene(cards: Array, done: Callable) -> void:
 			if mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
 				_cut_advance())
 		ui_root.add_child(cut_panel)
+		cut_img_prev = TextureRect.new()
+		cut_img_prev.position = Vector2(VIEW_W / 2.0 - 200, 24)
+		cut_img_prev.size = Vector2(400, 225)
+		cut_img_prev.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		cut_img_prev.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		cut_img_prev.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cut_panel.add_child(cut_img_prev)
 		cut_img = TextureRect.new()
 		cut_img.position = Vector2(VIEW_W / 2.0 - 200, 24)
 		cut_img.size = Vector2(400, 225)
@@ -1012,13 +1022,21 @@ func _play_cutscene(cards: Array, done: Callable) -> void:
 	ui_root.move_child(cut_panel, -1)
 	cut_panel.visible = true
 	cut_panel.modulate.a = 1.0
+	cut_img.texture = null
+	cut_img_prev.texture = null
 	_show_cut_card()
 
 
 func _show_cut_card() -> void:
 	var c: Dictionary = cut_cards[cut_i]
 	var tex: Texture2D = _art(str(c["art"])) if c.has("art") else null
+	var old_tex: Texture2D = cut_img.texture
 	cut_img.texture = tex
+	# Aynı resim tekrar belirmez; farklı resme geçerken eskisi yavaşça söner (crossfade).
+	var same := tex != null and tex == old_tex
+	var cross := tex != null and old_tex != null and not same
+	cut_img_prev.texture = old_tex if cross else null
+	cut_img_prev.modulate.a = 1.0
 	# Resim yoksa yazı ekranın ortasına iner.
 	cut_text.position.y = 262.0 if tex else VIEW_H / 2.0 - 30.0
 	cut_text.text = str(c["text"])
@@ -1048,11 +1066,13 @@ func _show_cut_card() -> void:
 	if c.has("sfx"):
 		_sfx(str(c["sfx"]))
 	cut_text.visible_ratio = 0.0
-	cut_img.modulate.a = 0.0
+	cut_img.modulate.a = 1.0 if same else 0.0
 	if cut_tween:
 		cut_tween.kill()
 	cut_tween = create_tween()
-	cut_tween.tween_property(cut_img, "modulate:a", 1.0, 0.6)
+	cut_tween.tween_property(cut_img, "modulate:a", 1.0, 1.6 if cross else (0.01 if same else 0.6))
+	if cross:
+		cut_tween.parallel().tween_property(cut_img_prev, "modulate:a", 0.0, 1.6)
 	cut_tween.parallel().tween_property(cut_actors, "modulate:a", 1.0, 0.6)
 	cut_tween.parallel().tween_property(cut_text, "visible_ratio", 1.0, 0.035 * cut_text.text.length())
 
@@ -1063,6 +1083,7 @@ func _cut_advance() -> void:
 	if cut_tween and cut_tween.is_running():
 		cut_tween.kill()
 		cut_img.modulate.a = 1.0
+		cut_img_prev.modulate.a = 0.0
 		cut_actors.modulate.a = 1.0
 		cut_text.visible_ratio = 1.0
 		return
@@ -1232,6 +1253,7 @@ func _room_setup(id: String, spawn_x: float) -> void:
 				player.visible = false
 				if maya:
 					maya.visible = false
+				car_parked = false
 				var car := _room_obj("car")
 				if not car.is_empty():
 					player.position.x = float(car["data"]["x"])
@@ -1627,6 +1649,7 @@ func _car_arrive() -> void:
 		maya.visible = false
 	var car := _room_obj("car")
 	if car.is_empty():
+		car_parked = true
 		_exit_car()
 		return
 	var n: Control = car["node"]
@@ -1635,11 +1658,13 @@ func _car_arrive() -> void:
 	car_tween = create_tween()
 	var tw := car_tween
 	tw.tween_property(n, "position:x", final_x, 2.2).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tw.tween_callback(func(): show_msg("Arabadan in: E / F"))
+	tw.tween_callback(func():
+		car_parked = true
+		show_msg("Arabadan in: E / F"))
 
 
 func _exit_car() -> void:
-	if not in_car or (car_tween and car_tween.is_running()):
+	if not in_car or not car_parked or (car_tween and car_tween.is_running()):
 		return
 	in_car = false
 	flags["arrived"] = true
@@ -1941,7 +1966,7 @@ func _spawn_object(o: Dictionary, has_bg: bool) -> void:
 		h = tex.get_height()
 	var pos := Vector2(float(o["x"]) - w / 2.0, floor_y - float(o.get("y", 0)) - h)
 	var n: Control
-	var parent: Node = front_layer if t == "car" else room_layer
+	var parent: Node = front_layer if (t == "car" or bool(o.get("front", false))) else room_layer
 	if tex:
 		n = _child_tex(parent, pos, tex)
 	else:
@@ -2440,6 +2465,11 @@ func _interact(o: Dictionary) -> void:
 			_face_each_other(o)
 			start_dialogue(str(o["dialogue"]))
 		"look":
+			if o.has("fullscreen"):
+				var again: bool = looked.has(_look_key(o))
+				looked[_look_key(o)] = true
+				_show_fullscreen(str(o["fullscreen"]), _fill_lines(o.get("lines_after", o["lines"]) if again else o["lines"]), _refresh_visibility)
+				return
 			looked[_look_key(o)] = true
 			if o.has("enter") and flags.has(str(o.get("set_flag", ""))) and _art("rooms/" + str(o["enter"])):
 				_enter_interior(str(o["enter"]), str(o.get("enter_sfx", "car_door")))
@@ -3144,9 +3174,9 @@ func _accuse(id: String) -> void:
 		play_lines(fin["lines"], func():
 			_close_dialog()
 			if fin.has("reveal_item"):
-				open_inspect(str(fin["reveal_item"]), func(): play_lines(fin.get("reveal_lines", []), _win))
+				open_inspect(str(fin["reveal_item"]), func(): play_lines(fin.get("reveal_lines", []), _epilogue))
 			else:
-				_win())
+				_epilogue())
 	else:
 		wrong_accuse += 1
 		_sfx("wrong")
@@ -3164,6 +3194,53 @@ func _accuse(id: String) -> void:
 			tw.tween_callback(func():
 				fade_rect.color.a = 0.0
 				_play_cutscene(cards, func(): go_room(return_room, return_x))))
+
+
+## Final sonrası kısa sahne: yakut yeniden vitrinde (data final.epilogue).
+func _epilogue() -> void:
+	flags["vaka_kapandi"] = true
+	var ep: Dictionary = data["final"].get("epilogue", {})
+	if ep.is_empty():
+		_win()
+		return
+	_close_dialog()
+	_show_fullscreen(str(ep.get("art", "")), ep.get("lines", []), _win)
+
+
+## Tam ekran resim üstünde satırlar (diyalog kutusu resmin önünde). Bitince resim söner.
+func _show_fullscreen(art: String, lines: Array, done: Callable) -> void:
+	var tex := _art(art)
+	if tex == null:
+		play_lines(lines, done)
+		return
+	busy = true
+	if full_img == null:
+		full_img = TextureRect.new()
+		full_img.size = Vector2(VIEW_W, VIEW_H)
+		full_img.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		full_img.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		full_img.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		full_img.mouse_filter = Control.MOUSE_FILTER_STOP
+		ui_root.add_child(full_img)
+	ui_root.move_child(full_img, 0)
+	full_img.texture = tex
+	full_img.visible = true
+	full_img.modulate.a = 0.0
+	_set_hud_visible(false)
+	var tw := create_tween()
+	tw.tween_property(full_img, "modulate:a", 1.0, 0.5)
+	tw.tween_callback(func():
+		play_lines(lines, func():
+			_close_dialog()
+			busy = true
+			var t2 := create_tween()
+			t2.tween_property(full_img, "modulate:a", 0.0, 0.5)
+			t2.tween_callback(func():
+				full_img.visible = false
+				_set_hud_visible(true)
+				busy = false
+				if done.is_valid():
+					done.call())))
 
 
 func _win() -> void:
@@ -3189,6 +3266,10 @@ func _win() -> void:
 	t += "Tüm kanıtlar bulundu: " + ("+$100" if bonus > 0 else "hayır (" + str(clues.size()) + "/" + str(total_clues) + ")") + "\n"
 	t += "Ödenen: $" + str(pay) + "    Kalan borç: $" + str(debt) + "\n\nVesper & Co. ... Bu isim Oscar'ın peşini bırakmayacak."
 	_show_line("VAKA KAPANDI", t, false)
+	_add_choice("Müzede dolaş", func():
+		_close_dialog()
+		summoned = ""
+		go_room("salon", 140.0))
 	_add_choice("Baştan oyna", func(): get_tree().reload_current_scene())
 	_add_choice("Çıkış", func(): get_tree().quit())
 	_layout_dialog()

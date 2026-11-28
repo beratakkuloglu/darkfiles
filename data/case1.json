@@ -12,7 +12,7 @@
    "text": "Ravenport, 2003. Yağmur yağıyor. Burada hep yağar zaten."
   },
   {
-   "art": "cutscene/sahne",
+   "art": "cutscene/sahne_parlak",
    "text": "Beş yıl önce bu şehir adımı haykırıyordu. Büyük Valentino. Evet, ben."
   },
   {
@@ -238,6 +238,21 @@
      "dialogue": "edith",
      "x": 250,
      "requires_flag": "sigortaci_geldi"
+    },
+    {
+     "type": "look",
+     "name": "Vitrin",
+     "x": 180,
+     "y": 20,
+     "w": 30,
+     "h": 30,
+     "requires_flag": "vaka_kapandi",
+     "lines": [
+      [
+       "Oscar",
+       "Yerinde, parlıyor. Vitrini de bu sefer düzgün bir camcıya yaptırsınlar."
+      ]
+     ]
     }
    ],
    "floor_y": 183,
@@ -365,7 +380,10 @@
     {
      "type": "npc",
      "dialogue": "harold",
-     "x": 282
+     "x": 282,
+     "hide_if_flag": [
+      "vaka_kapandi"
+     ]
     },
     {
      "type": "clue",
@@ -551,7 +569,8 @@
      ],
      "art": "araba_harold",
      "keep": true,
-     "enter": "araba_ic"
+     "enter": "araba_ic",
+     "front": true
     },
     {
      "type": "npc",
@@ -808,6 +827,39 @@
        "Her vaka bu rakamı biraz küçültüyor. Her kira günü yeniden büyütüyor."
       ]
      ]
+    },
+    {
+     "type": "look",
+     "name": "Pencere",
+     "x": 120,
+     "y": 30,
+     "w": 40,
+     "h": 52,
+     "fullscreen": "cutscene/pencere",
+     "lines": [
+      [
+       "Oscar",
+       "Ravenport. Buradan bakınca fena görünmüyor. Aşağı inince anlarsın."
+      ],
+      [
+       "Oscar",
+       "Yağmur yine başlamış. Ya da hiç durmadı, emin değilim."
+      ],
+      [
+       "Oscar",
+       "Karşıdaki neonun yarısı üç yıldır yanmıyor. Kimse de tamir ettirmiyor."
+      ],
+      [
+       "Oscar",
+       "Eskiden bu sokaklarda afişim asılıydı. Şimdi adımı hatırlayan tek kişi ev sahibim."
+      ]
+     ],
+     "lines_after": [
+      [
+       "Oscar",
+       "Hâlâ yağıyor. Sürpriz."
+      ]
+     ]
     }
    ],
    "sit_x": 140,
@@ -918,7 +970,7 @@
    "enter_lines": [
     [
      "Maya",
-     "Polis kapıda. Herkes içeride bizi bekliyor."
+     "Kapıda iki memur var. İçerisi daha da kalabalık."
     ],
     [
      "Oscar",
@@ -945,6 +997,18 @@
      "type": "npc",
      "dialogue": "leo",
      "x": 185
+    },
+    {
+     "type": "npc",
+     "dialogue": "riley",
+     "art": "polis1",
+     "x": 245
+    },
+    {
+     "type": "npc",
+     "dialogue": "alvarez",
+     "art": "polis2",
+     "x": 315
     }
    ],
    "walk": [
@@ -2776,6 +2840,94 @@
      ]
     }
    }
+  },
+  "riley": {
+   "name": "Memur Riley",
+   "intro": [
+    [
+     "Riley",
+     "Siz FCD'densiniz, değil mi? Şef söyledi. Şu... sihirbaz."
+    ],
+    [
+     "Oscar",
+     "Eski sihirbaz. Artık tek numaram borçlarımı büyütmek."
+    ],
+    [
+     "Riley",
+     "Üç saattir bu yağmurun altındayım. İçeridekiler bir şey bulamadı. Siz bulursanız belki eve giderim."
+    ]
+   ],
+   "claim": "Hâlâ buradayım. Hâlâ ıslağım.",
+   "topics": [
+    {
+     "q": "Ne gördün?",
+     "lines": [
+      [
+       "Riley",
+       "İlk gelen bendim. Vitrin kilitliydi, camda tek çizik yoktu. Taş da yoktu."
+      ],
+      [
+       "Riley",
+       "Müdür bey çok sakindi ama. Benim evimden yakut çalınsa duvarlara tırmanırdım."
+      ]
+     ]
+    },
+    {
+     "q": "Kimse çıktı mı?",
+     "lines": [
+      [
+       "Riley",
+       "Biz geldikten sonra kimse çıkmadı. Yeğeni, şu genç olan, arka kapıdan sigaraya çıkmak istedi. Bırakmadım."
+      ]
+     ]
+    }
+   ]
+  },
+  "alvarez": {
+   "name": "Memur Alvarez",
+   "intro": [
+    [
+     "Alvarez",
+     "Kordonun arkasında kalın, lütfen. ...Aa, Maya, sen misin?"
+    ],
+    [
+     "Maya",
+     "Selam, Alvarez. Bu da Penn, benimle."
+    ],
+    [
+     "Alvarez",
+     "Penn mi? Gazetedeki Valentino? Annem sizi seyretmeye gelmişti. Hâlâ anlatır."
+    ],
+    [
+     "Oscar",
+     "Umarım güzel kısmını anlatıyordur."
+    ],
+    [
+     "Alvarez",
+     "...Bazen."
+    ]
+   ],
+   "claim": "Bir şey bulursanız bana da söyleyin. Raporu ben yazacağım çünkü.",
+   "topics": [
+    {
+     "q": "Alarm?",
+     "lines": [
+      [
+       "Alvarez",
+       "Alarm hiç çalmamış. Ama kamera kayıtlarında salonun ışıkları dört saniye sönüyor. Gerisini içeridekilere sorun."
+      ]
+     ]
+    },
+    {
+     "q": "Müdür?",
+     "lines": [
+      [
+       "Alvarez",
+       "Harold Bey bizi kapıda karşıladı, kulağında telefon. Sigortacıyla konuşuyordu. Yakutu çalınmış, aklı poliçede. Ben olsam ağlardım."
+      ]
+     ]
+    }
+   ]
   }
  },
  "final": {
@@ -3137,7 +3289,48 @@
     "art": "rooms/muze_onu",
     "text": "Yakut hâlâ kayıp ve gerçek hırsız bir yerlerde gülüyor. Baştan bakmam lazım."
    }
-  ]
+  ],
+  "epilogue": {
+   "art": "cutscene/yakut_vitrin",
+   "lines": [
+    [
+     "",
+     "Ertesi sabah. Finch-Moore Müzesi, Mücevher Salonu."
+    ],
+    [
+     "Felix",
+     "Kızıl Göz'e kırk bir yıl baktım, Bay Penn. Hiç bu kadar güzel görünmemişti."
+    ],
+    [
+     "Oscar",
+     "Bir gece ortadan kaybolunca öyle oluyor. Ben beş yıldır deniyorum, bende işe yaramadı."
+    ],
+    [
+     "Felix",
+     "O cam kopyayı yıllar önce sergi için ben yapmıştım. Birinin onu satmaya kalkacağı aklımın ucundan geçmezdi."
+    ],
+    [
+     "Maya",
+     "FCD ödemeni yarın yatırıyor. 900 dolar, Penn."
+    ],
+    [
+     "Oscar",
+     "Bayan Kowalski'ye yeter. Bana da bir kahve parası kalır belki."
+    ],
+    [
+     "Maya",
+     "Kahve benden."
+    ],
+    [
+     "Oscar",
+     "Sıcak mı?"
+    ],
+    [
+     "Maya",
+     "Abartma."
+    ]
+   ]
+  }
  },
  "speakers": {
   "Oscar": "oscar",
@@ -3151,7 +3344,11 @@
   "Rosa": "rosa",
   "Felix": "felix",
   "Edith": "edith",
-  "Leo": "leo"
+  "Leo": "leo",
+  "Memur Riley": "polis1",
+  "Memur Alvarez": "polis2",
+  "Riley": "polis1",
+  "Alvarez": "polis2"
  },
  "scenes": {
   "ofis": [
