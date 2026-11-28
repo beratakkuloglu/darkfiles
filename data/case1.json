@@ -124,6 +124,17 @@
      "w": 36,
      "h": 85,
      "y": 0
+    },
+    {
+     "type": "npc",
+     "dialogue": "rosa",
+     "x": 200
+    },
+    {
+     "type": "npc",
+     "dialogue": "felix",
+     "x": 130,
+     "requires_flag": "depo_acik"
     }
    ],
    "floor_y": 180,
@@ -221,6 +232,12 @@
      "w": 24,
      "h": 52,
      "y": 0
+    },
+    {
+     "type": "npc",
+     "dialogue": "edith",
+     "x": 250,
+     "requires_flag": "sigortaci_geldi"
     }
    ],
    "floor_y": 183,
@@ -285,6 +302,14 @@
      "w": 30,
      "h": 68,
      "y": 0
+    },
+    {
+     "type": "clue",
+     "id": "telefon",
+     "x": 160,
+     "y": 27,
+     "w": 7,
+     "h": 5
     }
    ],
    "floor_y": 179,
@@ -396,6 +421,14 @@
      "w": 20,
      "h": 58,
      "y": 0
+    },
+    {
+     "type": "clue",
+     "id": "felix_mektup",
+     "x": 200,
+     "y": 22,
+     "w": 6,
+     "h": 3
     }
    ],
    "floor_y": 180,
@@ -461,6 +494,14 @@
      "w": 46,
      "h": 40,
      "hidden": true
+    },
+    {
+     "type": "clue",
+     "id": "replika_kutu",
+     "x": 252,
+     "y": 0,
+     "w": 10,
+     "h": 7
     }
    ],
    "floor_y": 175,
@@ -539,6 +580,16 @@
      "type": "clue",
      "id": "kartvizit",
      "x": 185,
+     "y": 20,
+     "w": 8,
+     "h": 5,
+     "requires_flag": "araba_acik",
+     "hide_if_flag": "has_car_art"
+    },
+    {
+     "type": "clue",
+     "id": "replika",
+     "x": 215,
      "y": 20,
      "w": 8,
      "h": 5,
@@ -870,6 +921,11 @@
      "w": 46,
      "h": 72,
      "label": "Finch-Moore Museum"
+    },
+    {
+     "type": "npc",
+     "dialogue": "leo",
+     "x": 185
     }
    ],
    "walk": [
@@ -952,10 +1008,10 @@
     {
      "type": "clue",
      "id": "kartvizit",
-     "x": 190,
-     "y": 40,
-     "w": 50,
-     "h": 18
+     "x": 205,
+     "y": 62,
+     "w": 30,
+     "h": 24
     },
     {
      "type": "look",
@@ -980,6 +1036,14 @@
      "h": 60,
      "spawn_x": 200,
      "label": "Geri dön"
+    },
+    {
+     "type": "clue",
+     "id": "replika",
+     "x": 190,
+     "y": 40,
+     "w": 50,
+     "h": 18
     }
    ]
   }
@@ -1332,7 +1396,8 @@
      }
     ]
    },
-   "short": "Sigorta belgesi"
+   "short": "Sigorta belgesi",
+   "sets_flag": "sigortaci_geldi"
   },
   "plan": {
    "name": "Bina planı",
@@ -1519,6 +1584,45 @@
      }
     ]
    }
+  },
+  "rosa_ifadesi": {
+   "name": "Rosa'nın ifadesi",
+   "short": "Rosa'nın ifadesi",
+   "desc": "Rosa: 'Müdür 21:38'de salondan aceleyle çıktı, ışıklar gelince terli döndü. Küratör Moreau da 21:20'de vitrinin camını dinliyordu.'"
+  },
+  "telefon": {
+   "name": "Telefon kaydı",
+   "short": "Telefon kaydı",
+   "desc": "Güvenlik odasının telefon defteri: '22:30, Polis İhbar Hattı.' El yazısı Harold'ınki."
+  },
+  "felix_mektup": {
+   "name": "İşten çıkarma mektubu",
+   "short": "İşten çıkarma",
+   "desc": "Harold'ın çekmecesinde, imzalı: 'Küratör Felix Moreau'nun görevine 1 Aralık itibarıyla son verilmiştir.'",
+   "comment": "Kırk bir yıllık bir adam, tek sayfalık bir mektup. Harold verimli biri."
+  },
+  "replika_kutu": {
+   "name": "Boş replika kutusu",
+   "short": "Replika kutusu",
+   "desc": "Bodrumda, rafın dibinde. Etiket: 'Kızıl Göz, cam kopya. F. Moreau atölyesi.' Kutu boş.",
+   "comment": "Bir yakut kayboluyor, kopyası da. Ya biri çok dikkatsiz ya da çok dikkatli."
+  },
+  "replika": {
+   "name": "Cam kopya yakut",
+   "short": "Cam kopya",
+   "desc": "Harold'ın evrak çantasında, kadife bir kesede. Kızıl Göz'ün birebir cam kopyası. Yanında bir not: 'Cuma, 23:30.'",
+   "analysis": "Cam ve kurşun. Değeri on dolar bile değil. Ama loş ışıkta gerçeğinden ayırt edilemiyor."
+  },
+  "sigorta_arama": {
+   "name": "Edith'in ifadesi",
+   "short": "Sigorta araması",
+   "desc": "Edith Crane: 'Bay Finch-Moore beni saat 22:05'te ofis hattından aradı. Taşın çalındığını söyledi.'"
+  },
+  "foto": {
+   "name": "İskele 14 fotoğrafı",
+   "short": "İskele fotoğrafı",
+   "desc": "Leo'nun fotoğrafı: Harold, İskele 14'teki kumarhane teknesinde, yakasında gümüş V rozeti olan bir adamla el sıkışıyor.",
+   "comment": "V harfi. Bu gece ikinci kez karşıma çıkıyor."
   }
  },
  "deductions": [
@@ -1581,6 +1685,48 @@
     "oluk"
    ],
    "text": "Plan üç ay önce hazırlanmış."
+  },
+  {
+   "id": "d_erken",
+   "pair": [
+    "sigorta_arama",
+    "telefon"
+   ],
+   "text": "Harold polisi aramadan 25 dakika önce sigortayı aradı. (ZAMANLAMA)",
+   "where": "Salondaki sigorta eksperiyle konuş. Güvenlik odasındaki telefon defterine bak."
+  },
+  {
+   "id": "d_replika",
+   "pair": [
+    "replika_kutu",
+    "replika"
+   ],
+   "text": "Harold alıcıya cam kopyayı satacak, gerçek yakutu saklayacaktı. (ÇİFTE OYUN)",
+   "where": "Bodrumdaki raflara ve Harold'ın bagajındaki çantaya bak."
+  },
+  {
+   "id": "d_cikis",
+   "pair": [
+    "rosa_ifadesi",
+    "kart"
+   ],
+   "text": "Harold ışıklar sönmeden iki dakika önce salondan çıkıp ofisine girdi."
+  },
+  {
+   "id": "d_felix",
+   "pair": [
+    "felix_mektup",
+    "rosa_ifadesi"
+   ],
+   "text": "Felix kovulacaktı ve olaydan önce vitrinin yanındaydı. Görünüşte şüpheli."
+  },
+  {
+   "id": "d_borc",
+   "pair": [
+    "foto",
+    "kartvizit"
+   ],
+   "text": "Harold'ın İskele 14'te kumar borcu var. Alıcısı da orada bekliyor."
   }
  ],
  "dialogues": {
@@ -1639,6 +1785,14 @@
       [
        "Toby",
        "Ben... biraz hava almaya çıktım. Bu kadar."
+      ]
+     ]
+    },
+    "felix_mektup": {
+     "lines": [
+      [
+       "Toby",
+       "Felix'i mi kovuyor? Felix bana çocukken taşları anlatırdı. Amcam... hiç anlatmadı."
       ]
      ]
     }
@@ -1721,6 +1875,18 @@
        "Bundan fazlasını söylemem, Penn."
       ]
      ]
+    },
+    "replika": {
+     "lines": [
+      [
+       "Vivian",
+       "Cam kopya. Güzel iş. Ama ben eksperim, Penn. Bana yutturamazlar."
+      ],
+      [
+       "Oscar",
+       "Size değil. Karanlıkta, teknede, acelesi olan birine."
+      ]
+     ]
     }
    }
   },
@@ -1781,6 +1947,18 @@
        "Dört saniye karanlık. Benim gördüğüm bu. Yani, görmüş olsaydım göreceğim bu."
       ]
      ]
+    },
+    "telefon": {
+     "lines": [
+      [
+       "Gus",
+       "Telefonun sesiyle uyandım. Müdür başımdaydı, ahizeyi elimden aldı."
+      ],
+      [
+       "Gus",
+       "'Polisi ben ararım' dedi. Ben de ne olduğunu sonradan öğrendim."
+      ]
+     ]
     }
    }
   },
@@ -1813,6 +1991,24 @@
       [
        "Oscar",
        "Gözlüğünüz şu an cebinizde. Konuşmayı da hiç yapmadınız."
+      ]
+     ]
+    },
+    {
+     "q": "22:05'te kimi aradınız?",
+     "requires_clue": "sigorta_arama",
+     "lines": [
+      [
+       "Harold",
+       "Sigortayı. Sorumlu bir müdür önce varlıklarını korur."
+      ],
+      [
+       "Oscar",
+       "Polisi ise yirmi beş dakika sonra aradınız. Varlıklar insanlardan önce, demek."
+      ],
+      [
+       "Harold",
+       "Bu... bir öncelik meselesi."
       ]
      ]
     }
@@ -1855,6 +2051,58 @@
       [
        "Harold",
        "Gus'a kahve götürdüm, evet. İyi bir patronum."
+      ]
+     ]
+    },
+    "felix_mektup": {
+     "lines": [
+      [
+       "Harold",
+       "Felix yaşlandı. Müzenin yeni kana ihtiyacı var."
+      ],
+      [
+       "Maya",
+       "Kovulacağını biliyor mu?"
+      ],
+      [
+       "Harold",
+       "Pazartesi öğrenecekti."
+      ]
+     ]
+    },
+    "replika": {
+     "lines": [
+      [
+       "Harold",
+       "O... Felix'in oyuncağı. Fotoğraf çekecektik."
+      ],
+      [
+       "Oscar",
+       "Arabanızın bagajında, İskele 14 notunun yanında. Fotoğrafçı denize mi açılacaktı?"
+      ]
+     ]
+    },
+    "foto": {
+     "lines": [
+      [
+       "Harold",
+       "Bu bir iş görüşmesi."
+      ],
+      [
+       "Oscar",
+       "Kumarhane teknesinde. Gece yarısı. Yakasında V olan biriyle."
+      ],
+      [
+       "Harold",
+       "...Bu fotoğrafı kim çekti?"
+      ]
+     ]
+    },
+    "telefon": {
+     "lines": [
+      [
+       "Harold",
+       "Polisi ben aradım, evet. Gus uyuyordu, biri aramalıydı."
       ]
      ]
     }
@@ -2055,6 +2303,472 @@
     }
    ],
    "show": {}
+  },
+  "rosa": {
+   "name": "Rosa Delgado",
+   "intro": [
+    [
+     "Rosa",
+     "İçki servisi bitti, tatlım. Somonlu kanepe kaldı. Ama FCD rozetin somon koksun istemezsin."
+    ],
+    [
+     "Oscar",
+     "Tepsiyi sol elinle taşıyorsun ama sağlaksın. Sağ bileğin ağrıyor. Bu gece çok koşturmuşsun."
+    ],
+    [
+     "Rosa",
+     "Üç saattir zenginlere şampanya taşıyorum, kimse teşekkür etmedi. Sen fark eden ilk kişisin. Sor bakalım."
+    ]
+   ],
+   "claim": "Garsonları kimse görmez. Ama garsonlar her şeyi görür.",
+   "topics": [
+    {
+     "q": "Işıklar sönmeden önce ne gördün?",
+     "lines": [
+      [
+       "Rosa",
+       "Müdür 21:38'de salondan çıktı. Kravatı yamuk, adımları hızlı. Tuvalete giden adam öyle yürümez."
+      ],
+      [
+       "Rosa",
+       "Işıklar gelince geri döndü. Alnı terliydi. Salon buz gibiyken."
+      ],
+      [
+       "Oscar",
+       "Saati bu kadar kesin nereden biliyorsun?"
+      ],
+      [
+       "Rosa",
+       "Molam 21:40'taydı. Saate bakmaktan boynum tutuldu."
+      ],
+      [
+       "Rosa",
+       "Bir de yaşlı küratör vardı, Moreau. 21:20 gibi vitrinin camına parmağıyla vurdu, kulağını dayadı. Sonra 'olmaz' dedi kendi kendine."
+      ]
+     ],
+     "gives_clue": "rosa_ifadesi"
+    },
+    {
+     "q": "Toby'yi gördün mü?",
+     "lines": [
+      [
+       "Rosa",
+       "Patronun yeğeni mi? Benden iki şişe aldı, 'amcamın hesabına' dedi. Sonra bodrum tarafına kayboldu."
+      ],
+      [
+       "Oscar",
+       "İki şişe. Biri cesaret için, biri unutmak için."
+      ]
+     ]
+    },
+    {
+     "q": "Bu işi ne zamandır yapıyorsun?",
+     "lines": [
+      [
+       "Rosa",
+       "Altı yıl. Gündüz hemşirelik okuyorum, gece zenginlerin bardağını dolduruyorum."
+      ],
+      [
+       "Rosa",
+       "İkisinde de öğrendiğim şey aynı: insanlar ağrıyan yerlerini saklar."
+      ],
+      [
+       "Oscar",
+       "Bizim meslekler sandığımdan yakınmış."
+      ]
+     ]
+    }
+   ],
+   "show": {
+    "ruj": {
+     "lines": [
+      [
+       "Rosa",
+       "Vivian Lark. Bu rujla üç kadeh içti, üçünü de yarım bıraktı. Pahalı zevk, ucuz alışkanlık."
+      ]
+     ]
+    },
+    "sakiz": {
+     "lines": [
+      [
+       "Rosa",
+       "Toby. Bütün gece çiğnedi. Nefesi viski kokuyordu, sakız kurtarmadı."
+      ]
+     ]
+    },
+    "kamera": {
+     "lines": [
+      [
+       "Rosa",
+       "Dört saniye mi? Bana daha uzun geldi."
+      ],
+      [
+       "Rosa",
+       "Karanlıkta biri yanımdan hızla geçti. Lavanta kokuyordu. Pahalı, ağır bir lavanta."
+      ],
+      [
+       "Oscar",
+       "Kimse bir yakut için lavanta sürünmez. Ama biri her gün sürünüyorsa..."
+      ]
+     ]
+    },
+    "misafir": {
+     "lines": [
+      [
+       "Rosa",
+       "O listeyi kim tuttuysa kötü tutmuş. Ben bile yokum. Garsonlar misafir sayılmaz tabii."
+      ]
+     ]
+    },
+    "krem": {
+     "lines": [
+      [
+       "Rosa",
+       "İşte o koku! Karanlıkta yanımdan geçen buydu, yemin ederim."
+      ]
+     ]
+    }
+   }
+  },
+  "felix": {
+   "name": "Felix Moreau",
+   "intro": [
+    [
+     "Felix",
+     "Felix Moreau, küratör. Kırk bir yıldır bu müzedeyim. Kızıl Göz'ün tozunu her sabah ben alırdım."
+    ],
+    [
+     "Oscar",
+     "Eldivenleriniz hâlâ elinizde. Galada bile çıkarmamışsınız."
+    ],
+    [
+     "Felix",
+     "Çıplak el eski şeylere saygısızlıktır, Bay Penn. Bazı insanlara da."
+    ]
+   ],
+   "claim": "Ben taşları korurum, Bay Penn. Çalmam.",
+   "topics": [
+    {
+     "q": "21:20'de vitrinin yanında ne yapıyordunuz?",
+     "requires_clue": "rosa_ifadesi",
+     "lines": [
+      [
+       "Felix",
+       "Dinliyordum. Cam vitrin vurunca çınlar. O vitrin çınlamıyor, guruldar. Altı boş."
+      ],
+      [
+       "Felix",
+       "Harold üç ay önce eski vitrini kaldırdı, bunu getirtti. Bana sormadı bile."
+      ],
+      [
+       "Maya",
+       "Bunu neden kimseye söylemediniz?"
+      ],
+      [
+       "Felix",
+       "Söyledim. Yönetim kuruluna yazdım. Mektubum hiç ulaşmadı sanırım."
+      ]
+     ]
+    },
+    {
+     "q": "Harold'la aranız nasıl?",
+     "lines": [
+      [
+       "Felix",
+       "Babasıyla otuz yıl çalıştım. Harold müzeyi bir bilanço gibi okur. Taşlar onun gözünde rakamdır."
+      ],
+      [
+       "Oscar",
+       "Siz onlara ne gözle bakıyorsunuz?"
+      ],
+      [
+       "Felix",
+       "Hikaye. Her taşın bir hikayesi vardır. Kızıl Göz'ünki bu gece bitmesin istiyorum."
+      ]
+     ]
+    }
+   ],
+   "show": {
+    "felix_mektup": {
+     "lines": [
+      [
+       "Felix",
+       "Bu ne? ...Kovuluyor muyum?"
+      ],
+      [
+       "Felix",
+       "Kırk bir yıl. Bir sayfa."
+      ],
+      [
+       "Oscar",
+       "Bilmiyordu, Cole. Yalan söyleyen biri önce kendine acımaz. Önce bana bakar, inandım mı diye."
+      ]
+     ],
+     "set_flag": "felix_sasirdi"
+    },
+    "replika_kutu": {
+     "lines": [
+      [
+       "Felix",
+       "Kopyam! Atölyemde yaptım, sigorta fotoğrafları için. Cam ve kurşun, birkaç dolarlık şey."
+      ],
+      [
+       "Felix",
+       "Geçen hafta Harold istedi. 'Fotoğrafçı gelecek' dedi. Geri getirmedi."
+      ],
+      [
+       "Oscar",
+       "Fotoğrafçı hiç gelmedi tabii."
+      ]
+     ],
+     "set_flag": "felix_temiz"
+    },
+    "replika": {
+     "lines": [
+      [
+       "Felix",
+       "Bu benim işim. Sol alt yüzeyde küçük bir F var, bakın. Kimse fark etmez, ben hariç."
+      ],
+      [
+       "Maya",
+       "Harold'ın bagajındaydı."
+      ],
+      [
+       "Felix",
+       "Tanrım. Benim kopyamla kimi kandıracaktı?"
+      ]
+     ]
+    },
+    "sac": {
+     "lines": [
+      [
+       "Felix",
+       "Kır saç mı? Benim saçım yok, Bay Penn. Bakın."
+      ],
+      [
+       "Oscar",
+       "Haklısınız. Eleme yöntemi bazen çok kolay."
+      ]
+     ]
+    },
+    "taban": {
+     "lines": [
+      [
+       "Felix",
+       "Biliyordum! Sahte taban. Bu bir sahne aleti, müze vitrini değil."
+      ]
+     ]
+    }
+   }
+  },
+  "edith": {
+   "name": "Edith Crane",
+   "intro": [
+    [
+     "Edith",
+     "Edith Crane, Ravenport Mutual. Kırk bir karat, iki milyon dolarlık poliçe. Bu gece benim gecem, Bay Penn."
+    ],
+    [
+     "Oscar",
+     "Daha gece yarısı olmadı, siz buradasınız. Ayakkabılarınız kuru. Yağmur başlamadan yola çıkmışsınız."
+    ],
+    [
+     "Edith",
+     "Hızlıyımdır. Yavaş eksperler emekli olamaz."
+    ]
+   ],
+   "claim": "Hasar dosyası açık. Bana bir hırsız getirin ki çeki imzalamayayım.",
+   "topics": [
+    {
+     "q": "Sizi kim, saat kaçta aradı?",
+     "lines": [
+      [
+       "Edith",
+       "Bay Finch-Moore. Saat 22:05. Kendi ofis hattından."
+      ],
+      [
+       "Edith",
+       "Sesi titremiyordu. Poliçe numarasını ezbere söyledi."
+      ],
+      [
+       "Oscar",
+       "Hırsızlığa uğramış bir adam için fazla sakin."
+      ]
+     ],
+     "gives_clue": "sigorta_arama"
+    },
+    {
+     "q": "Poliçe neden iki katına çıktı?",
+     "requires_clue": "sigorta",
+     "lines": [
+      [
+       "Edith",
+       "Talebi iki hafta önce o yaptı. Ben onayladım, komisyonumu da aldım."
+      ],
+      [
+       "Edith",
+       "Şimdi o imzaya bakınca midem bulanıyor."
+      ]
+     ]
+    },
+    {
+     "q": "Böyle bir dosya daha önce gördünüz mü?",
+     "lines": [
+      [
+       "Edith",
+       "1999, Baltimore. Bir galeri sahibi. Tablo çalındı, sonra kendi bodrumunda bulundu. Adam hâlâ içeride."
+      ],
+      [
+       "Oscar",
+       "Tarih tekerrür ediyor."
+      ],
+      [
+       "Edith",
+       "Tarih değil, Bay Penn. Açgözlülük."
+      ]
+     ]
+    }
+   ],
+   "show": {
+    "telefon": {
+     "lines": [
+      [
+       "Edith",
+       "Polisi 22:30'da mı aramış? Bana 22:05'te 'çalındı' dedi."
+      ],
+      [
+       "Edith",
+       "Normal insan önce polisi arar. Parayı düşünen önce bizi arar."
+      ]
+     ]
+    },
+    "kartvizit": {
+     "lines": [
+      [
+       "Edith",
+       "İskele 14. Kumarhane teknesi. Kara listemizdeki üç müşteri orada borçlu."
+      ]
+     ]
+    },
+    "replika": {
+     "lines": [
+      [
+       "Edith",
+       "Cam kopya mı? Taşı 'bulup' bunu getirseydi, ben ayırt edemezdim. Kimse edemezdi."
+      ],
+      [
+       "Edith",
+       "Yapan hariç."
+      ]
+     ]
+    }
+   }
+  },
+  "leo": {
+   "name": "Leo Brandt",
+   "intro": [
+    [
+     "Leo",
+     "Valentino! Büyük Valentino! Leo Brandt, Ravenport Gazette. 98'de Gloriana'daydım, ön sırada."
+    ],
+    [
+     "Oscar",
+     "O geceyi hatırlayan biri. Ne şanslıyım."
+    ],
+    [
+     "Leo",
+     "Herkes 'kaza' yazdı. Ben yazmadım. Editör yazımı basmadı ama."
+    ]
+   ],
+   "claim": "Bana bir manşet ver, ben de sana bir isim vereyim. Adil takas.",
+   "topics": [
+    {
+     "q": "Bu yağmurda burada ne arıyorsun?",
+     "lines": [
+      [
+       "Leo",
+       "Saat dokuzda gazeteye bir telefon geldi. 'Bu gece Finch-Moore'da tarihi bir an yaşanacak.' Boğuk bir erkek sesi."
+      ],
+      [
+       "Leo",
+       "Kapatmadan önce bir şey daha dedi: 'Valentino'ya selamlar.'"
+      ],
+      [
+       "Maya",
+       "Penn? İyi misin?"
+      ],
+      [
+       "Oscar",
+       "Yağmur. Sadece yağmur."
+      ]
+     ],
+     "set_flag": "leo_vesper"
+    },
+    {
+     "q": "Harold hakkında ne biliyorsun?",
+     "lines": [
+      [
+       "Leo",
+       "Finch-Moore'ların parası 90'larda bitti. Harold her cuma İskele 14'teki kumarhane teknesine gider."
+      ],
+      [
+       "Leo",
+       "Seksen bin dolar borcu varmış diyorlar. Şehirde herkes biliyor ama kimse yazmıyor."
+      ],
+      [
+       "Oscar",
+       "Sen hariç."
+      ],
+      [
+       "Leo",
+       "Ben hariç. Kanıt bulursam."
+      ]
+     ]
+    }
+   ],
+   "show": {
+    "kartvizit": {
+     "lines": [
+      [
+       "Leo",
+       "İskele 14! Bak sen."
+      ],
+      [
+       "Leo",
+       "Geçen cuma Harold'ı orada çektim. Yanındaki adamın yakasında gümüş bir V rozeti vardı."
+      ],
+      [
+       "Leo",
+       "Fotoğraf senin. Ama manşet benim, anlaştık mı?"
+      ]
+     ],
+     "gives_clue": "foto"
+    },
+    "afis": {
+     "lines": [
+      [
+       "Leo",
+       "Bu senin afişin! Köşedeki damga... Vesper & Co. mu bu?"
+      ],
+      [
+       "Leo",
+       "98'de Gloriana'nın sahne ekipmanını da onlar kurmuştu. Senin kaybolma kabinini de."
+      ],
+      [
+       "Oscar",
+       "...Biliyorum."
+      ]
+     ]
+    },
+    "kamera": {
+     "lines": [
+      [
+       "Leo",
+       "Dört saniye karanlık ve bir yakut yok. Okurlar buna bayılır. Polis değil."
+      ]
+     ]
+    }
+   }
   }
  },
  "final": {
@@ -2062,7 +2776,9 @@
    "d_bodrum",
    "d_uyutma",
    "d_cift",
-   "d_kol"
+   "d_kol",
+   "d_erken",
+   "d_replika"
   ],
   "culprit": "harold",
   "reward": 900,
@@ -2082,6 +2798,14 @@
    [
     "gus",
     "Gus Bailey"
+   ],
+   [
+    "felix",
+    "Felix Moreau"
+   ],
+   [
+    "edith",
+    "Edith Crane"
    ]
   ],
   "lines": [
@@ -2104,6 +2828,26 @@
    [
     "Oscar",
     "Bir de oluğu kurarken kol düğmenizi sandığın dibine düşürdünüz."
+   ],
+   [
+    "Oscar",
+    "Sonra 22:05'te sigortayı aradınız. Polisi ise yirmi beş dakika sonra. Önce para, sonra kanun."
+   ],
+   [
+    "Oscar",
+    "Ve en güzel kısmı: Felix'in cam kopyası bagajınızda. İskele 14'teki alıcınıza sahtesini satacaktınız. Gerçeği ise bodrumda bekleyecekti."
+   ],
+   [
+    "Harold",
+    "Siz... anlamıyorsunuz. O adamlara seksen bin borcum var. Gerçek taşı verseydim bile yetmezdi."
+   ],
+   [
+    "Maya",
+    "Hangi adamlar?"
+   ],
+   [
+    "Harold",
+    "...Avukatım gelmeden tek kelime etmem."
    ],
    [
     "Harold",
@@ -2160,6 +2904,26 @@
      "Maya",
      "Adamı uyutmuşlar, Penn. Asıl soru, kim uyuttu?"
     ]
+   ],
+   "felix": [
+    [
+     "Felix",
+     "Ben taşları korurum, Bay Penn. Kırk bir yıl korudum."
+    ],
+    [
+     "Maya",
+     "Adam kovulacağını bile bilmiyordu, Penn. Yanlış kapı."
+    ]
+   ],
+   "edith": [
+    [
+     "Edith",
+     "Ben ödeyecek tarafım, Penn. Kendi kasamı mı soyacağım?"
+    ],
+    [
+     "Maya",
+     "Kadın parayı veren taraf. Biraz düşün."
+    ]
    ]
   },
   "interrogation_intro": [
@@ -2188,7 +2952,15 @@
    ],
    [
     "",
-    "Oscar cebindeki Vesper & Co. etiketine bakar. Kimseye bir şey söylemez."
+    "Gece yarısı. Harold nezarette. Felix'in kopyası delil torbasında, gerçek yakut müzenin kasasında."
+   ],
+   [
+    "",
+    "Oscar cebindeki Vesper & Co. etiketine ve Leo'nun fotoğrafındaki V rozetine bakar."
+   ],
+   [
+    "Oscar",
+    "'Valentino'ya selamlar.' Beş yıl sonra biri hâlâ beni izliyor."
    ]
   ],
   "summon": {
@@ -2214,6 +2986,18 @@
     [
      "Gus",
      "Vardiyam bitmedi ki! ...Peki nöbeti kim tutacak? Tamam, geliyorum."
+    ]
+   ],
+   "felix": [
+    [
+     "Felix",
+     "Kırk bir yıl sonra kelepçeyle mi çıkacağım? ...Peki. Eldivenlerimi takabilir miyim?"
+    ]
+   ],
+   "edith": [
+    [
+     "Edith",
+     "Beni mi? Ravenport Mutual'ın avukatları buna bayılacak. Gelirim, ama saati tutuyorum."
     ]
    ]
   },
@@ -2314,6 +3098,26 @@
      ],
      "text": "Yol boyunca arka koltukta terledi. Maya onu müzenin kapısına kadar bıraktı ve özür diledi. Benim yerime."
     }
+   ],
+   "felix": [
+    {
+     "art": "rooms/sokak",
+     "text": "Felix kaldırımda eldivenlerini tek tek çıkardı. 'Kırk bir yıl' dedi, kimseye değil."
+    },
+    {
+     "art": "rooms/sokak",
+     "text": "Maya onu müzeye kadar bıraktı. Ben arabada kaldım. Bazen insan kendi yüzüne bakamaz."
+    }
+   ],
+   "edith": [
+    {
+     "art": "rooms/sokak",
+     "text": "Edith Crane saatine baktı. 'Kırk iki dakika. Bunu faturanıza yazacağım, Bay Penn.'"
+    },
+    {
+     "art": "rooms/sokak",
+     "text": "Taksiye binerken dosyasını göğsüne bastırdı. Ravenport Mutual bu geceyi unutmayacaktı. Ben de."
+    }
    ]
   },
   "wrong_return": [
@@ -2336,7 +3140,11 @@
   "Toby": "toby",
   "Maya": "maya",
   "Şef Calloway": "memur1",
-  "Memur Park": "memur2"
+  "Memur Park": "memur2",
+  "Rosa": "rosa",
+  "Felix": "felix",
+  "Edith": "edith",
+  "Leo": "leo"
  },
  "scenes": {
   "ofis": [
@@ -2562,6 +3370,38 @@
      ]
     }
    ]
+  },
+  {
+   "id": "felix_mektup",
+   "room": "hol",
+   "npc": "felix",
+   "clue": "felix_mektup",
+   "lines": [
+    [
+     "Felix",
+     "Bay Penn, Harold'ın masasından bir şey aldığınızı gördüm. Benimle mi ilgili?"
+    ]
+   ],
+   "choices": [
+    {
+     "text": "Evet, Felix. Üzgünüm.",
+     "lines": [
+      [
+       "Felix",
+       "Demek öyle. Teşekkür ederim, dürüst olduğunuz için."
+      ]
+     ]
+    },
+    {
+     "text": "Henüz bilmiyorum.",
+     "lines": [
+      [
+       "Felix",
+       "Kırk bir yıldır insanları okurum, Bay Penn. Siz de pek iyi yalan söylemiyorsunuz."
+      ]
+     ]
+    }
+   ]
   }
  ],
  "maya_chats": [
@@ -2761,6 +3601,115 @@
       [
        "Oscar",
        "...Eski alışkanlık."
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "felix",
+   "room": "hol",
+   "requires_flag": "depo_acik",
+   "lines": [
+    [
+     "Maya",
+     "Kırk bir yıl aynı binada. Ben aynı dairede üç yıl dayanamadım."
+    ]
+   ],
+   "choices": [
+    {
+     "text": "Bazı insanlar bir yere ait olur.",
+     "reply": [
+      [
+       "Maya",
+       "Ya sen, Penn? Sen neye aitsin?"
+      ],
+      [
+       "Oscar",
+       "Sahneye. Eskiden."
+      ]
+     ]
+    },
+    {
+     "text": "Üç yıl mı? Kim taşındı, sen mi o mu?",
+     "reply": [
+      [
+       "Maya",
+       "Bu bir soruşturma değil."
+      ],
+      [
+       "Oscar",
+       "Her şey soruşturmadır, Cole."
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "leo",
+   "room": "muze_onu",
+   "requires_flag": "leo_vesper",
+   "lines": [
+    [
+     "Maya",
+     "Muhabir 'Valentino'ya selamlar' deyince yüzün değişti."
+    ]
+   ],
+   "choices": [
+    {
+     "text": "Eski bir hayran işte.",
+     "reply": [
+      [
+       "Maya",
+       "Yalancı. Ama şimdilik bırakıyorum."
+      ]
+     ]
+    },
+    {
+     "text": "Biri beni izliyor, Cole.",
+     "reply": [
+      [
+       "Maya",
+       "O zaman ben de onu izlerim."
+      ],
+      [
+       "Oscar",
+       "Bu en güzel tehdit miydi, yoksa en güzel söz mü?"
+      ],
+      [
+       "Maya",
+       "İkisi."
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "edith",
+   "room": "salon",
+   "requires_clue": "sigorta_arama",
+   "lines": [
+    [
+     "Maya",
+     "Sigortacı polisten önce gelmiş. Hiç böyle bir şey görmemiştim."
+    ]
+   ],
+   "choices": [
+    {
+     "text": "Para her zaman polisten hızlıdır.",
+     "reply": [
+      [
+       "Maya",
+       "Bunu not edeceğim. Sonra sana karşı kullanacağım."
+      ]
+     ]
+    },
+    {
+     "text": "Harold onu çağırdı, Cole. Hem de erkenden.",
+     "reply": [
+      [
+       "Maya",
+       "O zaman telefon kayıtlarına bakalım."
       ]
      ]
     }
