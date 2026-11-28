@@ -47,6 +47,7 @@ var debt: int = 12480
 var wrong_shows: int = 0
 var final_hint_shown: bool = false
 var hinted: Dictionary = {}
+var looked: Dictionary = {}
 var in_menu: bool = true
 
 # Açılış sahnesi (data "cutscene": [{text, art?}])
@@ -100,8 +101,8 @@ var eye_time: float = 0.0
 var eye_bar: ColorRect
 var quip_bag: Dictionary = {}     # tekrarsız rastgele replik torbaları
 var npc_marks: Array = []         # [{data, mark}]
-const CAR_SCALE := 1.6            # arabanın mekandaki büyüklüğü
-const CAR_WHEELS := [Vector2(17, 21), Vector2(62, 21)]  # araba.png'de teker merkezleri
+const CAR_SCALE := 1.0            # araba çizimi karakterlerle aynı ölçüde (PixelLab)
+const CAR_WHEELS := [Vector2(30, 29), Vector2(101, 29)]  # araba.png'de teker merkezleri
 var wheels: Array = []            # [{node, car, last_x, road}]
 var wrong_accuse: int = 0
 var summoned: String = ""
@@ -1131,10 +1132,10 @@ func _room_setup(id: String, spawn_x: float) -> void:
 					maya.visible = false
 		"sorgu":
 			if summoned != "":
-				_spawn_object({"type": "npc", "dialogue": summoned, "art": _npc_art(summoned), "x": 292}, _art("rooms/sorgu") != null)
-				player.position.x = 150.0
+				_spawn_object({"type": "npc", "dialogue": summoned, "art": _npc_art(summoned), "x": 214}, _art("rooms/sorgu") != null)
+				player.position.x = 132.0
 				if maya:
-					maya_x = 110.0
+					maya_x = 96.0
 				_refresh_npc_marks()
 		"koridor":
 			if not flags.has("koridor_done") and maya:
@@ -1149,6 +1150,11 @@ func _room_setup(id: String, spawn_x: float) -> void:
 				var car := _room_obj("car")
 				if not car.is_empty():
 					player.position.x = float(car["data"]["x"])
+					# Araba ekran açılmadan önce solda, görünmeyen yerde beklesin; _car_arrive sürer.
+					var cn: Control = car["node"]
+					if not cn.has_meta("final_x"):
+						cn.set_meta("final_x", cn.position.x)
+					cn.position.x = -cn.size.x * cn.scale.x - 40.0
 				camera.reset_smoothing()
 
 
@@ -1213,6 +1219,11 @@ func _office_talk() -> void:
 			tw.tween_property(player_sprite, "position:y", player_sprite.position.y - 1.0, 0.4)
 			tw.tween_property(player_sprite, "position:y", player_sprite.position.y, 0.4)
 			tw.tween_interval(0.6)
+		# ayağa kalkma kareleri (art/oscar_stand.png)
+		var stand: Array = _strip_frames(_art("oscar_stand"), 32) if _art("oscar_stand") != null else []
+		for f in stand:
+			tw.tween_callback(func(): player_pose = f)
+			tw.tween_interval(0.14)
 		tw.tween_callback(func():
 			player_pose = null
 			player_sprite.position.y = -player_sprite.size.y
@@ -1530,8 +1541,8 @@ func _car_arrive() -> void:
 		_exit_car()
 		return
 	var n: Control = car["node"]
-	var final_x := n.position.x
-	n.position.x = -n.size.x - 40.0
+	var final_x: float = float(n.get_meta("final_x", n.position.x))
+	n.position.x = -n.size.x * n.scale.x - 40.0
 	car_tween = create_tween()
 	var tw := car_tween
 	tw.tween_property(n, "position:x", final_x, 2.2).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
@@ -1644,18 +1655,53 @@ func _try_interjection() -> void:
 			continue
 		flags[id] = true
 		current_npc = str(npc["data"]["dialogue"])
-		_face_each_other(npc["data"])
-		_sfx("blip")
-		play_lines(it["lines"], func():
-			_clear_choices()
-			busy = true
-			dialog_panel.visible = true
-			for ch in it.get("choices", []):
-				var c: Dictionary = ch
-				_add_choice(str(c["text"]), func():
-					play_lines(c.get("lines", []), Callable()))
-			_layout_dialog())
+		_npc_walk_up(npc, func():
+			_face_each_other(npc["data"])
+			_sfx("blip")
+			_interjection_talk(it))
 		return
+
+
+func _interjection_talk(it: Dictionary) -> void:
+	play_lines(it["lines"], func():
+		_clear_choices()
+		busy = true
+		dialog_panel.visible = true
+		for ch in it.get("choices", []):
+			var c: Dictionary = ch
+			_add_choice(str(c["text"]), func():
+				play_lines(c.get("lines", []), Callable()))
+		_layout_dialog())
+
+
+## Şüpheli itiraz etmeden önce yürüyerek Oscar'ın yanına gelir (art/<ad>_walk.png).
+func _npc_walk_up(e: Dictionary, done: Callable) -> void:
+	var o: Dictionary = e["data"]
+	var n: Control = e["node"]
+	var ox := float(o["x"])
+	var side := 1.0 if ox > player.position.x else -1.0
+	var tx := clampf(player.position.x + side * 26.0, walk_min, walk_max)
+	var dist := absf(tx - ox)
+	if dist < 6.0:
+		done.call()
+		return
+	busy = true
+	var anim := {}
+	for a in npc_anims:
+		if a["node"] == n:
+			anim = a
+	if not anim.is_empty():
+		anim["moving"] = true
+	var step := func(x: float) -> void:
+		o["x"] = x
+		n.position.x = x - n.size.x / 2.0
+	var tw := create_tween()
+	tw.tween_method(step, ox, tx, dist / 45.0)
+	tw.tween_callback(func():
+		if not anim.is_empty():
+			anim["moving"] = false
+		busy = false
+		done.call())
 
 
 func load_room(id: String, spawn_x: float) -> void:
@@ -1780,8 +1826,12 @@ func _spawn_object(o: Dictionary, has_bg: bool) -> void:
 			label_text = str(o.get("label", data["rooms"][o["to"]]["name"]))
 	var tex := _art(art_key)
 	var frames: Array = []
+	var walk_frames_npc: Array = []
 	if t == "npc" and tex:
-		frames = _strip_frames(_art(art_key + "_idle"), tex.get_width())
+		var idle_key := str(o.get("idle", art_key + "_idle"))
+		frames = _strip_frames(_art(idle_key), tex.get_width())
+		if _art(art_key + "_walk"):
+			walk_frames_npc = _strip_frames(_art(art_key + "_walk"), tex.get_width())
 	if tex:
 		w = tex.get_width()
 		h = tex.get_height()
@@ -1811,7 +1861,7 @@ func _spawn_object(o: Dictionary, has_bg: bool) -> void:
 			(n as TextureRect).flip_h = true
 		_add_wheels(n, false)
 	if t == "npc" and not frames.is_empty():
-		npc_anims.append({"node": n, "frames": frames, "phase": randf() * 2.0})
+		npc_anims.append({"node": n, "frames": frames, "walk": walk_frames_npc, "data": o, "moving": false, "phase": randf() * 2.0})
 	if t == "clue" or t == "look":
 		if has_bg and not tex:
 			# Sahne çiziminde nesne zaten resimde: kutu yerine yanıp sönen bir yıldız.
@@ -1890,10 +1940,36 @@ func _has_flags(v: Variant) -> bool:
 	return flags.has(str(v))
 
 
+## Yerdeki ipucunu alırken eğilme (art/oscar_crouch.png): in, bekle, kalk.
+func _crouch_then(done: Callable) -> void:
+	var fr := _strip_frames(_art("oscar_crouch"), 32)
+	busy = true
+	var tw := create_tween()
+	for f in fr:
+		tw.tween_callback(func(): player_pose = f)
+		tw.tween_interval(0.08)
+	tw.tween_interval(0.25)
+	for i in range(fr.size() - 2, -1, -1):
+		var f2: Texture2D = fr[i]
+		tw.tween_callback(func(): player_pose = f2)
+		tw.tween_interval(0.08)
+	tw.tween_callback(func():
+		player_pose = null
+		busy = false
+		done.call())
+
+
+## Bir kez incelenen eşya bir daha parlamaz ve tıklanmaz ("keep": true olanlar hariç).
+func _look_key(o: Dictionary) -> String:
+	return room_id + ":" + str(o.get("name", o.get("x", "")))
+
+
 func _obj_visible(o: Dictionary) -> bool:
 	if o.has("requires_flag") and not _has_flags(o["requires_flag"]):
 		return false
 	if o.has("hide_if_flag") and _has_flags(o["hide_if_flag"]):
+		return false
+	if str(o["type"]) == "look" and looked.has(_look_key(o)) and not bool(o.get("keep", false)):
 		return false
 	if str(o["type"]) == "clue":
 		if clues.has(o["id"]):
@@ -2095,7 +2171,11 @@ func _animate(delta: float) -> void:
 	anim_clock += delta
 	for a in npc_anims:
 		var frames: Array = a["frames"]
-		var i := int((anim_clock + float(a["phase"])) / IDLE_FRAME_TIME) % frames.size()
+		var ft := IDLE_FRAME_TIME if frames.size() <= 2 else 0.22
+		if bool(a["moving"]) and not (a["walk"] as Array).is_empty():
+			frames = a["walk"]
+			ft = 0.1
+		var i := int((anim_clock + float(a["phase"])) / ft) % frames.size()
 		(a["node"] as TextureRect).texture = frames[i]
 	if not player_sprite:
 		return
@@ -2178,7 +2258,10 @@ func _face_each_other(o: Dictionary) -> void:
 func _interact(o: Dictionary) -> void:
 	match str(o["type"]):
 		"clue":
-			give_clue(str(o["id"]), Callable())
+			if float(o.get("y", 0)) <= 6.0 and _art("oscar_crouch"):
+				_crouch_then(func(): give_clue(str(o["id"]), Callable()))
+			else:
+				give_clue(str(o["id"]), Callable())
 		"door":
 			var lock := str(o.get("lock_flag", o.get("requires_flag", "")))
 			if lock != "" and not flags.has(lock):
@@ -2192,14 +2275,15 @@ func _interact(o: Dictionary) -> void:
 			_face_each_other(o)
 			start_dialogue(str(o["dialogue"]))
 		"look":
+			looked[_look_key(o)] = true
 			if o.has("set_flag") and not flags.has(o["set_flag"]):
 				flags[o["set_flag"]] = true
 				if o.has("sfx"):
 					_sfx(str(o["sfx"]))
 				_refresh_visibility()
-				play_lines(o.get("lines", []), Callable())
+				play_lines(o.get("lines", []), _refresh_visibility)
 			else:
-				play_lines(o.get("lines_after", o.get("lines", [])), Callable())
+				play_lines(o.get("lines_after", o.get("lines", [])), _refresh_visibility)
 		"car":
 			if room_id == "sokak":
 				_board_car()

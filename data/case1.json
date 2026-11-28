@@ -5,55 +5,55 @@
  "cutscene": [
   {
    "style": "note",
-   "text": "Sorduğun her soru, gösterdiğin her kanıt ve suçladığın her kişi hikayenin gidişini değiştirecek.\n\nSeçimlerin bütün hikayeyi etkileyecek."
+   "text": "Sorduğun her soru, gösterdiğin her kanıt, suçladığın her kişi... Hepsi hikayeyi değiştirir."
   },
   {
    "art": "drive/sky",
-   "text": "Ravenport, 2003. Yağmur yağıyor. Burada hep yağar."
+   "text": "Ravenport, 2003. Yağmur yağıyor. Burada hep yağar zaten."
   },
   {
    "art": "cutscene/sahne",
-   "text": "Beş yıl önce bu şehir adımı bağırıyordu. Büyük Valentino. Yani ben."
+   "text": "Beş yıl önce bu şehir adımı haykırıyordu. Büyük Valentino. Evet, ben."
   },
   {
    "art": "cutscene/sahne",
-   "text": "Sonra son numaramda bir şey ters gitti. O geceden sonra kimse bilet almadı."
+   "text": "Sonra son numaramda bir şeyler ters gitti. O geceden sonra kimse bilet almadı."
   },
   {
-   "text": "Şimdi 12.480 dolar borcum ve bir ev sahibim var. İkisi de sabırsız."
+   "text": "Şimdi 12.480 dolar borcum ve bir ev sahibim var. İkisi de pek sabırlı sayılmaz."
   },
   {
-   "text": "Ama hâlâ bir şeyde iyiyim. Biri bana yalan söylediğinde anlarım. FCD de tam bunun için beni işe aldı."
+   "text": "Ama bir konuda hâlâ iyiyim: biri bana yalan söylerse anlarım. FCD de beni bu yüzden tuttu."
   },
   {
    "art": "rooms/muze_onu",
-   "text": "O gece büroda kahvemi içiyordum. Şehrin öbür ucunda ise bir yakut, kilitli bir vitrinden buhar olup uçmuştu."
+   "text": "O gece büroda soğumuş kahvemi içiyordum. Şehrin öbür ucunda ise bir yakut, kilitli bir vitrinden sırra kadem basmıştı."
   }
  ],
  "wrong_quips": [
   [
    "Maya",
-   "Penn, bu kanıtın konuyla ne alakası var?"
+   "Penn, bunun konuyla ne alakası var Allah aşkına?"
   ],
   [
    "Maya",
-   "Etkileyici. Hiçbir şey kanıtlamadın."
+   "Çok etkileyici. Hiçbir şey kanıtlamadın ama."
   ],
   [
    "Maya",
-   "Bunu gösterdiğin için kendini zeki mi hissettin?"
+   "Bunu gösterince kendini zeki mi hissettin?"
   ],
   [
    "Maya",
-   "Devam et, biraz daha utandır beni."
+   "Devam et, biraz daha rezil et beni."
   ],
   [
    "Oscar",
-   "...Bunu neden gösterdiğimi ben de bilmiyorum."
+   "...Bunu neden gösterdim, ben de bilmiyorum."
   ],
   [
    "Maya",
-   "Bir dahaki sefere önce düşün, sonra göster."
+   "Önce düşün, sonra göster. Bu sırayla."
   ],
   [
    "Oscar",
@@ -61,64 +61,41 @@
   ],
   [
    "Maya",
-   "Bu, ilgisiz bir şeyi ciddi bir yüzle göstermek oldu."
+   "Alakasız bir şeyi bu kadar ciddi bir yüzle gösterebilen tek kişi sensin."
   ],
   [
    "Oscar",
-   "Hmm. Yüzünde hiçbir şey kıpırdamadı. Demek ki alakası yok."
+   "Hıh. Yüzünde tek kas kıpırdamadı. Demek alakası yok."
   ],
   [
    "Maya",
-   "Şef bunu duysa maaşından keserdi. Bence de kessin."
+   "Şef bunu duysa maaşından keserdi. Açıkçası haklı da olurdu."
   ]
  ],
  "link_fail_quips": [
-  "Hmm. Hayır. Bu ikisi birbirini tanımıyor.",
-  "Bağlantı yok. Ama ip çok güzel duruyor.",
-  "Maya bunu görse gülerdi. Maya hiç gülmez."
+  "Yok. Bu ikisi birbirini hiç tanımıyor.",
+  "Bağlantı yok. Ama ip güzel duruyor, hakkını vereyim.",
+  "Maya bunu görse gülerdi. Maya hiç gülmez ama."
  ],
  "rooms": {
   "hol": {
    "name": "Main Hall",
    "width": 344,
    "bg": "#2b1d14",
-   "decor": [
-    {
-     "x": 99,
-     "y": 0,
-     "w": 45,
-     "h": 18,
-     "color": "#3a2a1e"
-    },
-    {
-     "x": 191,
-     "y": 0,
-     "w": 35,
-     "h": 50,
-     "color": "#3a2a1e"
-    },
-    {
-     "x": 161,
-     "y": 115,
-     "w": 35,
-     "h": 4,
-     "color": "#b8942f"
-    }
-   ],
    "objects": [
     {
      "type": "clue",
      "id": "ruj",
-     "x": 214,
-     "y": 23,
+     "x": 224,
+     "y": 28,
      "w": 5,
      "h": 5
     },
     {
      "type": "clue",
      "id": "misafir",
-     "x": 236,
-     "y": 23,
+     "x": 246,
+     "y": 28,
      "w": 14,
      "h": 4
     },
@@ -133,7 +110,7 @@
     {
      "type": "npc",
      "dialogue": "toby",
-     "x": 140,
+     "x": 130,
      "hide_if_flag": [
       "depo_acik",
       "seen_toby"
@@ -142,18 +119,18 @@
     {
      "type": "door",
      "to": "salon",
-     "x": 312,
-     "spawn_x": 70,
-     "w": 40,
-     "h": 63,
+     "x": 308,
+     "spawn_x": 45,
+     "w": 36,
+     "h": 85,
      "y": 0
     }
    ],
-   "floor_y": 172,
+   "floor_y": 180,
    "enter_lines": [
     [
      "Maya",
-     "Kimse çıkmadı. Misafirler, personel, hepsi hâlâ içeride."
+     "Kimse çıkmadı. Misafirler de personel de hâlâ içeride."
     ],
     [
      "Oscar",
@@ -161,11 +138,11 @@
     ],
     [
      "Maya",
-     "Bu bir gösteri değil, Penn."
+     "Burası sahne değil, Penn."
     ],
     [
      "Oscar",
-     "Her şey bir gösteridir, Cole. Biz sadece sahnede kimin olduğunu bulacağız."
+     "Her yer sahnedir, Cole. Bize düşen, sahnede kimin rol yaptığını bulmak."
     ],
     [
      "",
@@ -174,7 +151,7 @@
    ],
    "place": "Finch-Moore Museum",
    "walk": [
-    90,
+    72,
     336
    ]
   },
@@ -182,74 +159,37 @@
    "name": "Jewel Gallery",
    "width": 344,
    "bg": "#21170f",
-   "decor": [
-    {
-     "x": 172,
-     "y": 0,
-     "w": 30,
-     "h": 23,
-     "color": "#3a2a1e"
-    },
-    {
-     "x": 172,
-     "y": 23,
-     "w": 25,
-     "h": 15,
-     "color": "#4a3a2c"
-    },
-    {
-     "x": 172,
-     "y": 100,
-     "w": 12,
-     "h": 20,
-     "color": "#b8942f"
-    },
-    {
-     "x": 86,
-     "y": 30,
-     "w": 25,
-     "h": 35,
-     "color": "#3a2a1e"
-    },
-    {
-     "x": 268,
-     "y": 30,
-     "w": 25,
-     "h": 35,
-     "color": "#3a2a1e"
-    }
-   ],
    "objects": [
     {
      "type": "door",
      "to": "hol",
-     "x": 40,
+     "x": 22,
      "spawn_x": 290,
-     "w": 36,
-     "h": 63,
+     "w": 24,
+     "h": 52,
      "y": 0
     },
     {
      "type": "clue",
      "id": "kilit",
-     "x": 229,
+     "x": 180,
      "y": 32,
-     "w": 8,
-     "h": 8
+     "w": 6,
+     "h": 6
     },
     {
      "type": "clue",
      "id": "taban",
-     "x": 229,
-     "y": 25,
-     "w": 28,
+     "x": 168,
+     "y": 26,
+     "w": 16,
      "h": 3,
      "hidden": true
     },
     {
      "type": "clue",
      "id": "kupe",
-     "x": 258,
+     "x": 192,
      "y": 0,
      "w": 4,
      "h": 4
@@ -257,182 +197,132 @@
     {
      "type": "clue",
      "id": "sac",
-     "x": 222,
-     "y": 44,
+     "x": 162,
+     "y": 38,
      "w": 3,
      "h": 6
     },
     {
      "type": "npc",
      "dialogue": "vivian",
-     "x": 130,
+     "x": 110,
      "hide_if_flag": [
       "otopark_acik",
       "seen_vivian"
-     ]
+     ],
+     "idle": "vivian_smoke"
     },
     {
      "type": "door",
      "to": "guvenlik",
-     "x": 308,
-     "spawn_x": 70,
-     "w": 32,
-     "h": 59,
+     "x": 318,
+     "spawn_x": 55,
+     "w": 24,
+     "h": 52,
      "y": 0
     }
    ],
-   "floor_y": 172,
-   "place": "Finch-Moore Museum"
+   "floor_y": 183,
+   "place": "Finch-Moore Museum",
+   "walk": [
+    10,
+    334
+   ]
   },
   "guvenlik": {
    "name": "Security Room",
    "width": 344,
    "bg": "#1c140e",
-   "decor": [
-    {
-     "x": 147,
-     "y": 0,
-     "w": 80,
-     "h": 20,
-     "color": "#3a2a1e"
-    },
-    {
-     "x": 143,
-     "y": 20,
-     "w": 20,
-     "h": 15,
-     "color": "#5a4a2c"
-    },
-    {
-     "x": 177,
-     "y": 20,
-     "w": 10,
-     "h": 6,
-     "color": "#4a3a2c"
-    }
-   ],
    "objects": [
     {
      "type": "door",
      "to": "salon",
-     "x": 39,
-     "spawn_x": 275,
-     "w": 32,
-     "h": 61,
+     "x": 32,
+     "spawn_x": 295,
+     "w": 30,
+     "h": 68,
      "y": 0
     },
     {
      "type": "clue",
      "id": "kamera",
-     "x": 230,
-     "y": 42,
-     "w": 60,
-     "h": 36
+     "x": 180,
+     "y": 34,
+     "w": 70,
+     "h": 50
     },
     {
      "type": "clue",
      "id": "kart",
-     "x": 246,
-     "y": 23,
+     "x": 180,
+     "y": 27,
      "w": 6,
      "h": 3
     },
     {
      "type": "clue",
      "id": "fincan",
-     "x": 212,
-     "y": 23,
+     "x": 196,
+     "y": 27,
      "w": 6,
      "h": 6
     },
     {
      "type": "npc",
      "dialogue": "gus",
-     "x": 160
+     "x": 255,
+     "idle": "gus_nervous"
     },
     {
      "type": "door",
      "to": "ofis",
-     "x": 304,
-     "spawn_x": 60,
+     "x": 312,
+     "spawn_x": 58,
      "requires_flag": "ofis_acik",
-     "locked_text": "Müdürün ofisi kilitli. Anahtar Gus'ta. Önce onu biraz konuşturmam lazım.",
-     "w": 32,
-     "h": 61,
+     "locked_text": "Kilitli. Anahtar Gus'ta. Önce onu biraz konuşturmam lazım.",
+     "w": 30,
+     "h": 68,
      "y": 0
     }
    ],
-   "floor_y": 172,
-   "place": "Finch-Moore Museum"
+   "floor_y": 179,
+   "place": "Finch-Moore Museum",
+   "walk": [
+    12,
+    332
+   ]
   },
   "ofis": {
    "name": "Director's Office",
    "width": 344,
    "bg": "#2b1d14",
-   "decor": [
-    {
-     "x": 76,
-     "y": 0,
-     "w": 30,
-     "h": 55,
-     "color": "#3a2a1e"
-    },
-    {
-     "x": 164,
-     "y": 0,
-     "w": 60,
-     "h": 19,
-     "color": "#3a2a1e"
-    },
-    {
-     "x": 180,
-     "y": 19,
-     "w": 4,
-     "h": 10,
-     "color": "#b8942f"
-    },
-    {
-     "x": 206,
-     "y": 0,
-     "w": 9,
-     "h": 11,
-     "color": "#4a3a2c"
-    },
-    {
-     "x": 237,
-     "y": 35,
-     "w": 25,
-     "h": 20,
-     "color": "#4a3a2c"
-    }
-   ],
    "objects": [
     {
      "type": "door",
      "to": "guvenlik",
-     "x": 41,
-     "spawn_x": 280,
-     "w": 38,
-     "h": 65,
+     "x": 35,
+     "spawn_x": 290,
+     "w": 36,
+     "h": 58,
      "y": 0
     },
     {
      "type": "clue",
      "id": "krem",
-     "x": 134,
-     "y": 34,
+     "x": 140,
+     "y": 10,
      "w": 6,
      "h": 7
     },
     {
      "type": "npc",
      "dialogue": "harold",
-     "x": 258
+     "x": 245
     },
     {
      "type": "clue",
      "id": "kol1",
-     "x": 165,
+     "x": 170,
      "y": 0,
      "w": 4,
      "h": 3
@@ -440,94 +330,75 @@
     {
      "type": "clue",
      "id": "anahtar",
-     "x": 236,
-     "y": 24,
+     "x": 210,
+     "y": 22,
      "w": 6,
      "h": 3
     },
     {
      "type": "clue",
      "id": "sigorta",
-     "x": 200,
-     "y": 24,
-     "w": 12,
-     "h": 4
+     "x": 224,
+     "y": 0,
+     "w": 10,
+     "h": 8
     },
     {
      "type": "clue",
      "id": "plan",
-     "x": 116,
-     "y": 54,
-     "w": 70,
-     "h": 46
+     "x": 125,
+     "y": 45,
+     "w": 58,
+     "h": 40
     },
     {
      "type": "door",
      "to": "depo",
-     "x": 286,
+     "x": 284,
      "spawn_x": 60,
      "requires_flag": "depo_acik",
-     "locked_text": "Bodrum kapısı. Neden ineyim ki? Henüz bir sebebim yok.",
+     "locked_text": "Bodrum kapısı. Şimdilik aşağı inmem için bir sebep yok.",
      "w": 42,
-     "h": 62,
+     "h": 58,
      "y": 0
     },
     {
      "type": "door",
      "to": "otopark",
-     "x": 330,
-     "spawn_x": 86,
+     "x": 323,
+     "spawn_x": 80,
      "requires_flag": "otopark_acik",
-     "locked_text": "Otopark. Harold'ın arabası orada ama anahtarı bende değil.",
-     "w": 18,
-     "h": 66,
+     "locked_text": "Otoparka çıkıyor. Harold'ın arabası orada ama anahtarı bende değil.",
+     "w": 20,
+     "h": 58,
      "y": 0
     }
    ],
-   "floor_y": 172,
-   "place": "Finch-Moore Museum"
+   "floor_y": 180,
+   "place": "Finch-Moore Museum",
+   "walk": [
+    12,
+    336
+   ]
   },
   "depo": {
    "name": "Basement Storage",
    "width": 344,
    "bg": "#140f0a",
-   "decor": [
-    {
-     "x": 64,
-     "y": 0,
-     "w": 30,
-     "h": 25,
-     "color": "#3a2a1e"
-    },
-    {
-     "x": 215,
-     "y": 15,
-     "w": 5,
-     "h": 115,
-     "color": "#4a3a2c"
-    },
-    {
-     "x": 267,
-     "y": 0,
-     "w": 35,
-     "h": 20,
-     "color": "#3a2a1e"
-    }
-   ],
    "objects": [
     {
      "type": "door",
      "to": "ofis",
-     "x": 39,
-     "spawn_x": 286,
-     "w": 32,
-     "h": 63,
+     "x": 35,
+     "spawn_x": 270,
+     "w": 44,
+     "h": 60,
      "y": 0
     },
     {
      "type": "clue",
      "id": "bileklik",
-     "x": 78,
+     "x": 90,
      "y": 0,
      "w": 8,
      "h": 3
@@ -535,7 +406,7 @@
     {
      "type": "npc",
      "dialogue": "toby2",
-     "x": 150,
+     "x": 165,
      "requires_flag": [
       "depo_acik",
       "seen_toby"
@@ -545,15 +416,15 @@
     {
      "type": "clue",
      "id": "oluk",
-     "x": 328,
-     "y": 0,
+     "x": 316,
+     "y": 3,
      "w": 30,
-     "h": 50
+     "h": 80
     },
     {
      "type": "clue",
      "id": "kol2",
-     "x": 232,
+     "x": 296,
      "y": 0,
      "w": 4,
      "h": 3
@@ -561,58 +432,39 @@
     {
      "type": "clue",
      "id": "afis",
-     "x": 105,
-     "y": 34,
-     "w": 30,
-     "h": 39,
+     "x": 220,
+     "y": 55,
+     "w": 46,
+     "h": 40,
      "hidden": true
     }
    ],
-   "floor_y": 172,
-   "place": "Finch-Moore Museum"
+   "floor_y": 175,
+   "place": "Finch-Moore Museum",
+   "walk": [
+    12,
+    334
+   ]
   },
   "otopark": {
    "name": "Back Parking Lot",
    "width": 344,
    "bg": "#120d09",
-   "decor": [
-    {
-     "x": 206,
-     "y": 0,
-     "w": 75,
-     "h": 20,
-     "color": "#3a2a1e"
-    },
-    {
-     "x": 295,
-     "y": 0,
-     "w": 3,
-     "h": 90,
-     "color": "#3a2a1e"
-    },
-    {
-     "x": 295,
-     "y": 90,
-     "w": 10,
-     "h": 4,
-     "color": "#b8942f"
-    }
-   ],
    "objects": [
     {
      "type": "door",
      "to": "ofis",
-     "x": 66,
-     "spawn_x": 310,
-     "w": 28,
-     "h": 50,
-     "y": 28
+     "x": 60,
+     "spawn_x": 305,
+     "w": 24,
+     "h": 42,
+     "y": 25
     },
     {
      "type": "look",
      "name": "Harold'ın arabası",
-     "x": 224,
-     "y": 20,
+     "x": 230,
+     "y": -6,
      "w": 70,
      "h": 30,
      "set_flag": "araba_acik",
@@ -624,31 +476,34 @@
       ],
       [
        "Oscar",
-       "P3. Harold'ın arabası. Bakalım torpidoda ne saklıyor."
+       "P3. Harold'ın arabası. Bakalım torpidoda neler saklıyor."
       ]
      ],
      "lines_after": [
       [
        "Oscar",
-       "Kapı açık. Torpidoya ve bagaja bakabilirim."
+       "Kapı açık. Torpidoya ve bagaja bir bakayım."
       ]
-     ]
+     ],
+     "art": "araba_harold",
+     "keep": true
     },
     {
      "type": "npc",
      "dialogue": "vivian2",
-     "x": 120,
+     "x": 110,
      "requires_flag": [
       "otopark_acik",
       "seen_vivian"
      ],
-     "art": "vivian"
+     "art": "vivian",
+     "idle": "vivian_smoke"
     },
     {
      "type": "clue",
      "id": "fatura",
-     "x": 200,
-     "y": 43,
+     "x": 250,
+     "y": 22,
      "w": 10,
      "h": 5,
      "requires_flag": "araba_acik"
@@ -656,30 +511,34 @@
     {
      "type": "clue",
      "id": "kartvizit",
-     "x": 248,
-     "y": 38,
+     "x": 185,
+     "y": 20,
      "w": 8,
      "h": 5,
      "requires_flag": "araba_acik"
     }
    ],
    "rain": true,
-   "floor_y": 166,
-   "place": "Finch-Moore Museum"
+   "floor_y": 175,
+   "place": "Finch-Moore Museum",
+   "walk": [
+    20,
+    330
+   ]
   },
   "fcd": {
    "name": "Bullpen",
    "width": 344,
-   "floor_y": 172,
+   "floor_y": 183,
    "bg": "#1f1a14",
    "objects": [
     {
      "type": "door",
      "to": "koridor",
-     "x": 46,
-     "spawn_x": 625,
-     "w": 44,
-     "h": 62,
+     "x": 30,
+     "spawn_x": 600,
+     "w": 30,
+     "h": 46,
      "label": "Elevator",
      "y": 0
     },
@@ -693,64 +552,68 @@
      "type": "npc",
      "dialogue": "sef",
      "art": "memur1",
-     "x": 262
+     "x": 270
     },
     {
      "type": "door",
      "to": "sokak",
-     "x": 338,
-     "spawn_x": 90,
-     "w": 12,
-     "h": 62,
+     "x": 328,
+     "spawn_x": 65,
+     "w": 16,
+     "h": 44,
      "label": "Exit",
      "y": 0
     }
    ],
-   "place": "FCD · Ravenport"
+   "place": "FCD · Ravenport",
+   "walk": [
+    18,
+    334
+   ]
   },
   "oscar_ofis": {
    "name": "Oscar's Room",
    "place": "FCD · Ravenport",
    "width": 344,
-   "floor_y": 172,
+   "floor_y": 178,
    "bg": "#241a12",
-   "door_x": 305,
+   "door_x": 280,
    "objects": [
     {
      "type": "door",
      "to": "koridor",
-     "x": 305,
-     "spawn_x": 60,
-     "w": 32,
-     "h": 63,
+     "x": 280,
+     "spawn_x": 70,
+     "w": 36,
+     "h": 68,
      "label": "Hallway",
      "y": 0
     },
     {
      "type": "look",
      "name": "Eski afiş",
-     "x": 110,
-     "y": 34,
-     "w": 29,
-     "h": 42,
+     "x": 173,
+     "y": 43,
+     "w": 28,
+     "h": 38,
      "lines": [
       [
        "Oscar",
-       "'Magician'. Gloriana Tiyatrosu, 1998. Biletler üç dakikada tükenmişti."
+       "Gloriana Tiyatrosu, 1998. Biletler üç dakikada tükenmişti."
       ],
       [
        "Oscar",
-       "Şimdi bu odanın kirasını zor ödüyorum."
+       "Şimdiyse bu odanın kirasını zar zor ödüyorum."
       ]
      ]
     },
     {
      "type": "look",
      "name": "Gazete kupürü",
-     "x": 128,
-     "y": 0,
-     "w": 14,
-     "h": 6,
+     "x": 213,
+     "y": 36,
+     "w": 10,
+     "h": 12,
      "lines": [
       [
        "",
@@ -762,17 +625,17 @@
       ],
       [
        "Oscar",
-       "Beş yıldır kimse inanmadı. Henüz kanıtlayamadım."
+       "Beş yıldır kimse inanmadı. Kanıtlayana kadar da inanmayacaklar."
       ]
      ]
     },
     {
      "type": "look",
      "name": "Mektup",
-     "x": 40,
-     "y": 36,
-     "w": 14,
-     "h": 6,
+     "x": 102,
+     "y": 0,
+     "w": 12,
+     "h": 12,
      "lines": [
       [
        "",
@@ -780,99 +643,103 @@
       ],
       [
        "Oscar",
-       "Tavşanım yok. Artık."
+       "Tavşanım yok. Artık yok."
       ]
      ]
     },
     {
      "type": "look",
      "name": "Kahve fincanı",
-     "x": 206,
-     "y": 22,
+     "x": 207,
+     "y": 21,
      "w": 6,
      "h": 6,
      "lines": [
       [
        "Oscar",
-       "Üçüncü fincan. Artık kafein değil, alışkanlık."
+       "Üçüncü fincan. Artık kafein için değil, alışkanlıktan."
       ]
      ]
     },
     {
      "type": "look",
      "name": "Masadaki kağıtlar",
-     "x": 226,
-     "y": 22,
-     "w": 14,
-     "h": 12,
+     "x": 178,
+     "y": 18,
+     "w": 16,
+     "h": 10,
      "lines": [
       [
        "Oscar",
-       "Bir deste iskambil ve ödenmemiş faturalar. Destede 51 kart var. Kupa ası hep kayıp."
+       "Bir deste iskambil, bir yığın ödenmemiş fatura. Destede 51 kart var, kupa ası hep kayıp."
       ],
       [
        "Oscar",
-       "Nerede olduğunu biliyorum. Söylemem."
+       "Nerede olduğunu biliyorum tabii. Söylemem."
       ]
      ]
     },
     {
      "type": "look",
      "name": "Sihirbaz şapkası",
-     "x": 272,
-     "y": 47,
-     "w": 12,
-     "h": 10,
+     "x": 40,
+     "y": 43,
+     "w": 10,
+     "h": 8,
      "lines": [
       [
        "Oscar",
-       "İçi boş. Kontrol ettim. İki kere."
+       "Boş. Baktım. İki kere."
       ]
      ]
     }
    ],
-   "sit_x": 184,
-   "sit_dy": 0
+   "sit_x": 140,
+   "sit_dy": 0,
+   "walk": [
+    12,
+    330
+   ]
   },
   "koridor": {
    "name": "Hallway",
    "place": "FCD · Ravenport",
-   "width": 688,
-   "floor_y": 170,
+   "width": 668,
+   "floor_y": 173,
    "bg": "#2a2018",
-   "elevator_x": 649,
+   "elevator_x": 626,
    "objects": [
     {
      "type": "door",
      "to": "oscar_ofis",
-     "x": 40,
-     "spawn_x": 285,
-     "w": 34,
-     "h": 66,
+     "x": 60,
+     "spawn_x": 270,
+     "w": 26,
+     "h": 58,
      "label": "Oscar's Room",
      "y": 0
     },
     {
      "type": "look",
      "name": "Su sebili",
-     "x": 270,
+     "x": 90,
      "w": 12,
-     "h": 34,
+     "h": 36,
      "lines": [
       [
        "Oscar",
-       "Su bitmiş. Kimse yenisini takmıyor. FCD'nin en eski çözülmemiş vakası."
+       "Su yine bitmiş. Kimse yenisini takmıyor. FCD'nin en eski çözülmemiş vakası."
       ]
      ],
-     "y": 0
+     "y": 4
     },
     {
      "type": "look",
      "name": "İlan panosu",
-     "x": 436,
-     "y": 28,
-     "w": 54,
-     "h": 34,
+     "x": 460,
+     "y": 37,
+     "w": 46,
+     "h": 20,
      "lines": [
       [
        "",
@@ -883,31 +750,35 @@
     {
      "type": "door",
      "to": "fcd",
-     "x": 649,
-     "spawn_x": 70,
+     "x": 626,
+     "spawn_x": 40,
      "w": 40,
-     "h": 65,
+     "h": 68,
      "label": "Elevator",
      "y": 0
     }
+   ],
+   "walk": [
+    30,
+    655
    ]
   },
   "sokak": {
    "name": "Mercer St.",
    "place": "Ravenport",
    "width": 344,
-   "floor_y": 157,
+   "floor_y": 170,
    "bg": "#121018",
    "rain": true,
    "objects": [
     {
      "type": "door",
      "to": "fcd",
-     "x": 57,
-     "spawn_x": 318,
-     "y": 15,
-     "w": 40,
-     "h": 80,
+     "x": 45,
+     "spawn_x": 310,
+     "y": 12,
+     "w": 26,
+     "h": 58,
      "label": "FCD Office"
     },
     {
@@ -915,48 +786,56 @@
      "x": 262,
      "y": -16
     }
+   ],
+   "walk": [
+    20,
+    330
    ]
   },
   "muze_onu": {
    "name": "Museum Entrance",
    "place": "Finch-Moore Museum",
    "width": 344,
-   "floor_y": 166,
+   "floor_y": 172,
    "bg": "#14100c",
    "rain": true,
    "enter_lines": [
     [
      "Maya",
-     "Polis kapıda. Herkes içeride bekliyor."
+     "Polis kapıda. Herkes içeride bizi bekliyor."
     ],
     [
      "Oscar",
-     "Seyirci hazır. Sahneye çıkalım."
+     "Seyirci hazır demek. Hadi sahneye."
     ]
    ],
    "objects": [
     {
      "type": "car",
      "x": 70,
-     "y": -12
+     "y": -14
     },
     {
      "type": "door",
      "to": "hol",
-     "x": 265,
-     "spawn_x": 95,
-     "y": 28,
-     "w": 45,
-     "h": 60,
+     "x": 275,
+     "spawn_x": 85,
+     "y": 22,
+     "w": 46,
+     "h": 72,
      "label": "Finch-Moore Museum"
     }
+   ],
+   "walk": [
+    20,
+    330
    ]
   },
   "sorgu": {
    "name": "Interrogation Room",
    "place": "FCD · Ravenport",
    "width": 344,
-   "floor_y": 172,
+   "floor_y": 184,
    "bg": "#1a1410",
    "objects": []
   }
@@ -965,7 +844,7 @@
   "ruj": {
    "name": "Ruj izli kadeh",
    "desc": "Şampanya kadehinde koyu kırmızı ruj izi. Kadeh hâlâ soğuk.",
-   "comment": "Bu tonu yalnızca kendinden çok emin biri sürer.",
+   "comment": "Bu tonu ancak kendinden çok emin biri sürer.",
    "analysis": "Ruj, Vivian Lark'ın kullandığı markayla aynı. Kadeh 21:35'ten sonra bırakılmış.",
    "inspect": {
     "front": [
@@ -1019,7 +898,7 @@
   "sakiz": {
    "name": "Naneli sakız kağıdı",
    "desc": "Yerde buruşuk bir sakız kağıdı. Toby'nin çiğnediği sakızla aynı marka.",
-   "comment": "Ya biri çok gergindi, ya da nefesi çok kötüydü.",
+   "comment": "Ya biri çok gergindi ya da ağzı fena kokuyordu.",
    "inspect": {
     "front": [
      {
@@ -1062,7 +941,7 @@
   "taban": {
    "name": "Vitrindeki ince çizgi",
    "desc": "Tabanı çevreleyen kıl inceliğinde bir çizgi. Bu bir sahte taban, klasik sahne numarası.",
-   "comment": "Bu numarayı ben 1997'de daha temiz yapıyordum.",
+   "comment": "Ben bu numarayı 1997'de çok daha temiz yapıyordum.",
    "inspect": {
     "front": [
      {
@@ -1271,7 +1150,7 @@
    "name": "Araba anahtarı",
    "desc": "Harold'ın masasında eski, kumandalı bir araba anahtarı. Etiketinde 'P3' yazıyor.",
    "sets_flag": "otopark_acik",
-   "comment": "Hiç kimse araba anahtarını masada unutmaz. Ben hariç. Ve Harold.",
+   "comment": "Kimse araba anahtarını masada unutmaz. Ben hariç. Bir de Harold.",
    "inspect": {
     "front": [
      {
@@ -1315,7 +1194,7 @@
    "name": "Bina planı",
    "desc": "Sergi salonundaki vitrin tam bodrum deponun üstüne denk geliyor.",
    "sets_flag": "depo_acik",
-   "comment": "Bodrum. Kötü fikirlerin her zaman gittiği yer.",
+   "comment": "Bodrum. Kötü fikirlerin hep gittiği yer.",
    "inspect": {
     "front": [
      {
@@ -1566,15 +1445,15 @@
    "intro": [
     [
      "Toby",
-     "FBI mısınız? Ben hiçbir şey yapmadım."
+     "Siz polis misiniz? Bakın, ben bir şey yapmadım."
     ],
     [
      "Maya",
-     "FCD. Ve henüz kimse bir şey demedi."
+     "FCD. Ayrıca kimse sana bir şey demedi."
     ],
     [
      "Oscar",
-     "Sakız çiğneme hızından anladığım kadarıyla, bir şey yapmışsın. Ama belki yakutu çalmak değil."
+     "Sakızı çiğneme hızına bakılırsa bir şey yapmışsın. Yakutu çalmak olmayabilir ama."
     ]
    ],
    "claim": "Galanın sonunu hatırlamıyorum, tamam mı?",
@@ -1584,11 +1463,11 @@
      "lines": [
       [
        "Toby",
-       "Buralarda. Herkes gibi. Kalabalıktı."
+       "Buralardaydım işte. Herkes gibi. Çok kalabalıktı."
       ],
       [
        "Oscar",
-       "'Buralarda'. Klasik yalancı adresi."
+       "'Buralarda.' Yalancıların en sevdiği adres."
       ]
      ]
     },
@@ -1597,7 +1476,7 @@
      "lines": [
       [
        "Toby",
-       "Müzeyi benden çok seviyor. Son zamanlarda çok gergin ama. Hep telefonda."
+       "Müzeyi benden çok seviyor, orası kesin. Son zamanlarda çok gergin ama. Sürekli telefonda."
       ]
      ]
     }
@@ -1607,15 +1486,15 @@
      "lines": [
       [
        "Toby",
-       "Herkes sakız çiğner!"
+       "Ne var bunda? Herkes sakız çiğner!"
       ],
       [
        "Oscar",
-       "Ama herkes galanın ortasında hole kaçıp kağıdı yere atmaz."
+       "Ama herkes galanın ortasında hole kaçıp kağıdını yere atmaz."
       ],
       [
        "Toby",
-       "Ben... biraz hava almaya çıktım. O kadar."
+       "Ben... biraz hava almaya çıktım. Bu kadar."
       ]
      ]
     }
@@ -1630,11 +1509,11 @@
     ],
     [
      "Oscar",
-     "Kartlarımı değil, seyircimi kaybettim. Farklı şey."
+     "Kartlarımı değil, seyircimi kaybettim. İkisi farklı şeyler."
     ],
     [
      "Vivian",
-     "Ben mücevher eksperiyim. Yakutu galadan önce görmem gerekiyordu. Harold izin vermedi."
+     "Ben mücevher eksperiyim. Yakutu galadan önce incelemem gerekiyordu ama Harold izin vermedi."
     ]
    ],
    "claim": "21:30'da çıktım. Sıkıcı bir partiydi.",
@@ -1644,7 +1523,7 @@
      "lines": [
       [
        "Oscar",
-       "Avucunuzda toz, dizinizde iz. Yere eğildiniz. Bu salonda yere eğilecek tek ilginç yer vitrinin dibi."
+       "Avucunuzda toz, dizinizde iz var. Yere eğilmişsiniz. Bu salonda eğilmeye değecek tek yer de vitrinin dibi."
       ],
       [
        "Vivian",
@@ -1657,7 +1536,7 @@
      "lines": [
       [
        "Vivian",
-       "Bana sorarsan bir şey saklıyordu. Ama bana kimse sormaz."
+       "Bana sorarsan bir şey saklıyordu. Ama kimse bana sormuyor, değil mi?"
       ]
      ]
     }
@@ -1667,7 +1546,7 @@
      "lines": [
       [
        "Vivian",
-       "Peki. Belki biraz daha kaldım. Şampanya bedavaydı."
+       "Peki. Belki biraz daha kaldım. Şampanya bedavaydı, ne yapayım."
       ]
      ]
     },
@@ -1675,11 +1554,11 @@
      "lines": [
       [
        "Vivian",
-       "Listeyi tutan çocuk Toby'ydi. Yarısını boş bıraktı."
+       "Listeyi Toby tutuyordu. Yarısını boş bıraktı zaten."
       ],
       [
        "Oscar",
-       "Ama sadece sizinkini boş bıraktı."
+       "Ama tam olarak sizinkini boş bırakmış."
       ]
      ]
     },
@@ -1687,15 +1566,15 @@
      "lines": [
       [
        "Vivian",
-       "Onu kaybettiğimi fark etmemiştim."
+       "Düşürdüğümü fark etmemiştim."
       ],
       [
        "Oscar",
-       "Vitrinin dibinde kaybetmişsiniz."
+       "Vitrinin dibinde düşürmüşsünüz ama."
       ],
       [
        "Vivian",
-       "Daha fazla bir şey söylemem, Penn."
+       "Bundan fazlasını söylemem, Penn."
       ]
      ]
     }
@@ -1706,29 +1585,29 @@
    "intro": [
     [
      "Gus",
-     "Yankees 3, Red Sox 2... Ah! Merhaba. Gece bekçisi Gus."
+     "Yankees 3, Red Sox 2... Ah! Pardon, iyi akşamlar. Gece bekçisi Gus."
     ],
     [
      "Maya",
-     "Olay anında neredeydiniz?"
+     "Olay sırasında neredeydiniz?"
     ],
     [
      "Gus",
-     "Burada. Monitörün başında. Gözümü bir an ayırmadım."
+     "Burada. Monitörlerin başında. Gözümü bir saniye bile ayırmadım."
     ]
    ],
-   "claim": "Ben uyumam! Gece boyu gözüm salondaydı.",
+   "claim": "Ben nöbette uyumam! Bütün gece gözüm salondaydı.",
    "topics": [
     {
      "q": "Işıklar neden söndü?",
      "lines": [
       [
        "Gus",
-       "Sigorta atmıştır. Bu bina 1890'dan kalma."
+       "Sigorta atmıştır. Bina 1890'dan kalma, ne bekliyorsunuz?"
       ],
       [
        "Oscar",
-       "Sigorta 4 saniye sonra kendiliğinden düzelmez, Gus."
+       "Atan sigorta dört saniye sonra kendiliğinden düzelmez, Gus."
       ]
      ]
     }
@@ -1738,15 +1617,15 @@
      "lines": [
       [
        "Gus",
-       "Bu benim fincanım değil. Müdür getirdi, 'uzun gece olacak' dedi."
+       "O benim fincanım değil. Müdür getirdi, 'uzun bir gece olacak' dedi."
       ],
       [
        "Gus",
-       "Sonra... tamam, tamam, biraz kestirmiş olabilirim."
+       "Sonra... tamam, tamam. Biraz kestirmiş olabilirim."
       ],
       [
        "Gus",
-       "Işıklara gelince: salon ışıkları sadece müdürün ofisinden açılıp kapanır. Al, ofisin anahtarı."
+       "Bakın, salon ışıkları sadece müdürün ofisinden açılıp kapanıyor. Alın, ofisin anahtarı. Ben vermedim ama, haberiniz olsun."
       ]
      ],
      "gives_clue": "gus_ifadesi"
@@ -1766,18 +1645,18 @@
    "intro": [
     [
      "Harold",
-     "Ajanlar, hoş geldiniz. Korkunç bir gece. Kızıl Göz bu müzenin kalbiydi."
+     "Hoş geldiniz. Korkunç bir gece... Kızıl Göz bu müzenin kalbiydi."
     ],
     [
      "Oscar",
-     "Kravatınızı son bir dakikada dört kez düzelttiniz. Kalp ritminiz de korkunç görünüyor."
+     "Son bir dakikada kravatınızı dört kez düzelttiniz. Kalbiniz de pek iyi görünmüyor."
     ],
     [
      "Harold",
-     "Ben... gerginim, o kadar."
+     "Ben... sadece gerginim, o kadar."
     ]
    ],
-   "claim": "Eminim yeğenim Toby'nin işidir. Çocuk hep para istiyor.",
+   "claim": "Bence yeğenim Toby'nin işi. O çocuk hep para istiyor.",
    "topics": [
     {
      "q": "21:39'da ofisinizde ne yapıyordunuz?",
@@ -1785,11 +1664,11 @@
      "lines": [
       [
        "Harold",
-       "Gözlüğümü almaya geldim. Konuşma yapacaktım."
+       "Gözlüğümü almaya gittim. Konuşma yapacaktım."
       ],
       [
        "Oscar",
-       "Gözlüğünüz şu an cebinizde. Konuşmanızı hiç yapmadınız."
+       "Gözlüğünüz şu an cebinizde. Konuşmayı da hiç yapmadınız."
       ]
      ]
     }
@@ -1799,7 +1678,7 @@
      "lines": [
       [
        "Harold",
-       "Burası benim ofisim, ajan. İstediğim zaman girerim."
+       "Orası benim ofisim. İstediğim zaman girerim."
       ]
      ]
     },
@@ -1807,7 +1686,7 @@
      "lines": [
       [
        "Harold",
-       "Bu rutin bir güncelleme! Değerli taşların fiyatı artıyor."
+       "Rutin bir güncelleme! Değerli taşların fiyatı sürekli artıyor."
       ],
       [
        "Oscar",
@@ -1819,11 +1698,11 @@
      "lines": [
       [
        "Harold",
-       "Diğerini bir yerde kaybettim. Ne olmuş?"
+       "Diğerini bir yerde düşürdüm. Ne olmuş yani?"
       ],
       [
        "Oscar",
-       "Bir yerde. Bakalım nerede."
+       "Bir yerde. Bakalım neresi."
       ]
      ]
     },
@@ -1839,11 +1718,11 @@
   },
   "toby2": {
    "name": "Toby",
-   "claim": "Beni burada görmedin, tamam mı?",
+   "claim": "Beni burada görmediniz, tamam mı?",
    "intro": [
     [
      "Toby",
-     "Ne... beni nasıl buldunuz?"
+     "Ne... Beni nasıl buldunuz?"
     ],
     [
      "Oscar",
@@ -1855,11 +1734,11 @@
      "lines": [
       [
        "Toby",
-       "Tamam! Galada buraya inip içtim. Amcam öğrenirse beni kovar."
+       "Tamam, tamam! Galada buraya inip içtim. Amcam duyarsa beni kapı dışarı eder."
       ],
       [
        "Toby",
-       "Ama yakutla bir ilgim yok. Yemin ederim. Burada sadece o garip sandığı gördüm. Amcam ona kimsenin dokunmasını istemiyor."
+       "Ama yakutla hiçbir ilgim yok, yemin ederim. Burada sadece o tuhaf sandığı gördüm. Amcam ona kimseyi yaklaştırmıyor."
       ]
      ],
      "set_flag": "toby_temiz"
@@ -1868,7 +1747,7 @@
      "lines": [
       [
        "Toby",
-       "O sandık üç ay önce geldi. Amcam kendisi kurdu, kimseye yardım ettirmedi."
+       "O sandık üç ay önce geldi. Amcam kendisi kurdu, kimseden yardım almadı."
       ]
      ]
     }
@@ -1880,11 +1759,11 @@
    "intro": [
     [
      "Vivian",
-     "Yağmurda Harold'ın arabasının yanında ne işin var, sihirbaz?"
+     "Bu yağmurda Harold'ın arabasının yanında ne işin var, sihirbaz?"
     ],
     [
      "Oscar",
-     "Aynı soruyu ben de soracaktım."
+     "Ben de tam aynısını soracaktım."
     ]
    ],
    "show": {
@@ -1892,11 +1771,11 @@
      "lines": [
       [
        "Vivian",
-       "Peki. Vitrinin altına baktım. Bir etiket vardı: Vesper & Co. Sahne ekipmanı firması."
+       "Peki. Vitrinin altına baktım. Bir etiket vardı: Vesper & Co. Sahne ekipmanı yapan bir firma."
       ],
       [
        "Vivian",
-       "Harold'ın yaptığını anladım. Ondan biraz pay isteyecektim. Bu suç mu?"
+       "Harold'ın ne yaptığını anladım. Biraz pay isteyecektim. Bu suç mu?"
       ],
       [
        "Maya",
@@ -1909,7 +1788,7 @@
      "lines": [
       [
        "Vivian",
-       "Yine mi o kadeh? Yaratıcı ol biraz."
+       "Yine mi o kadeh? Biraz yaratıcı ol."
       ]
      ]
     }
@@ -1920,11 +1799,11 @@
    "intro": [
     [
      "Şef Calloway",
-     "Penn. Calloway. Elini sıkardım ama saatimi kaybetmek istemiyorum."
+     "Penn. Ben Calloway. Elini sıkardım ama saatimi kaybetmek istemem."
     ],
     [
      "Oscar",
-     "Akıllıca. Gerçi çoktan sağ cebinizde, Şef."
+     "Akıllıca. Gerçi saatiniz çoktan sağ cebinizde, Şef."
     ],
     [
      "Şef Calloway",
@@ -1932,11 +1811,11 @@
     ],
     [
      "Oscar",
-     "Değil. Ama bir an baktınız."
+     "Değil, haklısınız. Ama bir an baktınız."
     ],
     [
      "Şef Calloway",
-     "Müze işi, değil mi? Polis 'imkansız' deyip bize attı. Vitrin kilitli, cam sağlam, alarm sessiz."
+     "Müze işi, değil mi? Polis 'imkansız' deyip bize paslamış. Vitrin kilitli, cam sağlam, alarm çalmamış."
     ],
     [
      "Şef Calloway",
@@ -1950,15 +1829,15 @@
      "lines": [
       [
        "Şef Calloway",
-       "Polis 'imkansız' dedi. Sen hayatını imkansız şeyler yaparak kazandın."
+       "Polis 'imkansız' dedi. Sen de hayatını imkansız şeyler yaparak kazandın."
       ],
       [
        "Oscar",
-       "Ve kaybettim."
+       "Kaybettim de."
       ],
       [
        "Şef Calloway",
-       "O yüzden ucuzsun."
+       "O yüzden ucuzsun zaten."
       ]
      ]
     },
@@ -1967,7 +1846,7 @@
      "lines": [
       [
        "Şef Calloway",
-       "Finch-Moore'ların dedesi 1920'lerde Burma'dan getirmiş. Müzeyi o taş için kurmuşlar."
+       "Finch-Moore'ların dedesi 1920'lerde Burma'dan getirmiş. Müzeyi de o taş için kurmuşlar."
       ],
       [
        "Oscar",
@@ -1975,7 +1854,7 @@
       ],
       [
        "Şef Calloway",
-       "Hikayeyi boş ver. Taşı bul."
+       "Hikayeyi boş ver. Sen taşı bul."
       ]
      ]
     }
@@ -1995,21 +1874,21 @@
     ],
     [
      "Memur Park",
-     "Yok, şey... Kahve makinesini tamir edebilir misiniz? Sihirle?"
+     "Yok, ondan değil... Kahve makinesini tamir edebilir misiniz? Sihirle falan?"
     ],
     [
      "Oscar",
      "Onun için gerçek bir mucize lazım."
     ]
    ],
-   "claim": "Memur Eddie Park. İlk haftam. Henüz kimseyi tutuklamadım ama dosya taşımada iyiyim.",
+   "claim": "Memur Eddie Park. İlk haftam. Henüz kimseyi tutuklamadım ama dosya taşımada iyiyimdir.",
    "topics": [
     {
      "q": "Şef nasıl biri?",
      "lines": [
       [
        "Memur Park",
-       "Bağırıyorsa her şey yolunda. Susuyorsa saklanın."
+       "Bağırıyorsa sorun yok. Susuyorsa saklanın."
       ]
      ]
     },
@@ -2018,7 +1897,7 @@
      "lines": [
       [
        "Memur Park",
-       "Bir keresinde kendine park cezası yazdı."
+       "Bir keresinde kendine park cezası yazmış."
       ],
       [
        "Oscar",
@@ -2026,7 +1905,7 @@
       ],
       [
        "Memur Park",
-       "Kendine. Ödedi de."
+       "Kendine. Üstelik ödedi de."
       ]
      ]
     }
@@ -2064,31 +1943,31 @@
   "lines": [
    [
     "Harold",
-    "Bu bir hakaret. Avukatımı istiyorum."
+    "Bu bir hakaret! Avukatımı istiyorum."
    ],
    [
     "Oscar",
-    "Vitriniz bir sahne illüzyonu. Sahte taban, Vesper & Co. yapımı. Faturası arabanızda."
+    "Vitriniz bir sahne illüzyonu, Harold. Sahte taban, Vesper & Co. yapımı. Faturası arabanızda."
    ],
    [
     "Oscar",
-    "Gus'a ilaçlı kahve verdiniz. 21:39'da ofisinize girdiniz, 21:40'ta ışıkları kapattınız."
+    "Gus'a ilaçlı kahve verdiniz. 21:39'da ofisinize girdiniz, 21:40'ta da ışıkları kapattınız."
    ],
    [
     "Oscar",
-    "Yakutun sigortasını iki katına çıkardınız ve Cuma günü bir alıcınız var."
+    "Yakutun sigortasını iki katına çıkardınız. Üstüne Cuma günü bir de alıcınız var."
    ],
    [
     "Oscar",
-    "Ve oluğu kurarken kol düğmenizi sandığın dibine düşürdünüz."
+    "Bir de oluğu kurarken kol düğmenizi sandığın dibine düşürdünüz."
    ],
    [
     "Harold",
-    "Sandığı açamazsınız. Anahtarı kimseye vermem."
+    "O sandığı açamazsınız. Anahtarını kimseye vermem."
    ],
    [
     "Oscar",
-    "Bu anahtarı mı?"
+    "Bu anahtarı mı diyorsunuz?"
    ],
    [
     "",
@@ -2096,7 +1975,7 @@
    ],
    [
     "Harold",
-    "Ne zaman... nasıl..."
+    "Ne zaman... Nasıl..."
    ],
    [
     "Oscar",
@@ -2115,13 +1994,13 @@
     ],
     [
      "Maya",
-     "Penn, çocuk sarhoş, hırsız değil. Tekrar düşün."
+     "Penn, çocuk sarhoş, hırsız değil. Bir daha düşün."
     ]
    ],
    "vivian": [
     [
      "Vivian",
-     "Şantajcıyım belki. Hırsız değilim."
+     "Şantajcı olabilirim. Hırsız değilim."
     ],
     [
      "Maya",
@@ -2131,11 +2010,11 @@
    "gus": [
     [
      "Gus",
-     "Ben uyuyordum! Uyuyan adam nasıl çalar?"
+     "Ben uyuyordum! Uyuyan adam nasıl hırsızlık yapsın?"
     ],
     [
      "Maya",
-     "Adam uyutulmuştu, Penn. Kim uyuttu?"
+     "Adamı uyutmuşlar, Penn. Asıl soru, kim uyuttu?"
     ]
    ]
   },
@@ -2172,7 +2051,7 @@
    "harold": [
     [
      "Harold",
-     "Ben bu müzenin müdürüyüm! ...Pekala. Ama bu aileye yapılan bir hakarettir."
+     "Ben bu müzenin müdürüyüm! ...Pekala. Ama bu aileme yapılmış bir hakarettir."
     ]
    ],
    "toby": [
@@ -2184,13 +2063,13 @@
    "vivian": [
     [
      "Vivian",
-     "Beni kelepçelemeyi deneyin de görelim. ...Şaka. Gelirim. Ama arabada sigara içeceğim."
+     "Kelepçe takmayı bir deneyin de görelim. ...Şaka. Gelirim. Ama arabada sigara içerim."
     ]
    ],
    "gus": [
     [
      "Gus",
-     "Vardiyam bitmedi ki! ...Kim nöbet tutacak peki? Tamam, geliyorum."
+     "Vardiyam bitmedi ki! ...Peki nöbeti kim tutacak? Tamam, geliyorum."
     ]
    ]
   },
@@ -2319,15 +2198,15 @@
   "ofis": [
    [
     "Maya",
-    "Oscar, elimizde yeni bir dava var. Finch-Moore Müzesi'nde soygun olmuş."
+    "Penn, uyan. Yeni bir dava var. Finch-Moore Müzesi'nden bir yakut çalınmış."
    ],
    [
     "Maya",
-    "Polis bizim ilgilenmemizi istedi, davayı bize yönlendirdiler. Seninle müzeye gidip bakmamız gerekiyor."
+    "Polis işin içinden çıkamamış, dosyayı bize attılar. Hemen müzeye gidiyoruz."
    ],
    [
     "Oscar",
-    "Tamam. Şu kahvemi bitireyim, hemen yola çıkarız."
+    "Kahvemi bitireyim, geliyorum."
    ]
   ],
   "ofis_after": [
@@ -2353,7 +2232,7 @@
    ],
    [
     "Oscar",
-    "Bir aile, bir müze ve kayıp bir yakut. Daha şimdiden tanıdık geliyor."
+    "Bir aile, bir müze, kayıp bir yakut. Kulağa tanıdık geliyor."
    ],
    [
     "Maya",
@@ -2361,15 +2240,15 @@
    ],
    [
     "Oscar",
-    "Önyargı değil, Cole. Tecrübe. Sahnede en çok alkışlayan, çoğu zaman en çok saklayandır."
+    "Önyargı değil, Cole, tecrübe. Sahnede en çok alkışlayan, genelde en çok şey saklayandır."
    ],
    [
     "Maya",
-    "Ve sen bunu nereden biliyorsun?"
+    "Sen bunu nereden biliyorsun?"
    ],
    [
     "Oscar",
-    "Eskiden alkışları ben toplardım."
+    "Eskiden o alkışları ben toplardım."
    ]
   ]
  },
@@ -2400,7 +2279,7 @@
    "lines": [
     [
      "Vivian",
-     "Hâlâ o küpeyle mi uğraşıyorsunuz? Galada yüz kişi vardı, ajanlar."
+     "Hâlâ o küpeyle mi uğraşıyorsunuz? Galada yüz kişi vardı."
     ]
    ],
    "choices": [
@@ -2409,7 +2288,7 @@
      "lines": [
       [
        "Vivian",
-       "Belki benimdir. Vitrinin yanında durmak hırsızlık değil."
+       "Belki benimdir. Vitrinin yanında durmak suç değil."
       ],
       [
        "Maya",
@@ -2440,7 +2319,7 @@
    "lines": [
     [
      "Gus",
-     "Hey! O fincanı neden aldınız? Kahvemi bile içemeyecek miyim?"
+     "Hey! O fincanı niye aldınız? Kahvemi de mi içemeyeceğim?"
     ]
    ],
    "choices": [
@@ -2449,7 +2328,7 @@
      "lines": [
       [
        "Gus",
-       "...Müdür getirdi. 'Uzun gece olacak' dedi."
+       "...Müdür getirdi. 'Uzun bir gece olacak' dedi."
       ],
       [
        "Oscar",
@@ -2462,7 +2341,7 @@
      "lines": [
       [
        "Gus",
-       "Laboratuvar mı? Kahve için mi? Bu ülke ne hale geldi."
+       "Laboratuvar mı? Kahve için mi? Ne günlere kaldık."
       ]
      ]
     }
@@ -2476,7 +2355,7 @@
    "lines": [
     [
      "Harold",
-     "Çöpümü mü karıştırıyorsunuz? Bu düpedüz saygısızlık."
+     "Çöpümü mü karıştırıyorsunuz? Bu düpedüz saygısızlık!"
     ]
    ],
    "choices": [
@@ -2485,7 +2364,7 @@
      "lines": [
       [
        "Harold",
-       "Taşın değeri arttı. Piyasa, ajan. Anlamazsınız."
+       "Taşın değeri arttı. Piyasa bu. Siz anlamazsınız."
       ],
       [
        "Maya",
@@ -2530,7 +2409,7 @@
      ]
     },
     {
-     "text": "Çiğneme hızına bakılırsa gerginsin.",
+     "text": "Çiğneme hızına bakılırsa epey gerginsin.",
      "lines": [
       [
        "Toby",
