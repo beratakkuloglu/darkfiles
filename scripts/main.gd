@@ -1935,14 +1935,19 @@ func _spawn_object(o: Dictionary, has_bg: bool) -> void:
 		# Kapı yazısı: büyük punto yarım ölçekte + kalın siyah kontur, silik görünmesin.
 		var lb := Label.new()
 		lb.text = label_text
-		lb.size = Vector2(w * 2.0 + 160, 20)
+		var wf := _world_font()
+		# Kutu yazının kendi genişliğinde: yazı kapının tam üstünde ortalanır,
+		# sadece gerçekten ekran dışına taşacaksa kenara kayar.
+		var text_w: float = label_text.length() * 9.0
+		if wf:
+			text_w = wf.get_string_size(label_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 16).x
+		lb.size = Vector2(text_w + 12.0, 20)
 		lb.scale = Vector2(0.4, 0.4)
 		var lbw := lb.size.x * 0.4
-		var left_w := clampf(float(o["x"]) - lbw / 2.0, 2.0, room_w - lbw - 2.0)   # ekran kenarında kesilmesin
+		var left_w := clampf(float(o["x"]) - lbw / 2.0, 1.0, room_w - lbw - 1.0)
 		lb.position = Vector2(left_w - pos.x, -12)
 		lb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		lb.add_theme_font_size_override("font_size", 16)
-		var wf := _world_font()
 		if wf:
 			lb.add_theme_font_override("font", wf)
 		lb.add_theme_color_override("font_color", C_YELLOW)
