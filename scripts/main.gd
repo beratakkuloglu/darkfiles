@@ -1198,6 +1198,7 @@ func _room_setup(id: String, spawn_x: float) -> void:
 		return
 	match id:
 		"oscar_ofis":
+			_spawn_office_chair()
 			if not flags.has("ofis_done"):
 				var sit := _art("oscar_sit")
 				player_pose = sit if sit else _art("oscar")
@@ -1306,6 +1307,8 @@ func _office_talk() -> void:
 			player_pose = null
 			player_sprite.position.y = -player_sprite.size.y
 			flags["ofis_done"] = true
+			if office_chair:
+				office_chair.visible = true
 			_set_hud_visible(true)
 			var door := float(data["rooms"]["oscar_ofis"].get("door_x", room_w - 30.0))
 			if maya:
@@ -4236,3 +4239,21 @@ func _input(event: InputEvent) -> void:
 		_save_settings()
 	rebinding = ""
 	_refresh_controls()
+
+
+var office_chair: TextureRect
+
+## Oscar kalkınca sandalye yerinde kalır (art/oscar_chair.png, oscar_sit ile aynı tuval ve konum).
+func _spawn_office_chair() -> void:
+	office_chair = null
+	var t := _art("oscar_chair")
+	if t == null:
+		return
+	var rr: Dictionary = data["rooms"]["oscar_ofis"]
+	office_chair = TextureRect.new()
+	office_chair.texture = t
+	office_chair.size = t.get_size()
+	office_chair.position = Vector2(float(rr.get("sit_x", 140.0)) - t.get_width() / 2.0, floor_y - t.get_height() + float(rr.get("sit_dy", 0.0)))
+	office_chair.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	office_chair.visible = flags.has("ofis_done")
+	room_layer.add_child(office_chair)
