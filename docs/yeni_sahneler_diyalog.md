@@ -1,72 +1,72 @@
 # Yeni sahneler: görseller ve diyaloglar
 
-Görseller `art/` altında (PR'da). Bu dosya, oyuna nasıl bağlanacaklarını ve diyalogları anlatır.
+Görseller `art/` altında. Aşağıda her birinin oyunda nereye bağlanacağı ve diyalogları var.
 
 ## 1. Açılış: iki ayrı tiyatro görseli
-- "Beş yıl önce bu şehir adımı haykırıyordu. Büyük Valentino. Evet, ben." → `cutscene/sahne_parlak` (dolu salon, spot ışıkları, sahnede Valentino)
-- "Sonra son numaramda bir şeyler ters gitti. O geceden sonra kimse bilet almadı." → `cutscene/sahne` (mevcut, terk edilmiş sahne)
-- İkinci görsele geçerken aynı resim tekrar belirmesin; parlak görselden harabeye yavaş bir çapraz geçiş (crossfade) yeterli.
+- "Beş yıl önce bu şehir adımı haykırıyordu. Büyük Valentino. Evet, ben." satırında `cutscene/sahne_parlak` (dolu salon, spot ışıkları, sahnede Valentino).
+- "Sonra son numaramda bir şeyler ters gitti. O geceden sonra kimse bilet almadı." satırında `cutscene/sahne` (mevcut, terk edilmiş sahne).
+- İkinci satırda resim baştan belirmesin. Parlak görselden harabeye yavaş bir çapraz geçiş (crossfade) yeterli.
 
 ## 2. Oscar'ın ofisi: pencereden şehir
-`oscar_ofis` odasına pencerenin üstüne bir `look` nesnesi. Tıklayınca tam ekran `cutscene/pencere` gösterilir (yağmur efekti açık kalabilir), sonra şu satırlar:
+`oscar_ofis` odasında pencerenin üstüne bir `look` nesnesi konur. Tıklayınca tam ekran `cutscene/pencere` açılır (yağmur efekti açık kalabilir), ardından:
 
-- Oscar: "Ravenport. Gece hiç uyumaz, ama gözünü de pek açmaz."
+- Oscar: "Ravenport. Buradan bakınca fena görünmüyor. Aşağı inince anlarsın."
 - Oscar: "Yağmur yine başlamış. Ya da hiç durmadı, emin değilim."
-- Oscar: "Şu kırmızı neonun yarısı yanmıyor. Bu şehirde her şey yarım yanar zaten."
-- Oscar: "Bir zamanlar bu şehrin her ışığı benim için yanardı. Şimdi kahvem bile soğuk."
+- Oscar: "Karşıdaki neonun yarısı üç yıldır yanmıyor. Kimse de tamir ettirmiyor."
+- Oscar: "Eskiden bu sokaklarda afişim asılıydı. Şimdi adımı hatırlayan tek kişi ev sahibim."
 
-İkinci kez bakılırsa (keep:true ile kısa satır):
+İkinci bakışta (keep:true, kısa satır):
 - Oscar: "Hâlâ yağıyor. Sürpriz."
 
 ## 3. Müze önü: kapıda bekleyen iki polis
-Yeni karakterler (`art/polis1*.png`, `art/polis2*.png`, duruş + idle + yürüme):
-- **Memur Riley** (`polis1`): siyah yağmurluklu, bıyıklı, yorgun bir devriye polisi. Kapının solunda durur (x≈245).
-- **Memur Alvarez** (`polis2`): hardal yağmurluklu, el feneri tutan kadın polis. Kapının sağında durur (x≈315), kordonu tutuyor.
+Yeni karakterler (`art/polis1*.png`, `art/polis2*.png`; duruş, idle ve yürüme):
+- Memur Riley (`polis1`): siyah yağmurluklu, yorgun bir devriye polisi. Kapının solunda durur (x≈245).
+- Memur Alvarez (`polis2`): hardal yağmurluklu kadın polis. Kapının sağında, kordonun başında durur (x≈315).
 
 Giriş satırları (`enter_lines`, araba durduktan sonra):
-- Maya: "Kapıda iki üniforma var. İçerisi daha kalabalık."
+- Maya: "Kapıda iki memur var. İçerisi daha da kalabalık."
 - Oscar: "Seyirci hazır demek. Hadi sahneye."
 
 ### Riley diyalogu (`riley`)
 - Riley: "Siz FCD'densiniz, değil mi? Şef söyledi. Şu... sihirbaz."
-- Oscar: "Eski sihirbaz. Artık sadece borçlarımı yok ediyorum."
-- Riley: "Dört saattir bu yağmurun altındayım. İçeride kimse bir şey bulamadı. Siz bulursanız eve gidebilirim."
+- Oscar: "Eski sihirbaz. Artık tek numaram borçlarımı büyütmek."
+- Riley: "Üç saattir bu yağmurun altındayım. İçeridekiler bir şey bulamadı. Siz bulursanız belki eve giderim."
 - Seçenek "Ne gördün?":
-  - Riley: "İlk gelen bendim. Vitrin kapalıydı, cam sapasağlamdı. Taş yoktu. O kadar."
-  - Riley: "Müdür bey çok sakindi ama. Benim evimden bir yakut çalınsa ben o kadar sakin olmazdım."
+  - Riley: "İlk gelen bendim. Vitrin kilitliydi, camda tek çizik yoktu. Taş da yoktu."
+  - Riley: "Müdür bey çok sakindi ama. Benim evimden yakut çalınsa duvarlara tırmanırdım."
 - Seçenek "Kimse çıktı mı?":
-  - Riley: "Biz geldikten sonra kimse binadan çıkmadı. Sadece genç olan, yeğen, arka kapıdan sigara içmeye çıkmak istedi. İzin vermedim."
+  - Riley: "Biz geldikten sonra kimse çıkmadı. Yeğeni, şu genç olan, arka kapıdan sigaraya çıkmak istedi. Bırakmadım."
 - Tekrar konuşunca:
   - Riley: "Hâlâ buradayım. Hâlâ ıslağım."
 
 ### Alvarez diyalogu (`alvarez`)
-- Alvarez: "Kordonun arkasında kalın, lütfen. ...Ah, Maya. Sen misin?"
-- Maya: "Selam, Alvarez. Bu da Penn. Benimle."
-- Alvarez: "Penn mi? Gazetelerdeki Valentino?" (Oscar'a bakar) "Annem sizi seyretmeye gelmişti. Hâlâ anlatır."
-- Oscar: "Umarım iyi kısmı anlatıyordur."
-- Alvarez: "...Kısmen."
+- Alvarez: "Kordonun arkasında kalın, lütfen. ...Aa, Maya, sen misin?"
+- Maya: "Selam, Alvarez. Bu da Penn, benimle."
+- Alvarez: "Penn mi? Gazetedeki Valentino?" (Oscar'a bakar) "Annem sizi seyretmeye gelmişti. Hâlâ anlatır."
+- Oscar: "Umarım güzel kısmını anlatıyordur."
+- Alvarez: "...Bazen."
 - Seçenek "Alarm?":
-  - Alvarez: "Alarm hiç çalmadı. Ama güvenlik kamerasında, salonun ışıkları bir ara dört saniyeliğine sönüyor. Gerisini içeridekiler anlatır."
+  - Alvarez: "Alarm hiç çalmamış. Ama kamera kayıtlarında salonun ışıkları dört saniye sönüyor. Gerisini içeridekilere sorun."
 - Seçenek "Müdür?":
-  - Alvarez: "Harold Bey bizi kapıda karşıladı, elinde telefon. Sigortacıyla konuşuyordu. Taş çalınmış, adamın ilk işi poliçe. Bilmem dikkatinizi çeker mi."
+  - Alvarez: "Harold Bey bizi kapıda karşıladı, kulağında telefon. Sigortacıyla konuşuyordu. Yakutu çalınmış, aklı poliçede. Ben olsam ağlardım."
 - Tekrar konuşunca:
-  - Alvarez: "Bir şey bulursanız bana da söyleyin. Rapor yazmaktan nefret ediyorum."
+  - Alvarez: "Bir şey bulursanız bana da söyleyin. Raporu ben yazacağım çünkü."
 
-(Not: Alvarez'in sigorta ve "dört saniye karanlık" sözleri var olan ipuçlarıyla çelişmez, sadece pekiştirir; yeni bir zorunlu ipucu değildir.)
+Alvarez'in sigorta ve dört saniyelik karanlık sözleri var olan ipuçlarını tekrarlar, yeni bir zorunlu ipucu eklemez.
 
 ## 4. Final: yakut yeniden vitrinde
-Suçlu doğru seçildikten ve `reveal_lines` bittikten sonra, kredi/sonuç ekranından önce kısa bir sahne:
+Suçlu doğru seçilip `reveal_lines` bittikten sonra, sonuç ekranından önce kısa bir sahne:
 
 1. Tam ekran `cutscene/yakut_vitrin` (karanlık salon, tek spot, yakut kadife yastığında).
 2. Satırlar:
    - "": "Ertesi sabah. Finch-Moore Müzesi, Mücevher Salonu."
-   - Felix: "Kırk bir yıl bu taşa baktım, Bay Penn. Hiç bu kadar güzel görünmemişti."
-   - Oscar: "Bir gece kayıp kalınca herkes daha güzel görünür. İnsanlar da öyle."
-   - Felix: "Siz olmasaydınız sahtesini buraya koyacaklardı. Ben de farkına varmadan ona bakıp duracaktım."
-   - Maya: "Edith, ödülü bu akşam hesabına yatıracakmış. 900 dolar, Penn."
-   - Oscar: "Bayan Kowalski bunu duyunca ağlar. Sevinçten değil, 'bu kadar mı' diye."
-   - Maya: "Hadi. Kahve benden."
+   - Felix: "Kızıl Göz'e kırk bir yıl baktım, Bay Penn. Hiç bu kadar güzel görünmemişti."
+   - Oscar: "Bir gece ortadan kaybolunca öyle oluyor. Ben beş yıldır deniyorum, bende işe yaramadı."
+   - Felix: "O cam kopyayı yıllar önce sergi için ben yapmıştım. Birinin onu satmaya kalkacağı aklımın ucundan geçmezdi."
+   - Maya: "FCD ödemeni yarın yatırıyor. 900 dolar, Penn."
+   - Oscar: "Bayan Kowalski'ye yeter. Bana da bir kahve parası kalır belki."
+   - Maya: "Kahve benden."
    - Oscar: "Sıcak mı?"
    - Maya: "Abartma."
-3. İstenirse oyuncu salonda serbest dolaşıp vitrine bakabilir; salondaki boş vitrin nesnesinin `lines`'ı finalden sonra şu olur:
-   - Oscar: "Yerinde. Parlıyor. Bir dahaki sefere daha iyi bir vitrin alın."
+3. Oyuncu sonra salonda dolaşıp vitrine bakabilir. Finalden sonra vitrin nesnesinin satırı:
+   - Oscar: "Yerinde, parlıyor. Vitrini de bu sefer düzgün bir camcıya yaptırsınlar."
