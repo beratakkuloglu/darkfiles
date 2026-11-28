@@ -222,32 +222,33 @@
     {
      "type": "door",
      "to": "hol",
-     "x": 28,
+     "x": 40,
      "spawn_x": 265,
-     "w": 24,
-     "h": 105
+     "w": 36,
+     "h": 63,
+     "y": 0
     },
     {
      "type": "clue",
      "id": "kilit",
-     "x": 147,
-     "y": 52,
+     "x": 229,
+     "y": 32,
      "w": 8,
      "h": 8
     },
     {
      "type": "clue",
      "id": "taban",
-     "x": 125,
-     "y": 50,
-     "w": 44,
+     "x": 229,
+     "y": 25,
+     "w": 28,
      "h": 3,
      "hidden": true
     },
     {
      "type": "clue",
      "id": "kupe",
-     "x": 172,
+     "x": 258,
      "y": 0,
      "w": 4,
      "h": 4
@@ -255,15 +256,15 @@
     {
      "type": "clue",
      "id": "sac",
-     "x": 112,
-     "y": 70,
+     "x": 222,
+     "y": 44,
      "w": 3,
-     "h": 7
+     "h": 6
     },
     {
      "type": "npc",
      "dialogue": "vivian",
-     "x": 228,
+     "x": 130,
      "hide_if_flag": [
       "otopark_acik",
       "seen_vivian"
@@ -272,10 +273,11 @@
     {
      "type": "door",
      "to": "guvenlik",
-     "x": 292,
-     "spawn_x": 60,
-     "w": 24,
-     "h": 90
+     "x": 308,
+     "spawn_x": 70,
+     "w": 32,
+     "h": 59,
+     "y": 0
     }
    ],
    "floor_y": 172,
@@ -312,52 +314,54 @@
     {
      "type": "door",
      "to": "salon",
-     "x": 33,
-     "spawn_x": 270,
-     "w": 40,
-     "h": 137
+     "x": 39,
+     "spawn_x": 275,
+     "w": 32,
+     "h": 61,
+     "y": 0
     },
     {
      "type": "clue",
      "id": "kamera",
-     "x": 173,
-     "y": 114,
-     "w": 30,
-     "h": 24
+     "x": 230,
+     "y": 42,
+     "w": 60,
+     "h": 36
     },
     {
      "type": "clue",
      "id": "kart",
-     "x": 217,
-     "y": 54,
-     "w": 8,
-     "h": 4
+     "x": 246,
+     "y": 23,
+     "w": 6,
+     "h": 3
     },
     {
      "type": "clue",
      "id": "fincan",
-     "x": 203,
-     "y": 55,
-     "w": 7,
-     "h": 8
+     "x": 212,
+     "y": 23,
+     "w": 6,
+     "h": 6
     },
     {
      "type": "npc",
      "dialogue": "gus",
-     "x": 265
+     "x": 160
     },
     {
      "type": "door",
      "to": "ofis",
-     "x": 315,
-     "spawn_x": 35,
+     "x": 304,
+     "spawn_x": 40,
      "requires_flag": "ofis_acik",
      "locked_text": "Müdürün ofisi kilitli. Anahtar Gus'ta. Önce onu biraz konuşturmam lazım.",
-     "w": 36,
-     "h": 137
+     "w": 32,
+     "h": 61,
+     "y": 0
     }
    ],
-   "floor_y": 180,
+   "floor_y": 172,
    "place": "Finch-Moore Museum"
   },
   "ofis": {
@@ -405,75 +409,78 @@
     {
      "type": "door",
      "to": "guvenlik",
-     "x": 12,
-     "spawn_x": 290,
-     "w": 20,
-     "h": 60
+     "x": 10,
+     "spawn_x": 30,
+     "w": 16,
+     "h": 62,
+     "y": 0
     },
     {
      "type": "clue",
      "id": "krem",
-     "x": 58,
-     "y": 30,
+     "x": 100,
+     "y": 36,
      "w": 6,
-     "h": 8
+     "h": 6
     },
     {
      "type": "npc",
      "dialogue": "harold",
-     "x": 205
+     "x": 168
     },
     {
      "type": "clue",
      "id": "kol1",
-     "x": 110,
-     "y": 37,
+     "x": 190,
+     "y": 0,
      "w": 4,
      "h": 3
     },
     {
      "type": "clue",
      "id": "anahtar",
-     "x": 152,
-     "y": 40,
-     "w": 8,
-     "h": 4
+     "x": 252,
+     "y": 23,
+     "w": 6,
+     "h": 3
     },
     {
      "type": "clue",
      "id": "sigorta",
-     "x": 125,
-     "y": 0,
-     "w": 14,
+     "x": 216,
+     "y": 23,
+     "w": 12,
      "h": 4
     },
     {
      "type": "clue",
      "id": "plan",
-     "x": 140,
-     "y": 78,
-     "w": 58,
-     "h": 44
+     "x": 151,
+     "y": 40,
+     "w": 52,
+     "h": 33
     },
     {
      "type": "door",
      "to": "depo",
-     "x": 256,
-     "spawn_x": 62,
+     "x": 284,
+     "spawn_x": 60,
      "requires_flag": "depo_acik",
      "locked_text": "Bodrum kapısı. Neden ineyim ki? Henüz bir sebebim yok.",
-     "w": 40,
-     "h": 105
+     "w": 32,
+     "h": 62,
+     "y": 0
     },
     {
      "type": "door",
      "to": "otopark",
-     "x": 320,
+     "x": 326,
      "spawn_x": 86,
      "requires_flag": "otopark_acik",
      "locked_text": "Otopark. Harold'ın arabası orada ama anahtarı bende değil.",
-     "w": 30,
-     "h": 105
+     "w": 16,
+     "h": 64,
+     "y": 0
     }
    ],
    "floor_y": 172,
@@ -510,15 +517,16 @@
     {
      "type": "door",
      "to": "ofis",
-     "x": 45,
-     "spawn_x": 250,
-     "w": 34,
-     "h": 100
+     "x": 39,
+     "spawn_x": 284,
+     "w": 32,
+     "h": 63,
+     "y": 0
     },
     {
      "type": "clue",
      "id": "bileklik",
-     "x": 100,
+     "x": 78,
      "y": 0,
      "w": 8,
      "h": 3
@@ -526,7 +534,7 @@
     {
      "type": "npc",
      "dialogue": "toby2",
-     "x": 118,
+     "x": 150,
      "requires_flag": [
       "depo_acik",
       "seen_toby"
@@ -536,15 +544,15 @@
     {
      "type": "clue",
      "id": "oluk",
-     "x": 178,
-     "y": 6,
-     "w": 58,
-     "h": 37
+     "x": 328,
+     "y": 0,
+     "w": 30,
+     "h": 50
     },
     {
      "type": "clue",
      "id": "kol2",
-     "x": 212,
+     "x": 232,
      "y": 0,
      "w": 4,
      "h": 3
@@ -552,14 +560,14 @@
     {
      "type": "clue",
      "id": "afis",
-     "x": 301,
-     "y": 40,
-     "w": 40,
-     "h": 66,
+     "x": 105,
+     "y": 34,
+     "w": 30,
+     "h": 39,
      "hidden": true
     }
    ],
-   "floor_y": 156,
+   "floor_y": 172,
    "place": "Finch-Moore Museum"
   },
   "otopark": {
@@ -668,7 +676,7 @@
      "type": "door",
      "to": "koridor",
      "x": 18,
-     "spawn_x": 595,
+     "spawn_x": 625,
      "w": 30,
      "h": 100,
      "label": "Elevator"
@@ -701,26 +709,27 @@
    "name": "Oscar's Room",
    "place": "FCD · Ravenport",
    "width": 344,
-   "floor_y": 188,
+   "floor_y": 172,
    "bg": "#241a12",
-   "door_x": 330,
+   "door_x": 305,
    "objects": [
     {
      "type": "door",
      "to": "koridor",
-     "x": 330,
-     "spawn_x": 140,
-     "w": 24,
-     "h": 140,
-     "label": "Hallway"
+     "x": 305,
+     "spawn_x": 60,
+     "w": 32,
+     "h": 63,
+     "label": "Hallway",
+     "y": 0
     },
     {
      "type": "look",
      "name": "Eski afiş",
-     "x": 30,
-     "y": 65,
-     "w": 40,
-     "h": 90,
+     "x": 110,
+     "y": 34,
+     "w": 29,
+     "h": 42,
      "lines": [
       [
        "Oscar",
@@ -735,10 +744,10 @@
     {
      "type": "look",
      "name": "Gazete kupürü",
-     "x": 66,
-     "y": 107,
-     "w": 16,
-     "h": 32,
+     "x": 128,
+     "y": 0,
+     "w": 14,
+     "h": 6,
      "lines": [
       [
        "",
@@ -757,10 +766,10 @@
     {
      "type": "look",
      "name": "Mektup",
-     "x": 66,
-     "y": 70,
-     "w": 16,
-     "h": 30,
+     "x": 40,
+     "y": 36,
+     "w": 14,
+     "h": 6,
      "lines": [
       [
        "",
@@ -775,10 +784,10 @@
     {
      "type": "look",
      "name": "Kahve fincanı",
-     "x": 154,
-     "y": 50,
-     "w": 10,
-     "h": 8,
+     "x": 206,
+     "y": 22,
+     "w": 6,
+     "h": 6,
      "lines": [
       [
        "Oscar",
@@ -789,10 +798,10 @@
     {
      "type": "look",
      "name": "Masadaki kağıtlar",
-     "x": 205,
-     "y": 50,
-     "w": 20,
-     "h": 8,
+     "x": 226,
+     "y": 22,
+     "w": 14,
+     "h": 12,
      "lines": [
       [
        "Oscar",
@@ -807,10 +816,10 @@
     {
      "type": "look",
      "name": "Sihirbaz şapkası",
-     "x": 285,
-     "y": 60,
-     "w": 22,
-     "h": 22,
+     "x": 272,
+     "y": 47,
+     "w": 12,
+     "h": 10,
      "lines": [
       [
        "Oscar",
@@ -819,46 +828,48 @@
      ]
     }
    ],
-   "sit_x": 112,
-   "sit_dy": -10
+   "sit_x": 184,
+   "sit_dy": 0
   },
   "koridor": {
    "name": "Hallway",
    "place": "FCD · Ravenport",
-   "width": 635,
-   "floor_y": 162,
+   "width": 688,
+   "floor_y": 170,
    "bg": "#2a2018",
-   "elevator_x": 615,
+   "elevator_x": 649,
    "objects": [
     {
      "type": "door",
      "to": "oscar_ofis",
-     "x": 118,
-     "spawn_x": 316,
-     "w": 36,
-     "h": 75,
-     "label": "Oscar's Room"
+     "x": 40,
+     "spawn_x": 285,
+     "w": 34,
+     "h": 66,
+     "label": "Oscar's Room",
+     "y": 0
     },
     {
      "type": "look",
      "name": "Su sebili",
-     "x": 205,
-     "w": 16,
-     "h": 40,
+     "x": 270,
+     "w": 12,
+     "h": 34,
      "lines": [
       [
        "Oscar",
        "Su bitmiş. Kimse yenisini takmıyor. FCD'nin en eski çözülmemiş vakası."
       ]
-     ]
+     ],
+     "y": 0
     },
     {
      "type": "look",
      "name": "İlan panosu",
-     "x": 368,
-     "y": 62,
-     "w": 30,
-     "h": 25,
+     "x": 436,
+     "y": 28,
+     "w": 54,
+     "h": 34,
      "lines": [
       [
        "",
@@ -869,11 +880,12 @@
     {
      "type": "door",
      "to": "fcd",
-     "x": 615,
+     "x": 649,
      "spawn_x": 40,
-     "w": 30,
-     "h": 90,
-     "label": "Elevator"
+     "w": 40,
+     "h": 65,
+     "label": "Elevator",
+     "y": 0
     }
    ]
   },
