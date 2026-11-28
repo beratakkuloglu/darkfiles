@@ -210,7 +210,8 @@
       "otopark_acik",
       "seen_vivian"
      ],
-     "idle": "vivian_smoke"
+     "idle": "vivian_smoke",
+     "idle_pause": 5.5
     },
     {
      "type": "door",
@@ -271,7 +272,8 @@
      "type": "npc",
      "dialogue": "gus",
      "x": 255,
-     "idle": "gus_nervous"
+     "idle": "gus_nervous",
+     "idle_pause": 2.5
     },
     {
      "type": "door",
@@ -307,6 +309,28 @@
      "y": 0
     },
     {
+     "type": "look",
+     "name": "Çöp kovası",
+     "art": "ofis_cop",
+     "x": 186,
+     "y": 0,
+     "w": 12,
+     "h": 14,
+     "lines": [
+      [
+       "Oscar",
+       "Harold çöpünü bile pahalı kağıtla dolduruyor. Buruşuk bir sayfa dikkatimi çekiyor."
+      ]
+     ],
+     "lines_after": [
+      [
+       "Oscar",
+       "Gerisi eski davetiyeler ve kalem talaşı."
+      ]
+     ],
+     "keep": true
+    },
+    {
      "type": "clue",
      "id": "krem",
      "x": 140,
@@ -338,10 +362,10 @@
     {
      "type": "clue",
      "id": "sigorta",
-     "x": 224,
-     "y": 0,
-     "w": 10,
-     "h": 8
+     "x": 186,
+     "y": 12,
+     "w": 8,
+     "h": 5
     },
     {
      "type": "clue",
@@ -468,15 +492,15 @@
      "w": 70,
      "h": 30,
      "set_flag": "araba_acik",
-     "sfx": "car_door",
+     "sfx": "car_remote",
      "lines": [
       [
        "",
-       "Oscar anahtarın düğmesine basar. Kilitler 'klik' diye açılır."
+       "Oscar kumandaya basar. Bip bip. Kilitler açılır, farlar bir kez yanıp söner."
       ],
       [
        "Oscar",
-       "P3. Harold'ın arabası. Bakalım torpidoda neler saklıyor."
+       "Harold'ın arabası. Bakalım torpidoda neler saklıyor."
       ]
      ],
      "lines_after": [
@@ -486,7 +510,8 @@
       ]
      ],
      "art": "araba_harold",
-     "keep": true
+     "keep": true,
+     "enter": "araba_ic"
     },
     {
      "type": "npc",
@@ -497,7 +522,8 @@
       "seen_vivian"
      ],
      "art": "vivian",
-     "idle": "vivian_smoke"
+     "idle": "vivian_smoke",
+     "idle_pause": 5.5
     },
     {
      "type": "clue",
@@ -506,7 +532,8 @@
      "y": 22,
      "w": 10,
      "h": 5,
-     "requires_flag": "araba_acik"
+     "requires_flag": "araba_acik",
+     "hide_if_flag": "has_car_art"
     },
     {
      "type": "clue",
@@ -515,7 +542,8 @@
      "y": 20,
      "w": 8,
      "h": 5,
-     "requires_flag": "araba_acik"
+     "requires_flag": "araba_acik",
+     "hide_if_flag": "has_car_art"
     }
    ],
    "rain": true,
@@ -692,6 +720,24 @@
        "Boş. Baktım. İki kere."
       ]
      ]
+    },
+    {
+     "type": "look",
+     "name": "Borç defteri",
+     "x": 80,
+     "y": 43,
+     "w": 14,
+     "h": 6,
+     "lines": [
+      [
+       "",
+       "Dosya dolabının üstünde kirli bir defter. Son satırda kırmızı kalemle: TOPLAM BORÇ ${debt}."
+      ],
+      [
+       "Oscar",
+       "Her vaka bu rakamı biraz küçültüyor. Her kira günü yeniden büyütüyor."
+      ]
+     ]
     }
    ],
    "sit_x": 140,
@@ -838,6 +884,104 @@
    "floor_y": 184,
    "bg": "#1a1410",
    "objects": []
+  },
+  "araba_ic": {
+   "name": "Harold's Car",
+   "place": "Finch-Moore Museum",
+   "width": 344,
+   "floor_y": 178,
+   "no_player": true,
+   "enter_lines": [
+    [
+     "Oscar",
+     "Deri koltuk, lavanta kokusu. Harold arabasını odası gibi kullanıyor."
+    ]
+   ],
+   "objects": [
+    {
+     "type": "clue",
+     "id": "fatura",
+     "x": 247,
+     "y": 30,
+     "w": 80,
+     "h": 30
+    },
+    {
+     "type": "look",
+     "name": "Direksiyon",
+     "x": 80,
+     "y": 0,
+     "w": 90,
+     "h": 90,
+     "lines": [
+      [
+       "Oscar",
+       "Direksiyonda tırnak izleri. Harold bu gece çok sıkmış."
+      ]
+     ]
+    },
+    {
+     "type": "door",
+     "to": "bagaj",
+     "x": 330,
+     "y": 40,
+     "w": 24,
+     "h": 60,
+     "spawn_x": 172,
+     "label": "Bagaj"
+    },
+    {
+     "type": "door",
+     "to": "otopark",
+     "x": 14,
+     "y": 40,
+     "w": 24,
+     "h": 60,
+     "spawn_x": 200,
+     "label": "Arabadan in"
+    }
+   ]
+  },
+  "bagaj": {
+   "name": "Trunk",
+   "place": "Finch-Moore Museum",
+   "width": 344,
+   "floor_y": 178,
+   "no_player": true,
+   "objects": [
+    {
+     "type": "clue",
+     "id": "kartvizit",
+     "x": 190,
+     "y": 40,
+     "w": 50,
+     "h": 18
+    },
+    {
+     "type": "look",
+     "name": "Yedek lastik",
+     "x": 115,
+     "y": 38,
+     "w": 30,
+     "h": 45,
+     "lines": [
+      [
+       "Oscar",
+       "Yedek lastik hiç kullanılmamış. Harold lastik değiştirecek adam değil."
+      ]
+     ]
+    },
+    {
+     "type": "door",
+     "to": "otopark",
+     "x": 14,
+     "y": 40,
+     "w": 24,
+     "h": 60,
+     "spawn_x": 200,
+     "label": "Geri dön"
+    }
+   ]
   }
  },
  "clues": {
@@ -2414,6 +2558,209 @@
       [
        "Toby",
        "Gergin değilim! ...Tamam, biraz."
+      ]
+     ]
+    }
+   ]
+  }
+ ],
+ "maya_chats": [
+  {
+   "id": "kahve",
+   "room": "koridor",
+   "lines": [
+    [
+     "Maya",
+     "Kahveyi gerçekten bitirdin mi, yoksa yine yarım mı bıraktın?"
+    ]
+   ],
+   "choices": [
+    {
+     "text": "Yarım. Soğuk kahve insanı dürüst yapar.",
+     "reply": [
+      [
+       "Maya",
+       "Senin dürüstlükle ne alakan var, Penn?"
+      ]
+     ]
+    },
+    {
+     "text": "Bitirdim. Üçüncüsüydü.",
+     "reply": [
+      [
+       "Maya",
+       "Kalbin bir gün sana fatura kesecek."
+      ],
+      [
+       "Oscar",
+       "Sırada bekleyen çok fatura var. Kalbim sıra alsın."
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "muze",
+   "room": "hol",
+   "lines": [
+    [
+     "Maya",
+     "Müzeler beni hep geriyor. Herkes fısıldıyor, sanki ölüler dinliyormuş gibi."
+    ]
+   ],
+   "choices": [
+    {
+     "text": "Ölüler iyi seyircidir. Alkışlamazlar ama yuhalamazlar da.",
+     "reply": [
+      [
+       "Maya",
+       "Sahneyi hâlâ özlüyorsun, değil mi?"
+      ],
+      [
+       "Oscar",
+       "Her gece. Sonra uyanıyorum ve kira geliyor aklıma."
+      ]
+     ]
+    },
+    {
+     "text": "Bence sadece akustik.",
+     "reply": [
+      [
+       "Maya",
+       "Romantizmi öldürmekte üstüne yok."
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kaza",
+   "room": "salon",
+   "requires_clue": "kilit",
+   "lines": [
+    [
+     "Maya",
+     "Penn... O kazanın sabotaj olduğuna gerçekten inanıyor musun?"
+    ]
+   ],
+   "choices": [
+    {
+     "text": "İnanmıyorum. Biliyorum.",
+     "reply": [
+      [
+       "Maya",
+       "O zaman kanıtla. Ben de yanında olurum."
+      ]
+     ]
+    },
+    {
+     "text": "Bazen kendimi bile inandıramıyorum.",
+     "reply": [
+      [
+       "Maya",
+       "En azından dürüstsün. Bu sende yeni bir şey."
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "baba",
+   "room": "guvenlik",
+   "lines": [
+    [
+     "Maya",
+     "Babam da gece bekçisiydi. Bütün gece monitöre bakardı, hiçbir şey olmasın diye dua ederek."
+    ]
+   ],
+   "choices": [
+    {
+     "text": "Polis olmanın sebebi bu mu?",
+     "reply": [
+      [
+       "Maya",
+       "Bir şey olduğunda gelen biri olayım istedim. Evet."
+      ]
+     ]
+    },
+    {
+     "text": "Hiçbir şey olmayan geceler en zorudur.",
+     "reply": [
+      [
+       "Maya",
+       "Sen nereden bileceksin? Senin hayatın hep gösteri oldu."
+      ],
+      [
+       "Oscar",
+       "O yüzden biliyorum."
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "lavanta",
+   "room": "ofis",
+   "lines": [
+    [
+     "Maya",
+     "Bu odada para kokuyor. Bir de lavanta."
+    ]
+   ],
+   "choices": [
+    {
+     "text": "Lavanta, suçluluğun kokusudur.",
+     "reply": [
+      [
+       "Maya",
+       "Bunu bir kitaba yaz. Kimse almaz ama."
+      ]
+     ]
+    },
+    {
+     "text": "Para her zaman lavanta kokar.",
+     "reply": [
+      [
+       "Maya",
+       "Senin cüzdanın neden kokmuyor peki?"
+      ],
+      [
+       "Oscar",
+       "Boş olduğu için."
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bodrum",
+   "room": "depo",
+   "lines": [
+    [
+     "Maya",
+     "Akademide beni bir bodrumda sınava sokmuşlardı. Işıklar söndü ve kimse gelmedi."
+    ]
+   ],
+   "choices": [
+    {
+     "text": "Korktun mu?",
+     "reply": [
+      [
+       "Maya",
+       "Hayır. Kızdım. Kızgınlık korkudan daha çok işe yarar."
+      ]
+     ]
+    },
+    {
+     "text": "Işıklar sönerse elimi tutabilirsin.",
+     "reply": [
+      [
+       "Maya",
+       "Önce cebimden aldığın rozeti geri ver."
+      ],
+      [
+       "Oscar",
+       "...Eski alışkanlık."
       ]
      ]
     }

@@ -12,6 +12,7 @@ const WORLD_H := 180.0           # VIEW_H / ZOOM
 const DEFAULT_FLOOR_Y := 168.0   # mekanda "floor_y" yoksa zemin çizgisi
 const SPEED := 70.0
 const INTERACT_RANGE := 22.0
+const BAR_H := 22.0              # alt/üst siyah bant yüksekliği (ekran birimi)
 const TYPE_SPEED := 55.0         # daktilo efekti, saniyede karakter
 const TEXT_SPEEDS := [0.55, 1.0, 1.8, 400.0]   # ayarlardaki yazı hızı çarpanı
 ## art/oscar.png sağa bakıyorsa true, sola bakıyorsa false yap.
@@ -77,7 +78,10 @@ var pending_action: Callable = Callable()
 var room_objects: Array = []
 var bg_nodes: Array = []
 var npc_anims: Array = []
+var door_labels: Array = []      # [{label, x, data}] sadece yakındaki/üzerine gelinen kapının yazısı görünür
 var anim_clock: float = 0.0
+var maya_chat_idle := 0.0      # odada sakin geçen süre; dolunca Maya kendiliğinden laf atar
+var maya_chat_cool := 20.0     # iki sohbet arası bekleme
 # Ajan Maya Cole: Oscar'ı arkasından takip eder; tıklayınca ipucu verir.
 var maya: TextureRect
 var maya_x: float = 0.0
@@ -194,6 +198,9 @@ var big_portraits: Dictionary = {}   # "left" / "right" -> {"root", "img", "glow
 func _ready() -> void:
 	var f := FileAccess.open("res://data/case1.json", FileAccess.READ)
 	data = JSON.parse_string(f.get_as_text())
+	# Araba içi çizimi varsa ipuçları torpido/bagajda; yoksa otoparktaki arabada.
+	if ResourceLoader.exists("res://art/rooms/araba_ic.png"):
+		flags["has_car_art"] = true
 	room_layer = Node2D.new()
 	add_child(room_layer)
 	fx_layer = Node2D.new()
@@ -336,8 +343,8 @@ func _ui_font() -> Font:
 		return null
 	var f: FontFile = load(p)
 	f.antialiasing = TextServer.FONT_ANTIALIASING_GRAY
-	f.hinting = TextServer.HINTING_LIGHT
-	f.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
+	f.hinting = TextServer.HINTING_NONE
+	f.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_ONE_QUARTER   # harfler eşit aralıklı, kaymasın
 	return f
 
 
@@ -370,7 +377,7 @@ func _title_font() -> Font:
 func _make_theme() -> Theme:
 	var th := Theme.new()
 	th.default_font = _ui_font()
-	th.default_font_size = 13
+	th.default_font_size = 11
 
 	# 2003 dosya odası havası: koyu deri panel, pirinç çerçeve, gölge.
 	var panel := StyleBoxFlat.new()
@@ -435,13 +442,21 @@ func _build_ui() -> void:
 	ui_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ui_root.theme = _make_theme()
 	layer.add_child(ui_root)
+	# Sinematik siyah bantlar (alt ve üst); HUD alttaki bandın içinde durur.
+	for y in [0.0, VIEW_H - BAR_H]:
+		var bar := ColorRect.new()
+		bar.color = Color(0, 0, 0, 1)
+		bar.position = Vector2(0, y)
+		bar.size = Vector2(VIEW_W, BAR_H)
+		bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		ui_root.add_child(bar)
 
 	msg_label = Label.new()
-	msg_label.position = Vector2(0, 44)
+	msg_label.position = Vector2(0, 30)
 	msg_label.size = Vector2(VIEW_W, 24)
 	msg_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	msg_label.add_theme_color_override("font_color", C_YELLOW)
-	msg_label.add_theme_font_size_override("font_size", 16)
+	msg_label.add_theme_font_size_override("font_size", 12)
 	ui_root.add_child(msg_label)
 
 	debt_label = Label.new()
@@ -451,28 +466,27 @@ func _build_ui() -> void:
 	ui_root.add_child(debt_label)
 	_update_debt()
 
-	notebook_button = Button.new()
-	notebook_button.text = "Defter [Tab]"
-	notebook_button.position = Vector2(8, 8)
+	notebook_button = _hud_button("ui/icon_notebook", "Defter", "Tab")
+	notebook_button.position = Vector2(VIEW_W - 128, VIEW_H - BAR_H + 2)
 	notebook_button.pressed.connect(func(): open_notebook(""))
 	ui_root.add_child(notebook_button)
 
 	eye_bar = ColorRect.new()
 	eye_bar.color = Color(1, 1, 1, 0.9)
 	eye_bar.size = Vector2(300, 3)
-	eye_bar.position = Vector2(VIEW_W / 2.0 - 150, 36)
+	eye_bar.position = Vector2(VIEW_W / 2.0 - 150, BAR_H + 3)
 	eye_bar.visible = false
 	eye_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ui_root.add_child(eye_bar)
-	eye_button = Button.new()
-	eye_button.position = Vector2(104, 8)
+	eye_button = _hud_button("ui/icon_eye", "Göz", "Q")
+	eye_button.position = Vector2(VIEW_W - 64, VIEW_H - BAR_H + 2)
 	eye_button.pressed.connect(toggle_eye)
 	ui_root.add_child(eye_button)
 	_update_eye_button()
 
 	accuse_hud = Button.new()
 	accuse_hud.text = "SUÇLA"
-	accuse_hud.position = Vector2(258, 8)
+	accuse_hud.position = Vector2(VIEW_W / 2.0 - 30, VIEW_H - BAR_H + 2)
 	accuse_hud.add_theme_color_override("font_color", C_YELLOW)
 	accuse_hud.visible = false
 	accuse_hud.pressed.connect(func():
@@ -536,7 +550,7 @@ func _build_ui() -> void:
 	dialog_text = Label.new()
 	dialog_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	dialog_text.custom_minimum_size = Vector2(500, 34)
-	dialog_text.add_theme_font_size_override("font_size", 13)
+	dialog_text.add_theme_font_size_override("font_size", 12)
 	vb.add_child(dialog_text)
 	dialog_choices = VBoxContainer.new()
 	vb.add_child(dialog_choices)
@@ -562,12 +576,12 @@ func _build_ui() -> void:
 	nhb.add_child(left)
 	var case_lb := Label.new()
 	case_lb.text = str(data.get("case_name", "")).to_upper()
-	case_lb.add_theme_font_size_override("font_size", 20)
-	case_lb.add_theme_color_override("font_color", C_YELLOW)
-	case_lb.add_theme_color_override("font_shadow_color", Color(0.91, 0.77, 0.28, 0.45))
+	case_lb.add_theme_font_size_override("font_size", 16)
+	case_lb.add_theme_color_override("font_color", C_PALE)   # mantar panoda sarı okunmuyordu
+	case_lb.add_theme_color_override("font_outline_color", Color("#1a120c"))
+	case_lb.add_theme_constant_override("outline_size", 5)
 	case_lb.add_theme_constant_override("shadow_offset_x", 0)
 	case_lb.add_theme_constant_override("shadow_offset_y", 0)
-	case_lb.add_theme_constant_override("shadow_outline_size", 6)
 	left.add_child(case_lb)
 	var glow := case_lb.create_tween().set_loops()
 	glow.tween_property(case_lb, "modulate", Color(1.25, 1.2, 1.0), 0.9).set_trans(Tween.TRANS_SINE)
@@ -668,9 +682,8 @@ func _build_ui() -> void:
 	accuse_list = VBoxContainer.new()
 	accuse_panel.add_child(accuse_list)
 
-	menu_button = Button.new()
-	menu_button.text = "Menü [Esc]"
-	menu_button.position = Vector2(VIEW_W - 92, 32)
+	menu_button = _hud_button("", "Menü", "Esc")
+	menu_button.position = Vector2(6, VIEW_H - BAR_H + 2)
 	menu_button.pressed.connect(open_pause)
 	ui_root.add_child(menu_button)
 
@@ -1017,7 +1030,7 @@ func _set_hud_visible(v: bool) -> void:
 	notebook_button.visible = v
 	menu_button.visible = v
 	eye_button.visible = v
-	debt_label.visible = v
+	debt_label.visible = false   # borç HUD'da değil, Oscar'ın odasında görünür
 	if not v:
 		accuse_hud.visible = false
 
@@ -1029,7 +1042,7 @@ func _build_sfx() -> void:
 			AudioServer.add_bus()
 			AudioServer.set_bus_name(AudioServer.bus_count - 1, bus_name)
 	_load_settings()
-	for n in ["blip", "pickup", "door", "click", "deduce", "wrong", "solve", "eye", "car_door", "engine", "lighter"]:
+	for n in ["blip", "pickup", "door", "click", "deduce", "wrong", "solve", "eye", "car_door", "engine", "lighter", "car_remote"]:
 		var p: String = "res://sfx/" + n + ".wav"
 		if ResourceLoader.exists(p):
 			var a := AudioStreamPlayer.new()
@@ -1118,6 +1131,12 @@ func _room_setup(id: String, spawn_x: float) -> void:
 		player_sprite.position.y = -player_sprite.size.y
 	in_car = false
 	maya_follow()
+	player.modulate.a = 1.0
+	if _no_player():
+		player.visible = false
+		if maya:
+			maya.visible = false
+		return
 	match id:
 		"oscar_ofis":
 			if not flags.has("ofis_done"):
@@ -1719,6 +1738,7 @@ func load_room(id: String, spawn_x: float) -> void:
 	npc_marks.clear()
 	bg_nodes.clear()
 	npc_anims.clear()
+	door_labels.clear()
 	var r: Dictionary = data["rooms"][id]
 	room_w = float(r["width"])
 	floor_y = float(r.get("floor_y", DEFAULT_FLOOR_Y))
@@ -1736,6 +1756,9 @@ func load_room(id: String, spawn_x: float) -> void:
 		_draw_fallback_room(r)
 	# Yürünebilir aralık: "walk": [min, max] (ör. holde soldaki kapıların üstüne basılmasın).
 	var wl: Array = r.get("walk", [8.0, room_w - 8.0])
+	if bool(r.get("no_player", false)):
+		wl = [room_w / 2.0, room_w / 2.0]
+		spawn_x = room_w / 2.0
 	walk_min = float(wl[0])
 	walk_max = float(wl[1])
 	for o in r["objects"]:
@@ -1758,6 +1781,7 @@ func load_room(id: String, spawn_x: float) -> void:
 	_refresh_npc_marks()
 	show_msg((str(r["place"]) + "  ·  " if r.has("place") else "") + str(r["name"]))
 	_complete_lab()
+	maya_chat_idle = 0.0
 	_room_setup(id, spawn_x)
 
 
@@ -1890,8 +1914,8 @@ func _spawn_object(o: Dictionary, has_bg: bool) -> void:
 		var lb := Label.new()
 		lb.text = label_text
 		lb.size = Vector2(w * 2.0 + 160, 20)
-		lb.scale = Vector2(0.5, 0.5)
-		var lbw := lb.size.x * 0.5
+		lb.scale = Vector2(0.4, 0.4)
+		var lbw := lb.size.x * 0.4
 		var left_w := clampf(float(o["x"]) - lbw / 2.0, 2.0, room_w - lbw - 2.0)   # ekran kenarında kesilmesin
 		lb.position = Vector2(left_w - pos.x, -12)
 		lb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1905,7 +1929,10 @@ func _spawn_object(o: Dictionary, has_bg: bool) -> void:
 		lb.add_theme_constant_override("shadow_offset_x", 0)
 		lb.add_theme_constant_override("shadow_offset_y", 0)
 		lb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		lb.visible = false
+		lb.modulate.a = 0.0
 		n.add_child(lb)
+		door_labels.append({"label": lb, "x": float(o["x"]), "data": o})
 	if t == "npc":
 		# İsim yok; konuşulacak bir şey varsa başın üstünde parlayan ünlem (art/ui/unlem.png).
 		var mk := TextureRect.new()
@@ -2033,6 +2060,8 @@ func _hover_text(o: Dictionary) -> String:
 # ================================================================ hareket ve girdi
 
 func _process(delta: float) -> void:
+	_update_door_labels(delta)
+	_update_maya_chat(delta)
 	_update_maya(delta)
 	_update_drive(delta)
 	_update_eye_timer(delta)
@@ -2105,6 +2134,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				_close_inspect()
 			elif notebook_panel.visible:
 				_close_notebook()
+			elif dialog_panel.visible:
+				_esc_dialog()
 			elif paused:
 				close_pause()
 			elif not in_menu:
@@ -2160,10 +2191,35 @@ func _unhandled_input(event: InputEvent) -> void:
 			walk_to(maya_x + (24.0 if player.position.x > maya_x else -24.0), _talk_to_maya)
 			return
 		var o := _object_at(pos)
+		if _no_player():
+			if not o.is_empty():
+				_interact(o)
+			return
 		if not o.is_empty():
 			walk_to(_approach_x(o), _interact.bind(o))
 		else:
 			walk_to(pos.x, Callable())
+
+
+## Kapı yazıları sürekli ekranda durmaz: sadece Oscar'ın yakınındaki ya da farenin üstündeki tek kapınınki belirir.
+func _update_door_labels(delta: float) -> void:
+	if door_labels.is_empty():
+		return
+	var hovered: Dictionary = _object_at(get_global_mouse_position()) if not busy else {}
+	var best: Dictionary = {}
+	var best_d := 46.0
+	for e in door_labels:
+		var d := absf(float(e["x"]) - player.position.x)
+		if (e["data"] as Dictionary) == hovered:
+			d = -1.0
+		if d < best_d and (e["label"] as Label).get_parent().visible:
+			best_d = d
+			best = e
+	for e in door_labels:
+		var lb: Label = e["label"]
+		var want := 1.0 if e == best and not busy else 0.0
+		lb.modulate.a = move_toward(lb.modulate.a, want, delta * 5.0)
+		lb.visible = lb.modulate.a > 0.01
 
 
 ## Oscar'ın yürüme / durma kareleri ve şüphelilerin nefes alma kareleri.
@@ -2176,6 +2232,12 @@ func _animate(delta: float) -> void:
 			frames = a["walk"]
 			ft = 0.1
 		var i := int((anim_clock + float(a["phase"])) / ft) % frames.size()
+		var od: Dictionary = a["data"]
+		var pause := float(od.get("idle_pause", 0.0))
+		if pause > 0.0 and not bool(a["moving"]):
+			var play_t := frames.size() * ft
+			var t := fmod(anim_clock + float(a["phase"]) * 3.0, play_t + pause)
+			i = mini(int(t / ft), frames.size() - 1) if t < play_t else 0
 		(a["node"] as TextureRect).texture = frames[i]
 	if not player_sprite:
 		return
@@ -2276,19 +2338,51 @@ func _interact(o: Dictionary) -> void:
 			start_dialogue(str(o["dialogue"]))
 		"look":
 			looked[_look_key(o)] = true
+			if o.has("enter") and flags.has(str(o.get("set_flag", ""))) and _art("rooms/" + str(o["enter"])):
+				_enter_interior(str(o["enter"]))
+				return
 			if o.has("set_flag") and not flags.has(o["set_flag"]):
 				flags[o["set_flag"]] = true
 				if o.has("sfx"):
 					_sfx(str(o["sfx"]))
 				_refresh_visibility()
-				play_lines(o.get("lines", []), _refresh_visibility)
+				play_lines(_fill_lines(o.get("lines", [])), func():
+					_refresh_visibility()
+					if o.has("enter") and _art("rooms/" + str(o["enter"])):
+						_close_dialog()
+						_enter_interior(str(o["enter"])))
 			else:
-				play_lines(o.get("lines_after", o.get("lines", [])), _refresh_visibility)
+				play_lines(_fill_lines(o.get("lines_after", o.get("lines", []))), _refresh_visibility)
 		"car":
 			if room_id == "sokak":
 				_board_car()
 			else:
 				play_lines([["Oscar", "Daha yeni geldik. Önce yakut."]], Callable())
+
+
+## Metindeki {debt} yerine güncel borç yazılır.
+func _fill_lines(lines: Array) -> Array:
+	var out: Array = []
+	for l in lines:
+		var row: Array = (l as Array).duplicate()
+		row[1] = str(row[1]).replace("{debt}", str(debt))
+		out.append(row)
+	return out
+
+
+## Arabanın içine/bagajına geçiş: Oscar kapıyı açıp eğilerek girer, ekran kararır, iç görünüm açılır.
+func _enter_interior(room: String) -> void:
+	busy = true
+	_sfx("car_door")
+	var tw := create_tween()
+	tw.tween_property(player, "modulate:a", 0.0, 0.35)
+	if maya:
+		tw.parallel().tween_property(maya, "modulate:a", 0.0, 0.35)
+	tw.tween_callback(func():
+		player.modulate.a = 1.0
+		if maya:
+			maya.modulate.a = 1.0
+		go_room(room, 0.0))
 
 
 # ================================================================ ipuçları
@@ -2480,6 +2574,15 @@ func _on_dialog_input(event: InputEvent) -> void:
 			_advance()
 
 
+## Diyalogda Esc: "Ayrıl" seçeneği varsa ona basar; yoksa hiçbir şey yapmaz (oyun duraklamaz).
+func _esc_dialog() -> void:
+	for c in dialog_choices.get_children():
+		var b := c as Button
+		if b != null and b.text.begins_with("Ayrıl"):
+			b.pressed.emit()
+			return
+
+
 func _clear_choices() -> void:
 	for c in dialog_choices.get_children():
 		dialog_choices.remove_child(c)
@@ -2608,7 +2711,7 @@ func _fill_notebook(info: String) -> void:
 	board_cards.clear()
 	match select_mode:
 		"show":
-			notebook_title.text = "KANIT GÖSTER  (parlayanlar bu kişiyle ilgili)"
+			notebook_title.text = "KANIT GÖSTER"
 		"link":
 			notebook_title.text = "KANIT TAHTASI  (bağlanacak iki kanıtı seç)"
 		_:
@@ -2689,11 +2792,15 @@ func _add_board_card(id: String, relevant: bool) -> void:
 		b.add_child(ph)
 	var lb := Label.new()
 	lb.text = str(data["clues"][id].get("short", data["clues"][id]["name"]))
-	lb.position = Vector2(2, 52)
-	lb.size = Vector2(54, 16)
+	lb.position = Vector2(2, 51)
+	lb.size = Vector2(54, 18)
+	lb.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	lb.max_lines_visible = 2
+	lb.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	lb.clip_text = true
 	lb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_paper_label(lb, 8, Color("#2b1d14"))
+	lb.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_paper_label(lb, 7, Color("#2b1d14"))
 	lb.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	b.add_child(lb)
 	var pin := ColorRect.new()
@@ -2705,7 +2812,7 @@ func _add_board_card(id: String, relevant: bool) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = hash(id)
 	b.pivot_offset = Vector2(29, 35)
-	b.rotation = deg_to_rad(rng.randf_range(-4.0, 4.0))
+	b.rotation = deg_to_rad(rng.randf_range(-2.0, 2.0))
 	b.pressed.connect(_on_clue_pressed.bind(id))
 	b.mouse_entered.connect(func():
 		b.scale = Vector2(1.18, 1.18)
@@ -2993,7 +3100,31 @@ func _eye_warning() -> void:
 
 func _update_eye_button() -> void:
 	if eye_button:
-		eye_button.text = ("Gözü kapat" if eye_on else "Oscar'ın Gözü") + " [Q] " + str(eye_uses)
+		var has_icon := eye_button.icon != null
+		eye_button.text = ("" if has_icon else ("Gözü kapat " if eye_on else "Göz ")) + "Q  " + str(eye_uses)
+		eye_button.modulate = Color(1.4, 1.3, 0.9) if eye_on else Color(1, 1, 1)
+		eye_button.tooltip_text = "Oscar'ın Gözü (" + str(eye_uses) + " hak)"
+
+
+## Alttaki banttaki sade HUD düğmesi: simge (art/ui/...) + küçük tuş ipucu. Simge yoksa kısa yazı.
+func _hud_button(icon_key: String, fallback: String, key_hint: String) -> Button:
+	var b := Button.new()
+	var tex: Texture2D = _art(icon_key) if icon_key != "" else null
+	b.icon = tex
+	b.expand_icon = false
+	b.text = (key_hint if tex else fallback + " " + key_hint)
+	b.add_theme_font_size_override("font_size", 9)
+	b.add_theme_color_override("font_color", C_LIGHT)
+	b.add_theme_color_override("font_hover_color", C_YELLOW)
+	b.add_theme_constant_override("h_separation", 4)
+	b.add_theme_constant_override("icon_max_width", 16)
+	var flat := StyleBoxEmpty.new()
+	for st in ["normal", "hover", "pressed", "focus"]:
+		b.add_theme_stylebox_override(st, flat)
+	b.focus_mode = Control.FOCUS_NONE
+	b.custom_minimum_size = Vector2(0, BAR_H - 4)
+	b.size = Vector2(0, BAR_H - 4)
+	return b
 
 
 func _update_debt() -> void:
@@ -3056,10 +3187,20 @@ func _build_pause() -> void:
 func _build_settings() -> void:
 	var o := _overlay("AYARLAR")
 	settings_panel = o[0]
-	var box: VBoxContainer = o[1]
-	var panel := box.get_parent() as Control
-	panel.custom_minimum_size = Vector2(320, 0)
-	panel.position = Vector2(VIEW_W / 2.0 - 160, 40)
+	var outer: VBoxContainer = o[1]
+	var panel := outer.get_parent() as Control
+	panel.custom_minimum_size = Vector2(440, 0)
+	panel.position = Vector2(VIEW_W / 2.0 - 220, 62)
+	# İki sütun: solda ses ve oyun, sağda görüntü ve kontroller. Ekrana sığar.
+	var cols := HBoxContainer.new()
+	cols.add_theme_constant_override("separation", 18)
+	outer.add_child(cols)
+	var box := VBoxContainer.new()
+	box.custom_minimum_size = Vector2(200, 0)
+	cols.add_child(box)
+	var box2 := VBoxContainer.new()
+	box2.custom_minimum_size = Vector2(200, 0)
+	cols.add_child(box2)
 	_settings_header(box, "SES")
 	_add_slider(box, "Müzik", "music")
 	_add_slider(box, "Efekt sesleri", "sfx")
@@ -3073,18 +3214,21 @@ func _build_settings() -> void:
 		_sfx("click")
 		_save_settings())
 	box.add_child(speed_btn)
+	box = box2
 	_settings_header(box, "GÖRÜNTÜ")
 	var fs := CheckButton.new()
 	fs.text = "Tam ekran"
 	fs.button_pressed = bool(settings["fullscreen"])
 	fs.add_theme_color_override("font_color", C_PALE)
+	fs.add_theme_font_size_override("font_size", 10)
 	fs.toggled.connect(func(on: bool):
 		settings["fullscreen"] = on
 		_apply_settings()
 		_save_settings())
 	box.add_child(fs)
 	var at := CheckButton.new()
-	at.text = "Toz ve atmosfer efektleri"
+	at.text = "Toz efekti"
+	at.add_theme_font_size_override("font_size", 10)
 	at.button_pressed = bool(settings["atmosphere"])
 	at.add_theme_color_override("font_color", C_PALE)
 	at.toggled.connect(func(on: bool):
@@ -3094,11 +3238,11 @@ func _build_settings() -> void:
 	box.add_child(at)
 	_settings_header(box, "KONTROLLER")
 	var keys := Label.new()
-	keys.text = "Sol tık: yürü / incele / konuş\nA - D: yürü     F: etkileşim\nQ: Oscar'ın Gözü     Tab: defter     Esc: menü"
-	keys.add_theme_font_size_override("font_size", 10)
+	keys.text = "Sol tık: yürü / incele / konuş\nA - D: yürü    F: etkileşim\nQ: Oscar'ın Gözü    Tab: defter\nEsc: menü    F11: tam ekran"
+	keys.add_theme_font_size_override("font_size", 9)
 	keys.add_theme_color_override("font_color", C_LIGHT)
 	box.add_child(keys)
-	_menu_btn(box, "Geri [Esc]", _close_settings)
+	_menu_btn(outer, "Geri [Esc]", _close_settings)
 
 
 func _settings_header(box: Control, text: String) -> void:
@@ -3121,7 +3265,7 @@ func _add_slider(box: Control, label_text: String, key: String) -> void:
 	sl.max_value = 1.0
 	sl.step = 0.05
 	sl.value = float(settings[key])
-	sl.custom_minimum_size = Vector2(200, 16)
+	sl.custom_minimum_size = Vector2(190, 12)
 	box.add_child(sl)
 	lb.text = label_text + ": %d%%" % int(round(sl.value * 100))
 	sl.value_changed.connect(func(v: float):
@@ -3526,6 +3670,48 @@ func _maya_rect() -> Rect2:
 
 func _player_moving() -> bool:
 	return player_walking_script or target_x >= 0.0 or Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_D) or Input.is_action_pressed("ui_left") or Input.is_action_pressed("ui_right")
+
+
+## Maya ara ara kendiliğinden sohbet açar (data maya_chats). Her sohbet bir kez, cevabı oyuncu seçer.
+func _update_maya_chat(delta: float) -> void:
+	maya_chat_cool = maxf(0.0, maya_chat_cool - delta)
+	if busy or paused or in_menu or eye_on or maya == null or not maya.visible or _player_moving():
+		maya_chat_idle = 0.0
+		return
+	maya_chat_idle += delta
+	if maya_chat_idle < 8.0 or maya_chat_cool > 0.0:
+		return
+	for c in data.get("maya_chats", []):
+		var chat: Dictionary = c
+		var key := "maya_chat:" + str(chat["id"])
+		if flags.has(key):
+			continue
+		if chat.has("room") and str(chat["room"]) != room_id:
+			continue
+		if chat.has("requires_flag") and not flags.has(str(chat["requires_flag"])):
+			continue
+		if chat.has("requires_clue") and not clues.has(str(chat["requires_clue"])):
+			continue
+		flags[key] = true
+		maya_chat_idle = 0.0
+		maya_chat_cool = 45.0
+		_face(maya_x - player.position.x)
+		play_lines(chat["lines"], func():
+			var last: Array = (chat["lines"] as Array).back()
+			_show_line(str(last[0]), str(last[1]), false)
+			for ch in chat.get("choices", []):
+				var choice: Dictionary = ch
+				_add_choice(str(choice["text"]), func():
+					var reply: Array = [["Oscar", str(choice["text"])]]
+					reply.append_array(choice.get("reply", []))
+					play_lines(reply, Callable()))
+			_layout_dialog())
+		return
+
+
+## İç görünüm mekanları (araba içi, bagaj): Oscar ve Maya görünmez, tıklanan şey doğrudan incelenir.
+func _no_player() -> bool:
+	return bool(data["rooms"].get(room_id, {}).get("no_player", false))
 
 
 func _talk_to_maya() -> void:
