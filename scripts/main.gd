@@ -1131,10 +1131,10 @@ func _room_setup(id: String, spawn_x: float) -> void:
 					maya.visible = false
 		"sorgu":
 			if summoned != "":
-				_spawn_object({"type": "npc", "dialogue": summoned, "art": _npc_art(summoned), "x": 226}, _art("rooms/sorgu") != null)
-				player.position.x = 116.0
+				_spawn_object({"type": "npc", "dialogue": summoned, "art": _npc_art(summoned), "x": 292}, _art("rooms/sorgu") != null)
+				player.position.x = 150.0
 				if maya:
-					maya_x = 60.0
+					maya_x = 110.0
 				_refresh_npc_marks()
 		"koridor":
 			if not flags.has("koridor_done") and maya:

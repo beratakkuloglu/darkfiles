@@ -956,7 +956,7 @@
    "name": "Interrogation Room",
    "place": "FCD · Ravenport",
    "width": 344,
-   "floor_y": 168,
+   "floor_y": 172,
    "bg": "#1a1410",
    "objects": []
   }
